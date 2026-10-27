@@ -1,0 +1,53 @@
+site_name: ERGO × Microsoft Female Leadership Workshop
+site_url: https://fizamusthafa.github.io/ergo-female-leadership-workshop/
+site_description: Hands-on labs for Microsoft 365 Copilot custom skills in PowerPoint and Excel
+repo_url: https://github.com/fizamusthafa/ergo-female-leadership-workshop
+repo_name: ergo-female-leadership-workshop
+copyright: ERGO × Microsoft Female Leadership Workshop · All workshop data is fictional
+
+theme:
+  name: material
+  logo: assets/images/header-logo.png
+  favicon: assets/images/favicon.png
+  palette:
+    scheme: default
+    primary: custom
+    accent: custom
+  font:
+    text: Segoe UI
+    code: Roboto Mono
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.footer
+    - navigation.top
+    - navigation.indexes
+    - toc.follow
+    - content.code.copy
+    - search.highlight
+  icon:
+    repo: fontawesome/brands/github
+
+extra_css:
+  - stylesheets/ergo.css
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+
+nav:
+  - Home: index.md
+  - "Lab P1 · PowerPoint": labs/p1-powerpoint.md
+  - "Lab X1 · Excel": labs/x1-excel.md
