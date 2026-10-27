@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Excel exercise · ERGO Female Leadership Workshop</title>
+  <meta name="description" content="Use a Copilot custom skill to create a launch-readiness review in Excel.">
+  <link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="topbar">
+    <div class="wrap">
+      <a class="brand" href="index.html"><img src="assets/img/ergo-logo.png" alt="ERGO"><span>Female Leadership<br>Workshop</span></a>
+      <nav aria-label="Workshop pages">
+        <a href="index.html">Overview</a>
+        <a href="powerpoint.html">PowerPoint</a>
+        <a href="excel.html" aria-current="page">Excel</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero">
+      <div class="wrap">
+        <div>
+          <div class="eyebrow">Exercise 2 · Excel · 15 minutes</div>
+          <h1>Find launch blockers in a register</h1>
+          <p class="lead">Add a review skill, then ask Copilot to review the register. Copilot builds a launch review with formulas you can inspect.</p>
+          <div class="actions">
+            <a class="button" href="#steps">Start the steps</a>
+            <a class="button secondary" href="#downloads">Get the files</a>
+          </div>
+        </div>
+        <div class="hero-card">
+          <h2>What you will create</h2>
+          <ul class="check">
+            <li>A Launch review sheet dated 30 September 2026</li>
+            <li>Counts of total, blocked and overdue items</li>
+            <li>A filterable table linked to the source register</li>
+            <li>A short note on what blocks launch</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
+        <h2>Watch first</h2>
+        <div class="video-frame">
+          <video controls muted playsinline preload="metadata" poster="assets/img/excel-poster.jpg">
+            <source src="assets/video/excel-intro.mp4" type="video/mp4">
+            Your browser does not support video playback. <a href="assets/video/excel-intro.mp4">Download the video</a>.
+          </video>
+        </div>
+        <p class="caption">1:46 introduction from the real Excel run. The video has captions on screen and no sound.</p>
+      </div>
+    </section>
+
+    <section class="alt" id="downloads">
+      <div class="wrap">
+        <h2>Get the exercise files</h2>
+        <p>Use the workbook for the exercise. Excel reads skills from a folder, so unzip the skill package first.</p>
+        <div class="downloads">
+          <a class="download" href="downloads/ERGO-Skill-Launch-Before.xlsx" download><strong>ERGO-Skill-Launch-Before.xlsx</strong><span>24-item pilot register</span></a>
+          <a class="download" href="downloads/ergo-launch-review.zip" download><strong>ergo-launch-review.zip</strong><span>Unzip to get the skill folder</span></a>
+        </div>
+        <div class="callout neutral"><strong>Prepare:</strong> upload the workbook to your OneDrive and open it in Excel for the web. Unzip the skill package on your computer. You should have a folder named <strong>ergo-launch-review</strong> containing <strong>SKILL.md</strong>.</div>
+      </div>
+    </section>
+
+    <section id="steps">
+      <div class="wrap">
+        <h2>Step by step</h2>
+        <div class="steps">
+          <article class="step">
+            <div>
+              <h3>Open custom skills</h3>
+              <ol>
+                <li>Open the workbook and select <strong>Copilot</strong>.</li>
+                <li>Select <strong>…</strong> (Settings and more), then <strong>Manage plugins &amp; skills</strong>.</li>
+                <li>Select <strong>Custom skills</strong>, then <strong>Add</strong>.</li>
+                <li>Select <strong>Add in OneDrive</strong>.</li>
+              </ol>
+              <p>In this Excel version, Add offered only the OneDrive option. If you see <strong>Create skills folder</strong>, select it first.</p>
+            </div>
+            <figure class="narrow"><img src="assets/gif/xl-1-add-onedrive.gif" alt="Opening Add in OneDrive from Excel Custom skills" loading="lazy"><figcaption>The Add menu in Excel</figcaption></figure>
+          </article>
+
+          <article class="step">
+            <div>
+              <h3>Add the skill folder</h3>
+              <ol>
+                <li>Excel opens your OneDrive <strong>skills</strong> folder.</li>
+                <li>Select <strong>Create or upload</strong>, then <strong>Folder upload</strong>.</li>
+                <li>Choose the unzipped <strong>ergo-launch-review</strong> folder.</li>
+                <li>Return to Excel and select <strong>Refresh</strong> in Custom skills.</li>
+              </ol>
+              <div class="callout">Upload the folder, not the ZIP. The folder name must match the skill name.</div>
+            </div>
+            <figure><img src="assets/gif/xl-2-skills-folder.gif" alt="The ergo-launch-review folder in the OneDrive skills folder" loading="lazy"><figcaption>One folder per skill</figcaption></figure>
+          </article>
+
+          <article class="step">
+            <div>
+              <h3>Read what the skill tells Copilot</h3>
+              <p>Open <strong>SKILL.md</strong> inside the folder. The top lines tell Copilot when to use it: launch-readiness reviews, overdue action checks or owner-and-dependency reviews.</p>
+              <p>The numbered rules describe the method, for example:</p>
+              <ul>
+                <li>Use the register’s 30 September snapshot, not today’s date</li>
+                <li>Count blocked and overdue items separately</li>
+                <li>Use inspectable formulas and keep the source unchanged</li>
+              </ul>
+            </div>
+            <figure><img src="assets/gif/xl-3-skill-md.gif" alt="Reading the trigger and rules in SKILL.md" loading="lazy"><figcaption>The saved method in plain text</figcaption></figure>
+          </article>
+
+          <article class="step">
+            <div>
+              <h3>Ask normally</h3>
+              <p>Go back to the workbook. In Copilot, type this request without selecting or naming the skill:</p>
+              <div class="prompt"><span>Review this register for launch readiness.</span><button class="copy" type="button" data-copy="Review this register for launch readiness.">Copy</button></div>
+              <p>Copilot validates the 24 records, then builds the review. This can take a minute or two.</p>
+            </div>
+            <figure class="narrow"><img src="assets/gif/xl-4-prompt.gif" alt="Copilot answering a normal launch-readiness request" loading="lazy"><figcaption>The summary after a short request</figcaption></figure>
+          </article>
+
+          <article class="step">
+            <div>
+              <h3>Ask which skill was used</h3>
+              <div class="prompt"><span>Which custom skill did you use?</span><button class="copy" type="button" data-copy="Which custom skill did you use?">Copy</button></div>
+              <p>In the rehearsal, Copilot answered <strong>ergo-launch-review</strong>.</p>
+            </div>
+            <figure class="narrow"><img src="assets/gif/xl-5-which-skill.gif" alt="Copilot naming the ergo-launch-review skill" loading="lazy"><figcaption>Copilot explains which skill it applied</figcaption></figure>
+          </article>
+
+          <article class="step">
+            <div>
+              <h3>Check the launch review</h3>
+              <p>Open the new <strong>Launch review</strong> sheet. You should see:</p>
+              <table>
+                <thead><tr><th>Check</th><th>Expected</th></tr></thead>
+                <tbody>
+                  <tr><td>As of</td><td>30 Sep 2026</td></tr>
+                  <tr><td>Total items</td><td>24</td></tr>
+                  <tr><td>Blocked items</td><td>3: R04, A04, A08</td></tr>
+                  <tr><td>Overdue actions</td><td>2: A03, A08</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <figure><img src="assets/gif/xl-6-result.gif" alt="The Launch review sheet with 24 items, 3 blocked and 2 overdue" loading="lazy"><figcaption>Real output from the workshop run</figcaption></figure>
+          </article>
+
+          <article class="step">
+            <div>
+              <h3>Inspect the formula</h3>
+              <p>Select the <strong>Overdue actions</strong> count and look at the formula bar. It counts open actions whose due date is before the snapshot date.</p>
+              <p>Then ask:</p>
+              <div class="prompt"><span>Why aren't all blocked items overdue?</span><button class="copy" type="button" data-copy="Why aren't all blocked items overdue?">Copy</button></div>
+            </div>
+            <figure><img src="assets/gif/xl-7-formula.gif" alt="Selecting the overdue-action count to show its formula" loading="lazy"><figcaption>The result stays inspectable</figcaption></figure>
+          </article>
+
+          <article class="step text-only">
+            <div>
+              <h3>Discuss as a leader</h3>
+              <ul>
+                <li>Which overdue action would you escalate first, and to whom?</li>
+                <li>Why is “blocked” different from “overdue”?</li>
+                <li>Which recurring check in your own area should always follow the same rules?</li>
+              </ul>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="alt">
+      <div class="wrap">
+        <h2>If something does not work</h2>
+        <details><summary>The skill does not appear in Excel</summary><p>Check that you uploaded the unzipped folder and that it contains <strong>SKILL.md</strong>. Then select <strong>Refresh</strong> in Custom skills.</p></details>
+        <details><summary>Copilot gives a general answer instead of a Launch review sheet</summary><p>Start a new chat and ask again. As a fallback, type <strong>@ergo-launch-review Review this register for launch readiness.</strong></p></details>
+        <details><summary>The counts differ from the table above</summary><p>Check the reporting date in cell B2. The exercise uses the register’s snapshot date, 30 September 2026, not today’s date.</p></details>
+        <details><summary>The workbook already has a Launch review sheet</summary><p>Use a fresh copy of the practice workbook so everyone starts from the same register.</p></details>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <img src="assets/img/ergo-logo-white.png" alt="ERGO">
+      <span>Back to <a href="index.html" style="color:#fff">workshop overview</a> · Fictional training scenario</span>
+    </div>
+  </footer>
+  <script src="assets/site.js"></script>
+</body>
+</html>
