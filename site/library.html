@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prompt library · Make Copilot yours</title>
+<link rel="icon" href="assets/img/favicon.png">
+<link rel="stylesheet" href="assets/app.css">
+<link rel="stylesheet" href="assets/fx.css">
+</head>
+<body>
+<main id="main">
+  <section style="padding-bottom:30px">
+    <div class="wrap">
+      <p class="eyebrow">Try this next</p>
+      <h1 class="display" style="font-size:clamp(44px,8vw,96px)">Prompt <em>library.</em></h1>
+      <p class="lede">Short prompts that work on anything you made today. Pick a mood, copy, paste into Copilot.</p>
+      <div class="row" id="moods" style="margin-top:24px"></div>
+    </div>
+  </section>
+  <section style="padding-top:20px"><div class="wrap" id="lib"></div></section>
+</main>
+<script src="assets/content.js"></script>
+<script src="assets/skills-data.js"></script>
+<script src="assets/facts-data.js"></script>
+<script src="assets/vendor/gsap.min.js"></script>
+<script src="assets/app.js"></script>
+<script src="assets/fx.js"></script>
+<script>
+(function () {
+  ADV.shell({ active: 'library' });
+  const slug = (m) => m.replace(/[^a-z]+/gi, '-').replace(/^-|-$/g, '').toLowerCase();
+  ADV.$('#moods').innerHTML = ADV.library.map((g) => `<a class="btn small ghost" href="#${slug(g.mood)}">${g.mood}</a>`).join('');
+  ADV.$('#lib').innerHTML = ADV.library.map((g) => `<div class="lib-group" id="${slug(g.mood)}"><h2 style="font-size:32px">${g.mood}</h2>
+    <div class="grid three">${g.items.map(([p, out]) => `<article class="lib-card"><q>${ADV.esc(p)}</q><p class="preview"><span class="small">You’ll get:</span> ${ADV.esc(out)}</p>
+    <button class="btn small ghost" type="button" data-copy="${ADV.esc(p)}">Copy</button></article>`).join('')}</div></div>`).join('');
+  setTimeout(() => ADV.fx.buddy.say(ADV.buddyLines.library, { soft: true }), ADV.reduce ? 0 : 1200);
+})();
+</script>
+</body>
+</html>

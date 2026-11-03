@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Make Copilot yours · ERGO Female Leadership Summit</title>
+<meta name="description" content="A 45-minute hands-on adventure with Microsoft Copilot custom skills, for the ERGO Female Leadership Summit.">
+<link rel="icon" href="assets/img/favicon.png">
+<link rel="stylesheet" href="assets/app.css">
+<link rel="stylesheet" href="assets/fx.css">
+</head>
+<body>
+<main id="main">
+
+  <!-- Intro -->
+  <section class="stage hero" data-stage="intro">
+    <div class="wrap">
+      <div class="cobrand reveal-up"><img src="assets/img/ergo-logo.png" alt="ERGO" width="74" height="22"><span aria-hidden="true">×</span><img src="assets/img/microsoft-logo.png" alt="Microsoft" width="89" height="22"></div>
+      <p class="eyebrow reveal-up d1" style="margin-bottom:18px">ERGO Female Leadership Summit · Berlin</p>
+      <h1 class="display reveal-up d1">Make Copilot <em>yours.</em></h1>
+      <p class="lede reveal-up d2">Forty-five minutes. One board meeting to prepare for. A handful of skills that make Copilot work the way ERGO’s leaders work.</p>
+      <div class="row reveal-up d3" style="justify-content:center">
+        <button class="btn red" type="button" data-go="q0">Find your trail →</button>
+        <button class="btn ghost" type="button" data-go="choose">I’ll pick myself</button>
+      </div>
+      <p class="meta reveal-up d4">Three quick questions · about a minute</p>
+    </div>
+  </section>
+
+  <!-- Persona questions -->
+  <section class="stage" data-stage="quiz" hidden>
+    <div class="quiz">
+      <div class="progress" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+      <p class="eyebrow" id="q-count">Question 1 of 4</p>
+      <h2 id="q-text" tabindex="-1"></h2>
+      <div class="answers" role="group" aria-labelledby="q-text"></div>
+      <p class="note" aria-live="polite"></p>
+      <p class="self"><button class="linkish" type="button" data-go="choose">I’ll pick my trail myself</button></p>
+    </div>
+  </section>
+
+  <!-- Copilot chosen -->
+  <section class="stage" data-stage="chosen" hidden>
+    <div class="chosen narrow">
+      <img class="happy" src="assets/img/brands/microsoft-copilot.png" alt="Microsoft Copilot">
+      <h2 tabindex="-1">Great choice.</h2>
+      <p class="lede" style="margin:0 auto 30px">It already knows your Outlook, your Teams and your SharePoint. Today you teach it how ERGO works.</p>
+      <button class="btn red" type="button" data-go="reveal">Your adventure begins →</button>
+    </div>
+  </section>
+
+  <!-- Reveal -->
+  <section class="stage" data-stage="reveal" hidden>
+    <div class="wrap reveal-card" id="reveal"></div>
+  </section>
+
+  <!-- Choose yourself -->
+  <section class="stage" data-stage="choose" id="choose" hidden>
+    <div class="wrap">
+      <p class="eyebrow center">Choose your trail</p>
+      <h2 class="center" tabindex="-1">Where do you want to start?</h2>
+      <div class="grid three" id="trail-cards" style="margin-top:36px"></div>
+      <p class="center" style="margin-top:28px"><button class="linkish" type="button" data-go="q0">Take the quiz instead</button></p>
+    </div>
+  </section>
+
+</main>
+
+<div class="clippy" aria-live="polite" hidden>
+  <div class="bubble" role="dialog" aria-label="Clippy">
+    <p>It looks like you’re trying to choose an AI assistant. Would you like help?</p>
+    <div class="row"><button type="button" data-clippy="yes">Yes, help me</button><button type="button" class="blue" data-clippy="yes">Yes, help me (but in blue)</button></div>
+    <button type="button" class="leave" data-clippy="leave">Leave me alone</button>
+  </div>
+  <div class="clip"></div>
+</div>
+
+<script src="assets/content.js"></script>
+<script src="assets/skills-data.js"></script>
+<script src="assets/facts-data.js"></script>
+<script src="assets/vendor/gsap.min.js"></script>
+<script src="assets/app.js"></script>
+<script src="assets/fx.js"></script>
+<script>
+(function () {
+  ADV.shell({ active: 'home' });
+  const $ = ADV.$, $$ = (s) => [...document.querySelectorAll(s)];
+  const stages = $$('[data-stage]');
+  const show = (name) => {
+    stages.forEach((s) => { s.hidden = s.dataset.stage !== name; });
+    window.scrollTo(0, 0);
+    const h = document.querySelector(`[data-stage="${name}"] h2, [data-stage="${name}"] h1`); if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); }
+  };
+  let votes = [];
+  let attempts = 0;
+  let clippyUp = false;
+
+  // ---------- persona questions ----------
+  const ask = (i) => {
+    show('quiz'); votes = votes.slice(0, i);
+    $$('.quiz .progress i').forEach((b, k) => b.classList.toggle('on', k <= i));
+    $('#q-count').textContent = `Question ${i + 1} of 4`;
+    $('.quiz .note').textContent = '';
+    if (i === 3) return askAssistant();
+    const item = ADV.quiz[i];
+    $('#q-text').textContent = item.q;
+    $('.answers').innerHTML = item.a.map(([k, t], n) => `<button class="answer" type="button" data-vote="${k}"><span class="key" aria-hidden="true">${n + 1}</span>${ADV.esc(t)}</button>`).join('');
+    $('#q-text').focus({ preventScroll: true });
+    $$('.answers [data-vote]').forEach((b) => b.addEventListener('click', () => { votes[i] = b.dataset.vote; ask(i + 1); }));
+  };
+
+  // ---------- the assistant question ----------
+  const options = [
+    ['copilot', 'Microsoft Copilot', '<img src="assets/img/brands/microsoft-copilot.png" alt="">'],
+    ['chatgpt', 'ChatGPT', '<img src="assets/img/brands/chatgpt.png" alt="">'],
+    ['claude', 'Claude', '<img src="assets/img/brands/claude.png" alt="">'],
+    ['other', 'Something else…', '?'],
+  ];
+  const askAssistant = () => {
+    attempts = 0;
+    $('#q-text').textContent = 'Which assistant do you want to take on this adventure?';
+    $('.answers').innerHTML = options.map(([k, t, ic], n) => `<button class="answer ${k === 'copilot' ? 'copilot' : 'other'}" type="button" data-ai="${k}"><span class="icon" aria-hidden="true">${ic}</span>${t}<span class="key" aria-hidden="true" style="margin-left:auto">${n + 1}</span></button>`).join('');
+    $('#q-text').focus({ preventScroll: true });
+    $$('.answers [data-ai]').forEach((b) => b.addEventListener('click', () => (b.dataset.ai === 'copilot' ? pickCopilot() : notCopilot(b))));
+  };
+  const note = (t) => { $('.quiz .note').textContent = t; };
+  const notCopilot = (b) => {
+    attempts++;
+    const cop = $('.answer.copilot');
+    cop.style.setProperty('--grow', attempts);
+    if (attempts === 1) {
+      b.classList.remove('wobble'); void b.offsetWidth; b.classList.add('wobble');
+      note('Bold choice. But does it know your Outlook, your Teams and your SharePoint?');
+      cop.classList.add('glow');
+    } else if (attempts === 2) {
+      note('We’ll pretend that was a misclick 😉');
+      $$('.answer.other').forEach((x) => x.classList.add('shy'));
+    } else if (attempts === 3) {
+      note('');
+      clippy(true);
+      ADV.update((s) => { s.clippy = true; });
+      ADV.award('clippy');
+    } else {
+      sigh();
+    }
+  };
+  const sigh = () => {
+    const c = $('.clippy'); c.classList.remove('sigh'); void c.offsetWidth; c.classList.add('sigh');
+    if (!clippyUp) clippy(true);
+    $$('.answer.other').forEach((x) => { x.classList.add('gone'); x.setAttribute('tabindex', '-1'); x.setAttribute('aria-hidden', 'true'); });
+    const cop = $('.answer.copilot'); cop.classList.add('giant'); cop.focus();
+    note('Fine. We chose for you. You’re welcome.');
+  };
+  // "Shy" buttons drift away from the mouse. Keyboard and touch selections still count.
+  document.addEventListener('mousemove', (e) => {
+    if (ADV.reduce) return;
+    $$('.answer.shy:not(.gone)').forEach((b) => {
+      const r = b.getBoundingClientRect(); const cx = r.left + r.width / 2 - (b._dx || 0), cy = r.top + r.height / 2;
+      const dx = cx - e.clientX, dy = cy - e.clientY, dist = Math.hypot(dx, dy);
+      const push = dist < 160 ? (160 - dist) / 160 : 0;
+      b._dx = Math.sign(dx || 1) * push * 120;
+      b.style.transform = `translateX(${b._dx}px)`;
+    });
+  });
+
+  const clippy = (up) => {
+    const c = $('.clippy'); $('.clippy .clip').innerHTML = ADV.clippyImg;
+    if (up) { c.hidden = false; requestAnimationFrame(() => requestAnimationFrame(() => c.classList.add('up'))); clippyUp = true; setTimeout(() => $('.clippy [data-clippy]').focus(), 400); }
+    else { c.classList.remove('up'); clippyUp = false; setTimeout(() => { c.hidden = true; }, 700); }
+  };
+  $('.clippy').addEventListener('click', (e) => {
+    const a = e.target.closest('[data-clippy]')?.dataset.clippy; if (!a) return;
+    if (a === 'yes') pickCopilot();
+    if (a === 'leave') { clippy(false); $('.answer.copilot').focus(); }
+  });
+
+  const pickCopilot = () => {
+    if (clippyUp) { const c = $('.clippy'); c.classList.add('wave'); setTimeout(() => clippy(false), ADV.reduce ? 0 : 1300); }
+    setTimeout(() => { show('chosen'); ADV.confetti(); }, clippyUp && !ADV.reduce ? 900 : 0);
+  };
+
+  // ---------- reveal ----------
+  const winner = () => {
+    const count = { ppt: 0, xls: 0, m365: 0 }; votes.forEach((v) => { if (v) count[v]++; });
+    return ['ppt', 'xls', 'm365'].reduce((best, k) => (count[k] > count[best] ? k : best), 'ppt');
+  };
+  const reveal = (key) => {
+    const t = ADV.trails[key], p = ADV.personas[key];
+    ADV.update((s) => { s.trail = key; s.quiz = votes; });
+    const letters = [...p.name].map((ch, i) => `<span style="animation-delay:${0.15 + i * 0.06}s">${ch}</span>`).join('');
+    const article = /^[AEIOU]/.test(p.name) ? 'an' : 'a';
+    let body;
+    if (t.comingSoon) {
+      body = `<p class="lede" style="margin:0 auto 26px">${p.line} Your trail, <b>${t.app}</b>, is still being built.</p>
+        <div class="card" style="max-width:640px;margin:0 auto;text-align:left"><p class="eyebrow">Coming soon</p><p>Ask your facilitator which trail to join today. Orchestrators do great on either:</p>
+        <div class="row" style="margin-top:14px"><button class="btn red" type="button" data-pick="ppt">PowerPoint: The Board Meeting</button><button class="btn ghost" type="button" data-pick="xls">Excel: The Numbers Room</button></div></div>`;
+    } else {
+      const skills = [...new Set(t.steps.flatMap((s) => s.skills))];
+      body = `<p class="lede" style="margin:0 auto">${p.line}</p>
+        <div class="trail-preview glass" style="padding:28px">
+          <p class="eyebrow">${t.app} trail</p><h2 style="font-size:clamp(30px,4vw,44px)">${t.name}</h2>
+          <p class="muted" style="font-size:19px">Mission: ${t.mission}</p>
+          <div class="path-line">${t.steps.map((s, i) => `<div class="node ${s.optional ? 'opt' : ''}"><b>${i + 1}. ${s.title}</b><span>${s.time} min${s.optional ? ' · optional' : ''}</span></div>`).join('')}</div>
+          <div class="grid two" style="margin-top:22px">
+            <div><h3>Skills you’ll collect</h3><div class="uses">${skills.map((k) => `<span class="pill red">${ADV.skills[k].title}</span>`).join('')}</div></div>
+            <div><h3>Side quests</h3><div class="uses">${t.sideQuests.map((q) => `<span class="pill">${q.title} · ${q.time}′</span>`).join('')}</div></div>
+          </div>
+          <div class="row" style="margin-top:28px"><a class="btn red" href="anatomy.html?next=${key}">Start the trail →</a><button class="btn ghost" type="button" data-go="choose">Choose a different trail</button></div>
+          <p class="small muted" style="margin-top:12px">First stop: a three-minute look at what a skill actually is.</p>
+        </div>`;
+    }
+    $('#reveal').innerHTML = `<p class="you">You’re ${article}</p><h2 class="persona" tabindex="-1" aria-label="${p.name}">${letters}</h2>${body}`;
+    show('reveal');
+    $$('#reveal [data-pick]').forEach((b) => b.addEventListener('click', () => reveal(b.dataset.pick)));
+    $$('#reveal [data-go]').forEach((b) => b.addEventListener('click', () => go(b.dataset.go)));
+  };
+
+  // ---------- choose yourself ----------
+  $('#trail-cards').innerHTML = ['ppt', 'xls', 'm365'].map((k) => {
+    const t = ADV.trails[k], p = ADV.personas[k];
+    return `<button class="card answer" type="button" data-choose="${k}" style="flex-direction:column;align-items:flex-start;gap:6px">
+      <span class="pill ${t.comingSoon ? '' : 'red'}">${t.app}${t.comingSoon ? ' · coming soon' : ''}</span>
+      <b style="font-size:24px;letter-spacing:-.02em">${t.name}</b><span class="muted" style="font-size:15px">${t.mission}</span>
+      <span class="small muted">For the ${p.name}</span></button>`;
+  }).join('');
+  $$('[data-choose]').forEach((b) => b.addEventListener('click', () => { votes = []; reveal(b.dataset.choose); }));
+
+  const go = (where) => {
+    if (where === 'q0') { votes = []; ask(0); }
+    else if (where === 'reveal') reveal(winner());
+    else show(where);
+  };
+  document.addEventListener('click', (e) => { const b = e.target.closest('main [data-go]'); if (b && !b.closest('#reveal')) go(b.dataset.go); });
+  document.addEventListener('keydown', (e) => {
+    if ($('[data-stage="quiz"]').hidden || e.altKey || e.ctrlKey || e.metaKey) return;
+    const n = parseInt(e.key, 10); if (!n) return;
+    const btns = $$('.answers .answer:not(.gone)'); if (btns[n - 1]) btns[n - 1].click();
+  });
+  if (location.hash === '#choose') show('choose');
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Finale · Make Copilot yours</title>
+<link rel="icon" href="assets/img/favicon.png">
+<link rel="stylesheet" href="assets/app.css">
+<link rel="stylesheet" href="assets/fx.css">
+</head>
+<body>
+<main id="main">
+  <section class="hero" style="min-height:70vh">
+    <div class="narrow">
+      <p class="eyebrow reveal-up">Back together</p>
+      <h1 class="display reveal-up d1">The <em>finale.</em></h1>
+      <p class="lede reveal-up d2" style="margin:0 auto">Seven minutes. One live board rehearsal, one scenario, and the skill your team needs next.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap grid two">
+      <article class="card">
+        <p class="eyebrow">On the projector · 3 min</p>
+        <h2 style="font-size:32px">Live board rehearsal</h2>
+        <p class="muted">A Storyteller volunteers their board pack. The room plays the board.</p>
+        <div id="p-rehearse"></div>
+        <p class="small muted">Then ask the room: which question would you add?</p>
+      </article>
+      <article class="card">
+        <p class="eyebrow">Next to it · 2 min</p>
+        <h2 style="font-size:32px">One scenario, live</h2>
+        <p class="muted">An Analyst changes one grey input cell on the Scenarios sheet. Everyone watches the result move.</p>
+        <div id="p-scenario"></div>
+        <p class="small muted">Sensitivity, not a forecast.</p>
+      </article>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <p class="eyebrow">🏔️ You made it</p>
+      <h2>Your summit <em>certificate.</em></h2>
+      <p class="lede">Add your name, and if you like, one souvenir sentence from Copilot. Then download it.</p>
+      <div data-fx="certificate" style="margin-top:28px"></div>
+    </div>
+  </section>
+
+  <section class="center" style="padding-top:20px">
+    <div class="narrow">
+      <p class="eyebrow">2 min</p>
+      <h2>My team’s skill would…</h2>
+      <p class="lede" style="margin:0 auto 26px">Every team repeats something every week. That’s a skill waiting to be written.</p>
+      <div class="card" style="text-align:left">
+        <label for="team" class="small muted">My team</label>
+        <input id="team" class="field" placeholder="e.g. Claims operations" autocomplete="off">
+        <label for="task" class="small muted" style="margin-top:14px;display:block">…would teach Copilot to</label>
+        <input id="task" class="field" placeholder="e.g. turn the weekly backlog report into a two-line update for the board" autocomplete="off">
+        <p id="sentence" class="wow" style="min-height:2em" aria-live="polite"></p>
+        <div class="row"><button class="btn red" type="button" id="copy-sentence">Copy for the wall</button><span id="wall"></span>
+          <button class="btn ghost" type="button" id="copy-draft">Copy a prompt to draft the skill</button></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <p class="eyebrow">Your collection</p>
+      <h2 id="tally">What you take home</h2>
+      <div class="grid three" id="haul" style="margin-top:20px"></div>
+      <p class="row" style="margin-top:30px"><a class="btn ghost" href="library.html">Prompt library</a><a class="btn ghost" href="downloads/powerpoint-kit.zip" download>PowerPoint kit ↓</a><a class="btn ghost" href="downloads/excel-kit.zip" download>Excel kit ↓</a></p>
+    </div>
+  </section>
+</main>
+<style>
+  .field { width: 100%; font: inherit; font-size: 18px; color: var(--text); background: #fff; border: 1px solid rgba(0,0,0,.14); border-radius: 12px; padding: 14px 16px; margin-top: 6px; }
+  .field:focus { border-color: var(--red); outline: none; box-shadow: 0 0 0 3px var(--red-glow); }
+</style>
+<script src="assets/content.js"></script>
+<script src="assets/skills-data.js"></script>
+<script src="assets/facts-data.js"></script>
+<script src="assets/vendor/gsap.min.js"></script>
+<script src="assets/app.js"></script>
+<script src="assets/fx.js"></script>
+<script>
+(function () {
+  ADV.shell({ active: 'finale' });
+  const $ = ADV.$;
+  $('#p-rehearse').innerHTML = ADV.promptBox('Rehearse the board meeting with me. What will they ask?');
+  $('#p-scenario').innerHTML = ADV.promptBox('What happens to our result if the combined ratio gets 3 points worse instead of 2?');
+  const sentence = () => {
+    const team = $('#team').value.trim(), task = $('#task').value.trim();
+    return task ? `${team || 'My team'}’s skill would teach Copilot to ${task.replace(/\.$/, '')}.` : '';
+  };
+  const render = () => { $('#sentence').textContent = sentence(); };
+  $('#team').addEventListener('input', render); $('#task').addEventListener('input', render);
+  $('#copy-sentence').addEventListener('click', (e) => { if (sentence()) ADV.copy(sentence(), e.currentTarget); else $('#task').focus(); });
+  $('#copy-draft').addEventListener('click', (e) => {
+    const task = $('#task').value.trim() || '[describe the task]';
+    ADV.copy(`Write a custom skill (SKILL.md with a name, a description of when to use it, and numbered rules) that teaches you to ${task.replace(/\.$/, '')} the way my team does it. Ask me up to three questions first.`, e.currentTarget);
+  });
+  const w = ADV.config.wallUrl;
+  $('#wall').innerHTML = w ? `<a class="btn ghost" href="${w}" target="_blank" rel="noopener">Open the wall ↗</a>` : '<span class="small muted">Paste it where your facilitator shows you.</span>';
+
+  const st = ADV.state;
+  const owned = Object.keys(ADV.skills).filter((k) => st.skills[k]);
+  const badges = Object.keys(ADV.badges).filter((k) => st.badges[k]);
+  const steps = Object.keys(st.done).length, quests = Object.keys(st.quests).length;
+  $('#tally').textContent = owned.length ? `${owned.length} skill${owned.length > 1 ? 's' : ''}, ${steps} step${steps === 1 ? '' : 's'}, ${quests} side quest${quests === 1 ? '' : 's'}` : 'What you take home';
+  $('#haul').innerHTML = (owned.length ? owned : Object.keys(ADV.skills).slice(0, 3)).map((k) => `<article class="skill-card ${st.skills[k] ? 'lit' : 'locked'}"><span class="pill">${ADV.skills[k].app}</span><h4>${ADV.skills[k].title}</h4><p>${ADV.skills[k].what}</p></article>`).join('')
+    + badges.map((k) => `<article class="skill-card lit badge-card"><span class="ic" aria-hidden="true">${ADV.badges[k].icon}</span><div><h4>${ADV.badges[k].title}</h4><p>${ADV.badges[k].what}</p></div></article>`).join('');
+  if (owned.length >= 3) ADV.confetti();
+  ADV.fx.certificate(document.querySelector('[data-fx="certificate"]'));
+  setTimeout(() => ADV.fx.buddy.say(ADV.buddyLines.finale, { soft: true }), ADV.reduce ? 0 : 1200);
+})();
+</script>
+</body>
+</html>

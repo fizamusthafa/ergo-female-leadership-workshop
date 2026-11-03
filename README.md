@@ -1,10 +1,13 @@
-# ERGO × Microsoft Female Leadership Workshop
+# Make Copilot yours · ERGO Female Leadership Summit
 
-Hands-on labs for Microsoft 365 Copilot custom skills, built with [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/) in the style of the [Copilot Developer Camp](https://microsoft.github.io/copilot-camp/).
+A 45-minute, hands-on Microsoft Copilot workshop. Attendees take a short quiz, follow a guided trail in PowerPoint or Excel, and add custom skills that make Copilot work the ERGO way.
 
-- **Lab P1 · PowerPoint** — prepare a committee decision check
-- **Lab X1 · Excel** — find launch blockers in a register
+Live site: https://fizamusthafa.github.io/ergo-female-leadership-workshop/
 
-Run locally: `pip install "mkdocs<2" mkdocs-material` then `mkdocs serve`. Pushing to `main` publishes to GitHub Pages.
+- `site/` is the published static site: plain HTML, CSS and JavaScript, no build step. It also works offline from the folder.
+- Pushing to `main` publishes `site/` to GitHub Pages through `.github/workflows/publish.yml`.
+- The site is generated in the workshop source repository (`workshop-site/adventure/`); edit it there and copy it here.
 
-All workshop data is fictional and is not ERGO operating data.
+All figures, business units and events in the workshop are illustrative and invented for training. They are not ERGO results.
+
+Animations use [GSAP](https://gsap.com/) under its standard no-charge licence. The Microsoft Copilot, ChatGPT and Claude logos and the Clippy artwork are the property of their owners and are used for illustration in the quiz.

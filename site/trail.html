@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trail · Make Copilot yours</title>
+<link rel="icon" href="assets/img/favicon.png">
+<link rel="stylesheet" href="assets/app.css">
+<link rel="stylesheet" href="assets/fx.css">
+</head>
+<body>
+<nav class="rail" aria-label="Trail progress"><ol class="wrap" id="rail"></ol></nav>
+<main id="main"><div class="wrap" id="page"></div></main>
+
+<div class="modal" id="result" hidden role="dialog" aria-modal="true" aria-labelledby="result-title">
+  <div class="box"><button class="btn small ghost close" type="button">Close</button>
+    <p class="eyebrow">🚡 Cable car · example result</p><h2 id="result-title" style="font-size:30px"></h2>
+    <p class="muted small">A prepared example of what this step produces, so you can keep going. Your own result will look a little different.</p>
+    <div class="shots"></div><div class="row"><a class="btn red small dl" download>Download the file</a></div>
+  </div>
+</div>
+
+<script src="assets/content.js"></script>
+<script src="assets/skills-data.js"></script>
+<script src="assets/facts-data.js"></script>
+<script src="assets/vendor/gsap.min.js"></script>
+<script src="assets/app.js"></script>
+<script src="assets/fx.js"></script>
+<script>
+(function () {
+  ADV.shell({ active: 'trail' });
+  const $ = ADV.$, esc = ADV.esc;
+  const key = ADV.param('t') || ADV.state.trail || 'ppt';
+  const T = ADV.trails[key];
+  if (!T || T.comingSoon) { location.replace('index.html#choose'); return; }
+  if (ADV.state.trail !== key) ADV.update((s) => { s.trail = key; });
+  const sParam = ADV.param('s');
+  const s = sParam === 'quests' ? 'quests' : Math.max(0, Math.min(T.steps.length, parseInt(sParam || '0', 10) || 0));
+  const url = (x) => `trail.html?t=${key}&s=${x}`;
+  const isDone = (i) => !!ADV.state.done[`${key}-${i}`];
+  document.title = `${T.name} · Make Copilot yours`;
+
+  // ---------- progress rail ----------
+  const rail = () => {
+    const items = [['0', 'Base camp', null]].concat(T.steps.map((st, i) => [String(i + 1), st.title, i + 1]), [['quests', 'Side quests', 'q']]);
+    $('#rail').innerHTML = items.map(([id, label, n]) => {
+      const done = n === 'q' ? T.sideQuests.some((q) => ADV.state.quests[q.id]) : n ? isDone(n) : !!(ADV.state.packed || {})[key];
+      const opt = n && n !== 'q' && T.steps[n - 1].optional;
+      const cur = String(s) === id;
+      return `<li class="${done ? 'done' : ''} ${opt ? 'opt' : ''}"><a href="${url(id)}" ${cur ? 'aria-current="step"' : ''}><span class="dot" aria-hidden="true">${done ? '✓' : (n === 'q' ? '★' : n || '⌂')}</span><span>${esc(label)}</span>${done ? '<span class="sr-only">(done)</span>' : ''}</a></li>`;
+    }).join('');
+  };
+  rail();
+
+  // ---------- media blocks ----------
+  const media = (m) => {
+    if (!m) return '';
+    if (m.type === 'compare') return `<figure><div class="device"><div class="bar"><i></i><i></i><i></i></div>
+      <div class="compare" style="--pos:50%"><img src="${m.before}" alt="Before: the slide without the skill"><img class="after" src="${m.after}" alt="After: the same slide with the skill">
+      <span class="tag l">Before</span><span class="tag r">With skill</span><span class="handle" aria-hidden="true"></span>
+      <input type="range" min="0" max="100" value="50" aria-label="Drag to compare before and after"></div></div><figcaption>${m.caption}</figcaption></figure>`;
+    if (m.type === 'morph') return '<div data-fx="scrub"></div>';
+    if (m.type === 'panel') return '<div data-fx="panel"></div>';
+    return `<figure><div class="device"><div class="bar"><i></i><i></i><i></i></div><img src="${m.image}" alt="${esc(m.caption)}"></div><figcaption>${m.caption}</figcaption></figure>`;
+  };
+
+  // ---------- pages ----------
+  const nav = (prev, next) => `<div class="next-nav">${prev ? `<a class="btn ghost" href="${prev[0]}">← ${esc(prev[1])}</a>` : '<span></span>'}${next ? `<a class="btn red" href="${next[0]}">${esc(next[1])} →</a>` : ''}</div>`;
+
+  const packed = () => !!(ADV.state.packed || {})[key];
+  const packBlock = () => {
+    const P = T.pack;
+    return `<div class="beat setup" id="pack"><h3><b>2</b>Pack your gear</h3><div>
+        <p style="font-size:19px;margin-top:0"><b>Add the skills to Copilot.</b> ${P.intro}</p>
+        <div class="pack-files">${P.files.map(([k, href]) => `<a class="pack-file" href="${href}" download><span class="pf-ic" aria-hidden="true">${(ADV.gear[k] || ['🎒'])[0]}</span><span><b>${ADV.skills[k].title}</b><code>${k}.zip</code></span><span class="pf-dl" aria-hidden="true">↓</span></a>`).join('')}</div>
+        <p class="small muted">${P.fileNote}</p>
+        <ol class="pack-steps">${P.steps.map((x) => `<li><div><p>${x.text}</p></div>${x.gif ? `<figure class="pack-clip"><img src="${x.gif}" alt="Screen recording of this step" loading="lazy"></figure>` : ''}</li>`).join('')}</ol>
+        <p class="small muted">${P.gifNote}</p>
+        <div class="pack-check card"><p style="margin-top:0"><b>Check it worked.</b> Ask Copilot:</p>${ADV.promptBox('Which custom skills do you have?')}
+          <p class="muted small">You should see all three: ${P.files.map(([k]) => `<code>${k}</code>`).join(', ')}.</p>
+          <button class="btn ${packed() ? 'is-done done-btn' : 'red'} pack-btn" type="button" aria-pressed="${packed()}">${packed() ? '✓ Gear packed' : '✓ My skills are in'}</button></div>
+      </div></div>`;
+  };
+
+  const baseCamp = () => {
+    return `<header class="step-head"><p class="eyebrow">${T.app} trail · for the ${T.persona}</p>
+      <h1 class="display" style="font-size:clamp(44px,8vw,96px)">${T.name}</h1><p class="lede">Mission: ${T.mission}</p></header>
+      <div data-fx="profile"></div>
+      <div class="beat"><h3><b>1</b>Get the kit</h3><div>
+        <p>Everything for this trail in one download (${T.kit.size}): ${T.kit.contents.map((c) => `<code>${c}</code>`).join(', ')}.</p>
+        <p class="row"><a class="btn red" href="${T.kit.file}" download>Get the kit ↓</a><span class="small muted">${ADV.label}.</span></p>
+        <ol class="muted">${T.setup.map((x) => `<li>${x}</li>`).join('')}</ol></div></div>
+      ${packBlock()}
+      <div class="beat"><h3><b>3</b>The route</h3><div><div class="path-line">${T.steps.map((x, i) => `<div class="node ${x.optional ? 'opt' : ''}"><b>${i + 1}. ${x.title}</b><span>${x.time} min${x.optional ? ' · optional' : ''}</span></div>`).join('')}</div>
+        <p class="muted">Steps build on each other. Finish steps 1–4; step 5 and the side quests are for fast finishers. Stuck? Every step has a <b>Take the cable car</b> button: a prepared result, so you can keep climbing.</p></div></div>
+      ${nav(['anatomy.html?next=' + key, 'Anatomy of a skill'], [url(1), 'Step 1: ' + T.steps[0].title])}`;
+  };
+
+  const stepPage = (n) => {
+    const st = T.steps[n - 1];
+    const uses = st.skills.length ? st.skills.map((k) => `<span class="pill red">${ADV.skills[k].title}</span>`).join('') : '<span class="pill">No skill: plain Copilot</span>';
+    return `<header class="step-head"><div class="meta"><span class="pill">Step ${n} of ${T.steps.length}</span><span class="pill">${st.time} min</span>${st.optional ? '<span class="pill">Optional</span>' : ''}</div>
+        <h1 class="display" style="font-size:clamp(40px,7vw,84px)">${st.title}</h1><p class="lede">${st.goal}</p></header>
+      ${packed() ? '' : `<div class="pack-nudge" role="note"><span aria-hidden="true">🎒</span><div><b>Have you added the skills?</b> Copilot only works the ERGO way once the three ${T.app} skills are uploaded. It takes about two minutes.</div><a class="btn small red" href="${url(0)}#pack">Pack your gear</a></div>`}
+      <div data-fx="profile"></div>
+      <div class="beat"><h3><b>①</b>Mission</h3><div><p style="font-size:19px">Open <b>${esc(st.open)}</b>.</p>${st.how ? `<p class="muted">${st.how}</p>` : ''}</div></div>
+      <div class="beat"><h3><b>②</b>Run it</h3><div>
+        <p class="muted">Type this into Copilot, exactly as it is. Don’t name the skill.</p>
+        ${ADV.promptBox(st.prompt)}${st.prompt2 ? `<p class="muted small">Then try:</p>${ADV.promptBox(st.prompt2)}` : ''}
+        <div class="uses"><span class="small muted">Copilot should pick:</span>${uses}</div>
+        <div data-fx="think"></div>
+        <p class="wow">${st.wow}</p>
+        ${media(st.media)}
+      </div></div>
+      ${st.yours ? `<div class="beat"><h3><b>③</b>Make it yours</h3><div><p>${st.yours.text}</p>${st.yours.prompt ? ADV.promptBox(st.yours.prompt) : ''}${key === 'ppt' && n === 1 ? '<p class="muted" style="margin-top:26px">Warm up first: change a rule here and watch the slide follow it.</p><div data-fx="playground"></div>' : ''}</div></div>` : ''}
+      <div class="beat"><h3><b>${st.yours ? '④' : '③'}</b>Done?</h3><div>
+        <p class="muted">You’re there when you see:</p><ul class="checks">${st.check.map((c) => `<li>${esc(c)}</li>`).join('')}</ul>
+        <div class="done-row" style="margin-top:22px"><button class="btn done-btn ${isDone(n) ? 'is-done' : ''}" type="button" aria-pressed="${isDone(n)}">${isDone(n) ? '✓ Done' : 'Mark as done'}</button>
+        <button class="linkish show-result" type="button">🚡 Take the cable car</button></div></div></div>
+      ${nav(n === 1 ? [url(0), 'Base camp'] : [url(n - 1), `Step ${n - 1}`], n < T.steps.length ? [url(n + 1), `Step ${n + 1}: ${T.steps[n].title}`] : [url('quests'), 'Side quests'])}`;
+  };
+
+  const quests = () => {
+    const v = ADV.voiceQuest;
+    return `<header class="step-head"><p class="eyebrow">For fast finishers</p><h1 class="display" style="font-size:clamp(40px,7vw,84px)">Side quests</h1>
+      <p class="lede">Optional. Pick any. Each one is a few minutes and makes Copilot a little more yours.</p></header>
+      <div class="grid two" style="margin-bottom:40px">${T.sideQuests.map((q) => {
+        const done = !!ADV.state.quests[q.id];
+        return `<article class="card" ${q.voice ? 'style="grid-column:1/-1"' : ''}><div class="row" style="justify-content:space-between"><span class="pill">${q.time} min</span>${done ? '<span class="pill red">✓ Completed</span>' : ''}</div>
+          <h3 style="margin-top:12px">${q.title}</h3><p class="muted">${q.what}</p>
+          ${q.voice ? `<ol class="muted">${v.steps.map((x) => `<li>${x}</li>`).join('')}</ol>${ADV.promptBox(v.prompt)}<p class="small muted">Then test it:</p>${ADV.promptBox(v.test)}
+            <p class="row">${v.files.map(([h, l]) => `<a class="btn small ghost" href="${h}" download>${l} ↓</a>`).join('')}</p>` : ADV.promptBox(q.prompt)}
+          <button class="btn small ${done ? 'is-done done-btn' : 'ghost'}" type="button" data-quest="${q.id}" aria-pressed="${done}">${done ? '✓ Completed' : 'Mark as completed'}</button></article>`;
+      }).join('')}</div>
+      <div class="card glass" style="margin-bottom:40px"><h3>More ideas</h3><p class="muted">The <a href="library.html">prompt library</a> has short prompts grouped by mood: sharpen, reshape, translate, go deeper, learn.</p></div>
+      ${nav([url(T.steps.length), `Step ${T.steps.length}`], ['finale.html', 'Finale'])}`;
+  };
+
+  $('#page').innerHTML = s === 'quests' ? quests() : s === 0 ? baseCamp() : stepPage(s);
+
+  // ---------- behaviour ----------
+  document.querySelectorAll('.compare').forEach((c) => {
+    const r = c.querySelector('input'); const set = () => c.style.setProperty('--pos', r.value + '%'); r.addEventListener('input', set); set();
+  });
+  const packBtn = $('.pack-btn');
+  if (packBtn) packBtn.addEventListener('click', () => {
+    const now = !packed();
+    ADV.update((st) => { st.packed = st.packed || {}; if (now) st.packed[key] = true; else delete st.packed[key]; });
+    packBtn.className = `btn ${now ? 'is-done done-btn' : 'red'} pack-btn`; packBtn.textContent = now ? '✓ Gear packed' : '✓ My skills are in'; packBtn.setAttribute('aria-pressed', now);
+    rail();
+    if (now) { ADV.toast('Gear packed. Off to Camp 1!'); if (!ADV.reduce) ADV.confetti(); }
+  });
+  if (location.hash === '#pack') setTimeout(() => { const p = document.getElementById('pack'); if (p) p.scrollIntoView({ behavior: ADV.reduce ? 'auto' : 'smooth', block: 'start' }); }, 300);
+
+  // ---------- summit layer ----------
+  const fx = ADV.fx;
+  let profile = null;
+  const pfEl = document.querySelector('[data-fx="profile"]'); if (pfEl) profile = fx.profile(pfEl, key);
+  const stepObj = typeof s === 'number' && s > 0 ? T.steps[s - 1] : null;
+  const thinkEl = document.querySelector('[data-fx="think"]');
+  if (thinkEl && stepObj) fx.thinkPane(thinkEl, { prompt: stepObj.prompt, skills: stepObj.skills, plan: ADV.think[`${key}-${s}`] || [], app: T.app });
+  const scrubEl = document.querySelector('[data-fx="scrub"]'); if (scrubEl) fx.scrub(scrubEl, stepObj.media);
+  const panelEl = document.querySelector('[data-fx="panel"]'); if (panelEl) fx.panel(panelEl);
+  const pgEl = document.querySelector('[data-fx="playground"]'); if (pgEl) fx.playground(pgEl);
+  setTimeout(() => {
+    const line = s === 'quests' ? ADV.buddyLines.quests : s === 0 ? ADV.buddyLines.base : ADV.buddyLines.step.replace('{app}', T.app);
+    fx.buddy.say(line, { soft: true });
+  }, ADV.reduce ? 0 : 1200);
+
+  const doneBtn = $('.done-btn:not([data-quest])');
+  if (doneBtn && typeof s === 'number' && s > 0) doneBtn.addEventListener('click', () => {
+    const k = `${key}-${s}`; const now = !ADV.state.done[k];
+    ADV.update((st) => { if (now) st.done[k] = true; else delete st.done[k]; });
+    doneBtn.classList.toggle('is-done', now); doneBtn.textContent = now ? '✓ Done' : 'Mark as done'; doneBtn.setAttribute('aria-pressed', now);
+    rail();
+    if (now) {
+      const dot = document.querySelectorAll('#rail .dot')[s]; if (dot) dot.classList.add('stamp');
+      ADV.collectSkills(T.steps[s - 1].skills);
+      const res = profile ? profile.update() : null;
+      const core = T.steps.filter((x) => !x.optional).every((x, i) => ADV.state.done[`${key}-${i + 1}`]);
+      if (core && !ADV.state.seen[`${key}-complete`]) {
+        ADV.update((st) => { st.seen[`${key}-complete`] = true; }); ADV.confetti();
+        fx.buddy.cheer(ADV.buddyLines.summit.replace('{alt}', fx.altitude(key).alt.toLocaleString('en-GB')));
+      } else if (res && res.gained > 0) {
+        fx.buddy.cheer(ADV.buddyLines.done.replace('{m}', res.gained.toLocaleString('en-GB')));
+      }
+      fx.radioAfter(key, s);
+    } else if (profile) profile.update();
+  });
+  $('#page').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-quest]'); if (!b) return;
+    const id = b.dataset.quest; const now = !ADV.state.quests[id];
+    ADV.update((st) => { if (now) st.quests[id] = true; else delete st.quests[id]; });
+    if (now && id === 'my-voice') ADV.collectSkills(['my-voice']);
+    ADV.checkQuests(key);
+    $('#page').innerHTML = quests(); rail();
+    const again = document.querySelector(`[data-quest="${id}"]`); if (again) again.focus();
+    ADV.toast(now ? 'Side quest completed.' : 'Marked as not completed.');
+  });
+
+  const modal = $('#result');
+  const showResult = $('.show-result');
+  if (showResult) showResult.addEventListener('click', () => {
+    const st = T.steps[s - 1];
+    $('#result-title').textContent = `Step ${s}: ${st.title}`;
+    modal.querySelector('.shots').innerHTML = st.fallback.images.map((src) => `<div class="device"><img src="${src}" alt="Example result" loading="lazy"></div>`).join('');
+    const dl = modal.querySelector('.dl'); dl.href = st.fallback.file;
+    modal.hidden = false; modal.querySelector('.close').focus();
+  });
+  const closeModal = () => { modal.hidden = true; showResult && showResult.focus(); };
+  modal.addEventListener('click', (e) => { if (e.target === modal || e.target.closest('.close')) closeModal(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !modal.hidden) closeModal(); });
+})();
+</script>
+</body>
+</html>
