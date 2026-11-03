@@ -92,7 +92,7 @@
     ];
     const header = document.createElement('header'); header.className = 'topbar';
     header.innerHTML = `<a class="skip" href="#main">Skip to content</a>
-      <button class="logo-btn" type="button" aria-label="ERGO"><img class="logo" src="assets/img/ergo-logo.png" alt="ERGO" width="74" height="22"></button>
+      <div class="brandmark"><button class="logo-btn" type="button" aria-label="ERGO"><img class="logo" src="assets/img/ergo-logo.png" alt="ERGO" width="74" height="22"></button><span class="x" aria-hidden="true">×</span><img class="ms" src="assets/img/microsoft-logo.png" alt="Microsoft" width="89" height="22"></div>
       <nav aria-label="Workshop">${nav.map(([h, l, k]) => `<a href="${h}" ${k === active ? 'aria-current="page"' : ''}>${l}</a>`).join('')}</nav>
       <button class="drawer-btn" type="button" aria-haspopup="dialog" aria-controls="drawer"><span aria-hidden="true">🎒</span> Skills <span class="count">0</span></button>`;
     document.body.prepend(header);

@@ -45,6 +45,10 @@ code { font-family: var(--mono); font-size: .88em; background: rgba(0, 0, 0, .05
 }
 .topbar .logo { height: 22px; width: auto; cursor: pointer; }
 .topbar .logo-btn { background: none; border: 0; padding: 4px; cursor: pointer; }
+.brandmark { display: flex; align-items: center; gap: 10px; flex: none; }
+.brandmark .x { color: var(--faint); font-size: 14px; }
+.brandmark .ms { height: 20px; width: auto; }
+@media (max-width: 420px) { .brandmark .ms { height: 16px; } .brandmark { gap: 6px; } }
 .topbar nav { display: flex; gap: 4px; margin-left: auto; flex-wrap: wrap; }
 .topbar nav a { text-decoration: none; color: var(--muted); font-size: 14px; padding: 6px 12px; border-radius: 999px; }
 .topbar nav a:hover, .topbar nav a[aria-current="page"] { color: var(--text); background: rgba(0, 0, 0, .05); }
