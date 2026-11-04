@@ -191,3 +191,14 @@ body::before {
 .pack-nudge > span { font-size: 26px; }
 .pack-nudge > div { flex: 1; font-size: 15px; }
 @media (max-width: 680px) { .pack-nudge { flex-wrap: wrap; } }
+
+/* ---------- "without the skill" comparison ---------- */
+.without { margin: 14px 0 6px; border: 1px dashed rgba(0, 0, 0, .18); border-radius: 14px; background: rgba(255, 255, 255, .6); }
+.without summary { cursor: pointer; padding: 12px 16px; font-size: 14px; color: var(--muted); list-style: none; }
+.without summary::-webkit-details-marker { display: none; }
+.without summary::before { content: "▸ "; color: var(--red); }
+.without[open] summary::before { content: "▾ "; }
+.wo-count { display: inline-block; font-weight: 700; color: var(--ok); background: rgba(21, 128, 61, .1); border-radius: 999px; padding: 1px 9px; }
+.wo-count.long { color: var(--red); background: rgba(191, 22, 41, .08); }
+.without > p, .without blockquote { margin: 0 16px 14px; }
+.without blockquote { font-size: 14px; line-height: 1.6; color: var(--text); background: #fff; border-left: 3px solid var(--red); border-radius: 0 10px 10px 0; padding: 12px 14px; }

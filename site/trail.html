@@ -107,6 +107,7 @@
       <div class="beat"><h3><b>②</b>Run it</h3><div>
         <p class="muted">Type this into Copilot, exactly as it is. Don’t name the skill.</p>
         ${ADV.promptBox(st.prompt)}${st.prompt2 ? `<p class="muted small">Then try:</p>${ADV.promptBox(st.prompt2)}` : ''}
+        ${st.without ? `<details class="without"><summary><span class="wo-count">${st.prompt.split(/\s+/).length} words</span> with the skill · <span class="wo-count long">${st.without.split(/\s+/).length} words</span> without it. See the long version</summary><p class="muted small">This is the expert prompt the skill replaces. It now lives in the skill, so everyone on the team gets the same method from a short question.</p><blockquote>${esc(st.without)}</blockquote></details>` : ''}
         <div class="uses"><span class="small muted">Copilot should pick:</span>${uses}</div>
         <div data-fx="think"></div>
         <p class="wow">${st.wow}</p>
