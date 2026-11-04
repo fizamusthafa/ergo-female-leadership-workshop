@@ -61,6 +61,7 @@ ADV.trails = {
       intro: 'Three skills, about two minutes. Without them Copilot still helps, but it won’t work the ERGO way.',
       files: [['ergo-brand', 'downloads/ergo-brand.zip'], ['ergo-board-pack', 'downloads/ergo-board-pack.zip'], ['ergo-board-sparring', 'downloads/ergo-board-sparring.zip']],
       fileNote: 'Keep them zipped. PowerPoint reads the ZIP directly.',
+      explore: { pick: 'upload' },
       steps: [
         { text: 'Open <code>messy-draft.pptx</code> in PowerPoint for the web and select <b>Copilot</b>. In the Copilot pane select <b>…</b> → <b>Manage plugins &amp; skills</b> → <b>Custom skills</b> → <b>Add</b>.', gif: 'assets/media/ppt-skill-add.gif' },
         { text: 'Select <b>Upload</b> and choose <code>ergo-brand.zip</code>. Repeat for <code>ergo-board-pack.zip</code> and <code>ergo-board-sparring.zip</code>.', gif: 'assets/media/ppt-skill-upload.gif' },

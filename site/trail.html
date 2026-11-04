@@ -74,10 +74,11 @@
         <p style="font-size:19px;margin-top:0"><b>Add the skills to Copilot.</b> ${P.intro}</p>
         <div class="pack-files">${P.files.map(([k, href]) => `<a class="pack-file" href="${href}" download><span class="pf-ic" aria-hidden="true">${(ADV.gear[k] || ['🎒'])[0]}</span><span><b>${ADV.skills[k].title}</b><code>${k}.zip</code></span><span class="pf-dl" aria-hidden="true">↓</span></a>`).join('')}</div>
         <p class="small muted">${P.fileNote}</p>
+        ${P.explore ? `<div class="am-wrap"><p style="margin:22px 0 4px"><b>Before you click: what’s behind Add?</b> There are four ways to add a skill. Try the menu below and select each option to see what it does.</p><div data-fx="addmenu"></div></div>` : ''}
         <ol class="pack-steps">${P.steps.map((x) => `<li><div><p>${x.text}</p></div>${x.gif ? `<figure class="pack-clip"><img src="${x.gif}" alt="Screen recording of this step" loading="lazy"></figure>` : ''}</li>`).join('')}</ol>
         <p class="small muted">${P.gifNote}</p>
         <div class="pack-check card"><p style="margin-top:0"><b>Check it worked.</b> Ask Copilot:</p>${ADV.promptBox('Which custom skills do you have?')}
-          <p class="muted small">You should see all three: ${P.files.map(([k]) => `<code>${k}</code>`).join(', ')}.</p>
+          <p class="muted small">You should see all ${['', 'one', 'two', 'three', 'four', 'five'][P.files.length] || P.files.length}: ${P.files.map(([k]) => `<code>${k}</code>`).join(', ')}.</p>
           <button class="btn ${packed() ? 'is-done done-btn' : 'red'} pack-btn" type="button" aria-pressed="${packed()}">${packed() ? '✓ Gear packed' : '✓ My skills are in'}</button></div>
       </div></div>`;
   };
@@ -165,6 +166,7 @@
   const scrubEl = document.querySelector('[data-fx="scrub"]'); if (scrubEl) fx.scrub(scrubEl, stepObj.media);
   const panelEl = document.querySelector('[data-fx="panel"]'); if (panelEl) fx.panel(panelEl);
   const pgEl = document.querySelector('[data-fx="playground"]'); if (pgEl) fx.playground(pgEl);
+  const amEl = document.querySelector('[data-fx="addmenu"]'); if (amEl) fx.addmenu(amEl, T.pack.explore);
   setTimeout(() => {
     const line = s === 'quests' ? ADV.buddyLines.quests : s === 0 ? ADV.buddyLines.base : ADV.buddyLines.step.replace('{app}', T.app);
     fx.buddy.say(line, { soft: true });

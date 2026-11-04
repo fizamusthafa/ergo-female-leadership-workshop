@@ -398,6 +398,128 @@ ${rules().map(([k, t]) => `<span class="pg-line" data-line="${k}">${esc(t)}</spa
   };
 
   // ======================================================================
+  // What's behind "Add"? The four ways to add a custom skill
+  // ======================================================================
+  const ICON = {
+    manual: '<path d="M4 20h4L19 9l-4-4L4 16v4z"/><path d="M13.5 6.5l4 4"/><path d="M12 20h8"/>',
+    upload: '<path d="M5 4h14"/><path d="M12 20V8"/><path d="M7 13l5-5 5 5"/>',
+    record: '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.6" fill="currentColor" stroke="none"/>',
+    onedrive: '<path d="M7 18h11a4 4 0 0 0 .6-7.95A6 6 0 0 0 7.1 8.5 4.75 4.75 0 0 0 7 18z"/>',
+  };
+  const ADD_OPTIONS = [
+    { id: 'manual', label: 'Create manually',
+      what: 'Type or paste a skill into a short form: a name, a description that tells Copilot when to use it, and the instructions. Select <b>Add</b> and Copilot saves it to the Skills folder in your OneDrive.',
+      good: 'A rule you can write in a few lines, or a skill a colleague sent you as text.',
+      today: 'You could paste ERGO Brand in here, but uploading the ZIP is quicker.' },
+    { id: 'upload', label: 'Upload',
+      what: 'Pick a skill file from your computer, or drag it in. A skill is a folder with a <code>SKILL.md</code> inside, zipped. Copilot stores it in your OneDrive Skills folder and it’s ready straight away.',
+      good: 'Skills someone prepared for you, like the three ERGO ZIPs in your kit.',
+      today: 'This is the one you use today: one ZIP per skill, kept zipped.' },
+    { id: 'record', label: 'Record a skill',
+      what: 'Do the task once while Copilot watches: edit slides yourself, use the ribbon or give Copilot instructions, then select <b>Stop</b>. Copilot drafts the name, description and instructions from your changes. You review the draft and upload it.',
+      good: 'Formatting you repeat: chart styling, table clean-up, logo placement. One outcome per recording, under 10 minutes.',
+      today: 'Try it after the trail: record how you like your title slides.' },
+    { id: 'onedrive', label: 'Add in OneDrive',
+      what: 'Opens the Skills folder in your OneDrive. Each skill is a folder with the skill’s name and a <code>SKILL.md</code> inside. Add, rename or delete folders there, then select <b>Refresh</b> so Copilot sees the change.',
+      good: 'Editing skills in place, and skills your organisation shares as folders.',
+      today: 'Every route ends here. Whichever option you pick, the skill is saved in this folder.' },
+  ];
+  const svgIcon = (id) => `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON[id]}</svg>`;
+  const addDemo = {
+    manual: () => ({
+      html: `<div class="am-form"><label>Name<span class="am-field" data-type="ergo-brand"></span></label>
+          <label>Description<span class="am-field" data-type="Use when I ask to make slides board-ready…"></span></label>
+          <label>Instructions<span class="am-field tall" data-type="Headlines say the “so what”. Maximum 3 bullets. ERGO red once per slide…"></span></label>
+          <span class="am-btn">Add</span></div><span class="am-saved">✓ Saved to OneDrive › Skills</span>`,
+      tl: (st) => {
+        const tl = gsap.timeline();
+        $$('.am-field', st).forEach((f) => { const t = f.dataset.type; const o = { n: 0 }; tl.to(o, { n: t.length, duration: Math.min(1.4, t.length / 40), ease: 'none', onUpdate: () => { f.textContent = t.slice(0, Math.round(o.n)); } }); });
+        return tl.fromTo($('.am-btn', st), { scale: 1 }, { scale: .92, duration: .12, yoyo: true, repeat: 1 })
+          .fromTo($('.am-saved', st), { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: .35, ease: 'back.out(2)' });
+      },
+      end: (st) => $$('.am-field', st).forEach((f) => { f.textContent = f.dataset.type; }),
+    }),
+    upload: () => ({
+      html: `<div class="am-drop"><span class="am-zip">🗜️ ergo-brand.zip</span><span class="am-drop-hint">Drop a skill here</span></div>
+        <div class="am-list"><div class="am-row"><span>🧭 ERGO Brand</span><span class="am-toggle on" aria-hidden="true"></span></div></div>`,
+      tl: (st) => gsap.timeline()
+        .fromTo($('.am-zip', st), { y: -70, opacity: 0, rotation: -8 }, { y: 0, opacity: 1, rotation: 0, duration: .7, ease: 'bounce.out' })
+        .to($('.am-drop', st), { borderColor: '#bf1629', backgroundColor: 'rgba(191,22,41,.05)', duration: .25 }, '-=.2')
+        .to($('.am-zip', st), { scale: .6, opacity: 0, duration: .35, ease: 'power2.in' }, '+=.3')
+        .fromTo($('.am-row', st), { opacity: 0, x: -16 }, { opacity: 1, x: 0, duration: .4, ease: 'power2.out' })
+        .fromTo($('.am-toggle', st), { backgroundColor: '#c9c9c9' }, { backgroundColor: '#15803d', duration: .3 }),
+    }),
+    record: () => ({
+      html: `<div class="am-rec"><span class="am-dot" aria-hidden="true"></span> Recording <span class="am-time">00:00</span><span class="am-stop">Stop</span></div>
+        <div class="am-slide"><span class="am-title">Q3 results</span><span class="am-logo">ERGO</span><span class="am-bar"></span></div>
+        <div class="am-draft"><span class="am-shimmer">Copilot is drafting your skill…</span><span class="am-draft-text"><b>title-slide-style</b> · Use when I make a title slide. Logo top right, message headline, one red rule.</span></div>`,
+      tl: (st) => {
+        const time = $('.am-time', st), o = { s: 0 };
+        return gsap.timeline()
+          .to(o, { s: 14, duration: 2.6, ease: 'none', onUpdate: () => { time.textContent = `00:${String(Math.round(o.s)).padStart(2, '0')}`; } })
+          .fromTo($('.am-dot', st), { opacity: 1 }, { opacity: .25, duration: .4, yoyo: true, repeat: 5 }, 0)
+          .to($('.am-logo', st), { left: '78%', top: '10%', duration: .7, ease: 'power2.inOut' }, .3)
+          .to($('.am-title', st), { color: '#242424', fontWeight: 700, duration: .3 }, 1.1)
+          .fromTo($('.am-bar', st), { scaleX: 0 }, { scaleX: 1, duration: .5, ease: 'power2.out' }, 1.5)
+          .fromTo($('.am-stop', st), { scale: 1 }, { scale: .9, duration: .12, yoyo: true, repeat: 1 })
+          .fromTo($('.am-draft', st), { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: .3 })
+          .fromTo($('.am-shimmer', st), { opacity: 1 }, { opacity: 0, duration: .3, delay: .8 })
+          .fromTo($('.am-draft-text', st), { opacity: 0 }, { opacity: 1, duration: .4 });
+      },
+      end: (st) => { $('.am-time', st).textContent = '00:14'; },
+    }),
+    onedrive: () => ({
+      html: `<div class="am-path">☁️ OneDrive › <b>Skills</b><span class="am-refresh" aria-hidden="true">⟳</span></div>
+        <ul class="am-tree">${['ergo-brand', 'ergo-board-pack', 'ergo-board-sparring'].map((k) => `<li><span>📁 ${k}</span><span class="am-file">📄 SKILL.md</span></li>`).join('')}</ul>`,
+      tl: (st) => gsap.timeline()
+        .fromTo($$('.am-tree li', st), { opacity: 0, x: -14 }, { opacity: 1, x: 0, duration: .35, stagger: .25, ease: 'power2.out' })
+        .fromTo($$('.am-file', st), { opacity: 0 }, { opacity: 1, duration: .3, stagger: .15 }, '-=.3')
+        .fromTo($('.am-refresh', st), { rotation: 0 }, { rotation: 360, duration: .8, ease: 'power2.inOut' }),
+    }),
+  };
+  fx.addmenu = (el, opts = {}) => {
+    const pick = opts.pick || 'upload';
+    const seen = new Set();
+    el.classList.add('addmenu');
+    el.innerHTML = `<div class="am-grid">
+        <div class="am-pane"><div class="am-pane-head">${copilotImg('am-cp')}<b>Manage plugins &amp; skills</b></div>
+          <div class="am-skills-row"><span><b>Custom skills</b><span class="small muted"> · your own skills</span></span>
+            <button type="button" class="am-add" aria-expanded="false" aria-controls="am-menu">Add <span aria-hidden="true">⌄</span></button></div>
+          <div class="am-menu" id="am-menu" role="menu" hidden>${ADD_OPTIONS.map((o) => `<button type="button" role="menuitem" class="am-item" data-id="${o.id}">${svgIcon(o.id)}<span>${o.label}</span>${o.id === pick ? '<span class="am-today">Today</span>' : ''}<span class="am-tick" aria-hidden="true">✓</span></button>`).join('')}</div>
+          <p class="am-hint small muted"><span aria-hidden="true">👆</span> Select <b>Add</b> to see the four ways in.</p>
+        </div>
+        <div class="am-detail" aria-live="polite"><p class="muted">Four ways to add a skill. Open the menu and select one to see what it does.</p></div>
+      </div>
+      <div class="row" style="justify-content:space-between"><span class="small muted am-count">Explored 0 of 4</span><button class="linkish am-replay" type="button" hidden>Replay</button></div>`;
+    const add = $('.am-add', el), menu = $('.am-menu', el), detail = $('.am-detail', el), items = $$('.am-item', el), hint = $('.am-hint', el), replay = $('.am-replay', el);
+    let current = null, tl = null;
+    const pulse = reduce() ? null : gsap.to(add, { boxShadow: '0 0 0 6px rgba(191,22,41,.25)', duration: .8, yoyo: true, repeat: -1, ease: 'sine.inOut' });
+    const openMenu = (open) => {
+      menu.hidden = !open; add.setAttribute('aria-expanded', open);
+      if (open) { if (pulse) { pulse.kill(); gsap.set(add, { boxShadow: 'none' }); } hint.innerHTML = 'Now select an option.'; run(gsap.fromTo(items, { opacity: 0, y: -8 }, { opacity: 1, y: 0, duration: .25, stagger: .06, ease: 'power2.out' })); }
+    };
+    add.addEventListener('click', () => openMenu(menu.hidden));
+    const play = () => {
+      const d = addDemo[current](); const stage = $('.am-stage', detail); stage.innerHTML = d.html;
+      if (tl) tl.kill(); tl = d.tl(stage);
+      if (reduce()) { tl.progress(1).pause(); if (d.end) d.end(stage); }
+    };
+    const show = (id) => {
+      current = id; const o = ADD_OPTIONS.find((x) => x.id === id);
+      seen.add(id); items.forEach((b) => { b.classList.toggle('on', b.dataset.id === id); b.classList.toggle('seen', seen.has(b.dataset.id)); });
+      detail.innerHTML = `<p class="am-title-row">${svgIcon(id)}<b>${o.label}</b>${id === pick ? '<span class="am-today">Use this today</span>' : ''}</p>
+        <div class="am-stage" aria-hidden="true"></div>
+        <p>${o.what}</p><p class="small"><b>Good for:</b> ${esc(o.good)}</p><p class="small muted">${esc(o.today)}</p>`;
+      run(gsap.fromTo(detail.children, { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: .3, stagger: .06 }));
+      play(); replay.hidden = false;
+      $('.am-count', el).textContent = seen.size === 4 ? '✓ All four explored. Every route ends in the same place: a folder with a SKILL.md in your OneDrive Skills folder.' : `Explored ${seen.size} of 4`;
+      if (seen.size === 4 && !el.dataset.done) { el.dataset.done = '1'; ADV.toast('All four ways explored.'); }
+    };
+    items.forEach((b) => b.addEventListener('click', () => show(b.dataset.id)));
+    replay.addEventListener('click', () => current && play());
+  };
+
+  // ======================================================================
   // Radio from Copilot
   // ======================================================================
   fx.radioAfter = (key, n) => {
