@@ -200,5 +200,7 @@ body::before {
 .without[open] summary::before { content: "▾ "; }
 .wo-count { display: inline-block; font-weight: 700; color: var(--ok); background: rgba(21, 128, 61, .1); border-radius: 999px; padding: 1px 9px; }
 .wo-count.long { color: var(--red); background: rgba(191, 22, 41, .08); }
-.without > p, .without blockquote { margin: 0 16px 14px; }
+.without > p, .without blockquote, .without ul { margin: 0 16px 14px; }
+.without ul { padding-left: 20px; font-size: 14px; line-height: 1.6; }
+.without ul li::marker { color: var(--red); }
 .without blockquote { font-size: 14px; line-height: 1.6; color: var(--text); background: #fff; border-left: 3px solid var(--red); border-radius: 0 10px 10px 0; padding: 12px 14px; }

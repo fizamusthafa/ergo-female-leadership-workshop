@@ -30,7 +30,7 @@
       <article class="card">
         <p class="eyebrow">Next to it · 2 min</p>
         <h2 style="font-size:32px">One scenario, live</h2>
-        <p class="muted">An Analyst changes one grey input cell on the Scenarios sheet. Everyone watches the result move.</p>
+        <p class="muted">An Analyst changes one grey input cell on the Assumptions sheet. Everyone watches the result move.</p>
         <div id="p-scenario"></div>
         <p class="small muted">Sensitivity, not a forecast.</p>
       </article>
@@ -87,7 +87,7 @@
   ADV.shell({ active: 'finale' });
   const $ = ADV.$;
   $('#p-rehearse').innerHTML = ADV.promptBox('Rehearse the board meeting with me. What will they ask?');
-  $('#p-scenario').innerHTML = ADV.promptBox('What happens to our result if the combined ratio gets 3 points worse instead of 2?');
+  $('#p-scenario').innerHTML = ADV.promptBox('What happens to the weighted loss ratio if the Severe weight goes from 15% to 25% and Base from 50% to 40%?');
   const sentence = () => {
     const team = $('#team').value.trim(), task = $('#task').value.trim();
     return task ? `${team || 'My team'}’s skill would teach Copilot to ${task.replace(/\.$/, '')}.` : '';

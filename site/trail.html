@@ -98,16 +98,18 @@
 
   const stepPage = (n) => {
     const st = T.steps[n - 1];
-    const uses = st.skills.length ? st.skills.map((k) => `<span class="pill red">${ADV.skills[k].title}</span>`).join('') : '<span class="pill">No skill: plain Copilot</span>';
+    const uses = st.skills.length ? st.skills.map((k) => `<span class="pill red">${ADV.skills[k].title}</span>`).join('') : '<span class="pill">No skill: the prompt carries everything</span>';
+    const count = ['no', 'one', 'two', 'three', 'four', 'five'][T.pack.files.length] || T.pack.files.length;
     return `<header class="step-head"><div class="meta"><span class="pill">Step ${n} of ${T.steps.length}</span><span class="pill">${st.time} min</span>${st.optional ? '<span class="pill">Optional</span>' : ''}</div>
         <h1 class="display" style="font-size:clamp(40px,7vw,84px)">${st.title}</h1><p class="lede">${st.goal}</p></header>
-      ${packed() ? '' : `<div class="pack-nudge" role="note"><span aria-hidden="true">🎒</span><div><b>Have you added the skills?</b> Copilot only works the ERGO way once the three ${T.app} skills are uploaded. It takes about two minutes.</div><a class="btn small red" href="${url(0)}#pack">Pack your gear</a></div>`}
+      ${packed() ? '' : `<div class="pack-nudge" role="note"><span aria-hidden="true">🎒</span><div><b>Have you added the skills?</b> Copilot only works the ERGO way once the ${count} ${T.app} skills are uploaded. It takes a few minutes.</div><a class="btn small red" href="${url(0)}#pack">Pack your gear</a></div>`}
       <div data-fx="profile"></div>
       <div class="beat"><h3><b>①</b>Mission</h3><div><p style="font-size:19px">Open <b>${esc(st.open)}</b>.</p>${st.how ? `<p class="muted">${st.how}</p>` : ''}</div></div>
       <div class="beat"><h3><b>②</b>Run it</h3><div>
-        <p class="muted">Type this into Copilot, exactly as it is. Don’t name the skill.</p>
+        <p class="muted">Copy this into Copilot:</p>
         ${ADV.promptBox(st.prompt)}${st.prompt2 ? `<p class="muted small">Then try:</p>${ADV.promptBox(st.prompt2)}` : ''}
-        ${st.without ? `<details class="without"><summary><span class="wo-count">${st.prompt.split(/\s+/).length} words</span> with the skill · <span class="wo-count long">${st.without.split(/\s+/).length} words</span> without it. See the long version</summary><p class="muted small">This is the expert prompt the skill replaces. It now lives in the skill, so everyone on the team gets the same method from a short question.</p><blockquote>${esc(st.without)}</blockquote></details>` : ''}
+        ${st.adds ? `<details class="without adds"><summary>Your prompt says <b>what</b>. The skill adds <b>how</b>: <span class="wo-count">${st.adds.length} ERGO rules</span> you didn’t have to type</summary><ul>${st.adds.map((a) => `<li>${esc(a)}</li>`).join('')}</ul><p class="muted small">The same rules apply to any workbook, so the whole team works the same way.</p></details>` : ''}
+        ${!st.skills.length ? '<p class="muted small">No skill here: the prompt carries the whole brief, brand rules included. If you find yourself typing the same rules again and again, that is your next skill.</p>' : ''}
         <div class="uses"><span class="small muted">Copilot should pick:</span>${uses}</div>
         <div data-fx="think"></div>
         <p class="wow">${st.wow}</p>

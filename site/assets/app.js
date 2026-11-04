@@ -128,8 +128,8 @@
     const s = ADV.state; const owned = Object.keys(ADV.skills).filter((k) => s.skills[k]);
     if (count) count.textContent = owned.length + Object.keys(s.badges).length;
     if (!drawer) return;
-    const order = s.trail === 'xls' ? ['ergo-data-controls', 'ergo-ifrs9-ecl', 'ergo-ecl-explainability', 'ergo-brand', 'ergo-board-pack', 'ergo-board-sparring', 'my-voice']
-      : ['ergo-brand', 'ergo-board-pack', 'ergo-board-sparring', 'ergo-data-controls', 'ergo-ifrs9-ecl', 'ergo-ecl-explainability', 'my-voice'];
+    const order = s.trail === 'xls' ? ['ergo-data-cleaning', 'ergo-calculations', 'ergo-pivot-analysis', 'ergo-exec-dashboard', 'ergo-brand', 'ergo-board-pack', 'ergo-board-sparring', 'my-voice']
+      : ['ergo-brand', 'ergo-board-pack', 'ergo-board-sparring', 'ergo-data-cleaning', 'ergo-calculations', 'ergo-pivot-analysis', 'ergo-exec-dashboard', 'my-voice'];
     const skillText = window.SKILL_TEXT || {};
     const cards = order.map((k) => {
       const sk = ADV.skills[k]; const lit = !!s.skills[k]; const isNew = (ADV.lastNew || []).includes(k);
