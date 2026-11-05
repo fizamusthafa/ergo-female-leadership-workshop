@@ -1,6 +1,6 @@
 ---
 name: interactive-slides-workaround
-description: "Use when I ask to make a slide interactive, clickable or explorable, so viewers can click into details on their own, and the built-in Interactive Slides skill is not available."
+description: "Use when I ask to make a slide clickable with tiles that link to detail slides, or when the built-in Interactive Slide button is not available and I want viewers to click into details on their own."
 ---
 
 # Make one slide interactive

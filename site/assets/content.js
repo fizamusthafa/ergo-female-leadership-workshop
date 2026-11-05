@@ -50,7 +50,7 @@ ADV.skills = {
   'ergo-register-cleaner': { app: 'Excel', title: 'Register Cleaner', what: 'Your own skill, from our template: standardises a KPI register, applies colour rules, adds a summary row and logs every change.', trigger: '"clean my register", "prepare the monthly KPI file"', zip: 'downloads/ergo-register-cleaner.zip', md: 'downloads/ergo-register-cleaner-SKILL.md' },
   'ergo-brand': { app: 'PowerPoint', title: 'ERGO Brand', what: 'Restyles any deck in ERGO board style: message headlines, one red accent, flat charts. Never changes a figure.', trigger: '"make these slides board-ready"', zip: 'downloads/ergo-brand.zip', md: 'downloads/ergo-brand-SKILL.md' },
   'ergo-board-sparring': { app: 'PowerPoint', title: 'Board Rehearsal', what: 'Our version of the skill you build in step 7: the Chair, the CFO, a supervisor and the works council each ask their hardest question, answered from your deck.', trigger: '"rehearse", "what will they ask"', zip: 'downloads/ergo-board-sparring.zip', md: 'downloads/ergo-board-sparring-SKILL.md' },
-  'interactive-slides-workaround': { app: 'PowerPoint', title: 'Interactive Slides (workaround)', what: 'Only if the built-in Interactive Slides skill is missing: turns one slide into a clickable overview with detail slides.', trigger: '"make this slide interactive"', zip: 'downloads/interactive-slides-workaround.zip', md: 'downloads/interactive-slides-workaround-SKILL.md' },
+  'interactive-slides-workaround': { app: 'PowerPoint', title: 'Interactive Slides (workaround)', what: 'Only if the Interactive Slide button is missing: turns one slide into a clickable overview that links to detail slides.', trigger: '"make this slide interactive"', zip: 'downloads/interactive-slides-workaround.zip', md: 'downloads/interactive-slides-workaround-SKILL.md' },
   'chief-of-staff': { app: 'Copilot Chat', title: 'Chief-of-Staff agent', kind: 'agent', what: 'The agent you build in Agent Builder: knows your priorities, organises your day and week, and drafts replies in your voice.', trigger: '@mention it in Copilot Chat or Outlook' },
   'my-voice': { app: 'Any', title: 'My Voice', what: 'Your writing style as short rules. Built into your Chief-of-Staff agent, or used as a skill on its own.', trigger: '"in my voice"', md: 'downloads/my-voice-SKILL.md' },
 };
@@ -259,6 +259,7 @@ ADV.trails = {
     trouble: [
       ['Creating the deck takes ages', 'That’s normal: a few minutes. Don’t wait. Open <code>board-pack-ready.pptx</code> in a new tab and do step 2.'],
       ['Copilot can’t find my Word file', 'Make sure it’s in OneDrive, then attach it with <b>+</b> (Add) → <b>Attach</b>, or type <b>/</b> and start typing the file name.'],
+      ['I can’t edit my interactive slide', 'That’s by design: interactive slides are changed by prompting Copilot, not by clicking into the slide. Keep the Copilot pane open and describe the change.'],
     ],
     steps: [
       {
@@ -305,15 +306,19 @@ ADV.trails = {
         check: ['Every slide in German', 'Numbers and dates unchanged', 'Speaker notes translated too'],
       },
       {
-        title: 'Interactive Slides', goal: 'A built-in skill: slides your audience can click through.', time: 5, test: true,
-        start: [['downloads/board-pack-ready.pptx', 'board-pack-ready.pptx']],
-        how: 'PowerPoint has skills built in. In the Copilot pane, select <b>+</b> → <b>Choose skills</b> and look for <b>Interactive Slides</b>, or type <b>@</b>.',
-        prompt: 'Make slide 3 interactive so viewers can explore each KPI on their own.',
-        alt: { label: 'If Interactive Slides isn’t listed', text: 'Upload our workaround skill (the clicks are the same as in step 6), then send:', prompt: 'Make slide 3 interactive: one tile per KPI that links to a detail slide, and a “Back to overview” link on every detail slide.' },
+        title: 'Interactive Slides', goal: 'A built-in skill: a slide your audience can click through.', time: 6,
+        start: [['downloads/board-pack-ready.pptx', 'board-pack-ready.pptx'], ['downloads/q3-figures.xlsx', 'q3-figures.xlsx']],
+        how: 'Select <b>Interactive Slide</b> on the <b>Home</b> or <b>Insert</b> tab. Pick a category (<b>Summary</b>, <b>Timeline</b>, <b>Dashboard</b>, <b>Comparison</b>) or <b>Custom</b>. You’ll also find <b>Create interactive slide</b> in the Copilot pane under <b>+</b> → <b>Choose skills</b>. To use the figures, type <b>/</b> and pick <code>q3-figures.xlsx</code>.',
+        variants: [
+          ['Dashboard from your Excel file', 'Create an interactive dashboard slide from /q3-figures.xlsx: tabs for gross written premium, combined ratio and operating result, each comparing the business units with plan and prior year.'],
+          ['Timeline from the deck', 'Create an interactive timeline slide of the next steps in this deck, so I can click through each step and see what happens and who decides.'],
+        ],
+        more: { label: 'Then refine it by prompting', prompt: 'Make the charts bar charts, add a filter by business unit, and match the colours to this deck.' },
+        alt: { label: 'If the Interactive Slide button is missing', text: 'Check you’re in PowerPoint for the web. If it’s still not there, upload our workaround skill (clicks as in step 6). It builds a clickable overview with links to detail slides:', prompt: 'Make slide 3 interactive: one tile per KPI that links to a detail slide, and a “Back to overview” link on every detail slide.' },
         skillFiles: ['interactive-slides-workaround'],
-        note: 'Every viewer clicks around on their own, so this is great to explore and less suited to presenting. Optional: try it in pairs in a Teams meeting on the room monitor.',
-        wow: 'A slide that works like a small website: everyone explores the part they care about.',
-        check: ['A slide with clickable elements', 'In Slide Show, clicking takes you to the detail and back'],
+        note: 'Change an interactive slide by prompting Copilot, not by editing the slide itself. In a Teams meeting (PowerPoint Live) every attendee clicks around on their own and doesn’t see the presenter’s clicks, so it’s great to explore and less suited to presenting. Optional: try it in pairs in a Teams meeting on the room monitor. Viewers don’t need a Copilot licence. Exported to PDF, the slide becomes a still image.',
+        wow: 'A slide that works like a small app: tabs, filters and steps your audience can explore, filled with the numbers from your own workbook.',
+        check: ['A slide you can click through in Slide Show: tabs, filters or steps', 'The numbers match q3-figures.xlsx (for example Group GWP EUR 4,125m)', 'You changed it at least once by prompting'],
       },
       {
         title: 'Make it ERGO', goal: 'Your first custom skill: the ERGO brand.', time: 7,
@@ -474,7 +479,7 @@ ADV.openPoints = [
   'Is Agent Builder enabled in ERGO’s tenants? There are several.',
   'Rebecca tests the prompts in an ERGO environment.',
   'Test with a user without usage-based billing and not on Frontier: the experience differs.',
-  'Is Interactive Slides available in ERGO’s PowerPoint for the web?',
+  'Interactive Slides: Microsoft’s rollout to PowerPoint for the web finished end of October 2026 and there are no admin controls. Confirm the button shows in ERGO’s tenant.',
   'Do web data and work data (emails) work in Excel in ERGO’s tenant? (Trail 1, step 3)',
 ];
 
