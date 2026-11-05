@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Make Copilot yours · ERGO Female Leadership Summit</title>
-<meta name="description" content="A 45-minute hands-on adventure with Microsoft Copilot custom skills, for the ERGO Female Leadership Summit.">
+<meta name="description" content="A 60-minute hands-on session with Microsoft Copilot, for the ERGO Female Leadership Summit in Berlin.">
 <link rel="icon" href="assets/img/favicon.png">
 <link rel="stylesheet" href="assets/app.css">
 <link rel="stylesheet" href="assets/fx.css">
@@ -16,14 +16,15 @@
   <section class="stage hero" data-stage="intro">
     <div class="wrap">
       <div class="cobrand reveal-up"><img src="assets/img/ergo-logo.png" alt="ERGO" width="74" height="22"><span aria-hidden="true">×</span><img src="assets/img/microsoft-logo.png" alt="Microsoft" width="89" height="22"></div>
-      <p class="eyebrow reveal-up d1" style="margin-bottom:18px">ERGO Female Leadership Summit · Berlin</p>
+      <p class="eyebrow reveal-up d1" style="margin-bottom:18px">ERGO Female Leadership Summit · Berlin · 17 November 2026</p>
       <h1 class="display reveal-up d1">Make Copilot <em>yours.</em></h1>
-      <p class="lede reveal-up d2">Forty-five minutes. One board meeting to prepare for. A handful of skills that make Copilot work the way ERGO’s leaders work.</p>
-      <div class="row reveal-up d3" style="justify-content:center">
-        <button class="btn red" type="button" data-go="q0">Find your trail →</button>
-        <button class="btn ghost" type="button" data-go="choose">I’ll pick myself</button>
+      <p class="lede reveal-up d2">Sixty minutes, three use cases: a performance review in Excel, an executive presentation in PowerPoint, and Copilot as your own Chief of Staff. Prompts first, then the skills and agents that make Copilot work your way.</p>
+      <p class="rooms-title reveal-up d3">Pick your room</p>
+      <div class="rooms reveal-up d3" id="rooms"></div>
+      <div class="row reveal-up d4" style="justify-content:center;margin-top:22px">
+        <button class="linkish" type="button" data-go="q0">Don’t know your room? Find your trail →</button>
+        <button class="linkish" type="button" data-go="choose">I’ll pick myself</button>
       </div>
-      <p class="meta reveal-up d4">Three quick questions · about a minute</p>
     </div>
   </section>
 
@@ -181,8 +182,8 @@
 
   // ---------- reveal ----------
   const winner = () => {
-    const count = { ppt: 0, xls: 0, m365: 0 }; votes.forEach((v) => { if (v) count[v]++; });
-    return ['ppt', 'xls', 'm365'].reduce((best, k) => (count[k] > count[best] ? k : best), 'ppt');
+    const count = { xls: 0, ppt: 0, cos: 0 }; votes.forEach((v) => { if (v) count[v]++; });
+    return ['xls', 'ppt', 'cos'].reduce((best, k) => (count[k] > count[best] ? k : best), 'xls');
   };
   const reveal = (key) => {
     const t = ADV.trails[key], p = ADV.personas[key];
@@ -190,23 +191,19 @@
     const letters = [...p.name].map((ch, i) => `<span style="animation-delay:${0.15 + i * 0.06}s">${ch}</span>`).join('');
     const article = /^[AEIOU]/.test(p.name) ? 'an' : 'a';
     let body;
-    if (t.comingSoon) {
-      body = `<p class="lede" style="margin:0 auto 26px">${p.line} Your trail, <b>${t.app}</b>, is still being built.</p>
-        <div class="card" style="max-width:640px;margin:0 auto;text-align:left"><p class="eyebrow">Coming soon</p><p>Ask your facilitator which trail to join today. Orchestrators do great on either:</p>
-        <div class="row" style="margin-top:14px"><button class="btn red" type="button" data-pick="ppt">PowerPoint: The Board Meeting</button><button class="btn ghost" type="button" data-pick="xls">Excel: The Numbers Room</button></div></div>`;
-    } else {
-      const skills = [...new Set(t.steps.flatMap((s) => s.skills))];
+    {
+      const skills = [...new Set(t.steps.flatMap((s) => (s.skills || []).concat(s.upload ? [s.upload.skill] : [])).concat(t.sideQuests.map((q) => q.skill).filter(Boolean)))];
       body = `<p class="lede" style="margin:0 auto">${p.line}</p>
         <div class="trail-preview glass" style="padding:28px">
           <p class="eyebrow">${t.app} trail</p><h2 style="font-size:clamp(30px,4vw,44px)">${t.name}</h2>
           <p class="muted" style="font-size:19px">Mission: ${t.mission}</p>
-          <div class="path-line">${t.steps.map((s, i) => `<div class="node ${s.optional ? 'opt' : ''}"><b>${i + 1}. ${s.title}</b><span>${s.time} min${s.optional ? ' · optional' : ''}</span></div>`).join('')}</div>
+          <div class="path-line">${t.steps.map((s, i) => `<div class="node ${s.level === 'advanced' ? 'opt' : ''}"><b>${i + 1}. ${s.title}</b><span>${s.time} min${s.level === 'advanced' ? ' · Advanced' : ''}</span></div>`).join('')}</div>
           <div class="grid two" style="margin-top:22px">
-            <div><h3>Skills you’ll collect</h3><div class="uses">${skills.map((k) => `<span class="pill red">${ADV.skills[k].title}</span>`).join('')}</div></div>
-            <div><h3>Side quests</h3><div class="uses">${t.sideQuests.map((q) => `<span class="pill">${q.title} · ${q.time}′</span>`).join('')}</div></div>
+            <div><h3>What you’ll build</h3><div class="uses">${skills.map((k) => `<span class="pill red">${ADV.skills[k].title}</span>`).join('')}</div></div>
+            <div><h3>Side quests</h3><div class="uses">${t.sideQuests.filter((q) => q.type !== 'link').map((q) => `<span class="pill">${q.title} · ${q.time}′</span>`).join('')}</div></div>
           </div>
-          <div class="row" style="margin-top:28px"><a class="btn red" href="anatomy.html?next=${key}">Start the trail →</a><button class="btn ghost" type="button" data-go="choose">Choose a different trail</button></div>
-          <p class="small muted" style="margin-top:12px">First stop: a three-minute look at what a skill actually is.</p>
+          <div class="row" style="margin-top:28px"><a class="btn red" href="trail.html?t=${key}">Start the trail →</a><button class="btn ghost" type="button" data-go="choose">Choose a different trail</button></div>
+          <p class="small muted" style="margin-top:12px">Basic and Advanced follow the same steps; Advanced groups move faster and skip ahead.</p>
         </div>`;
     }
     $('#reveal').innerHTML = `<p class="you">You’re ${article}</p><h2 class="persona" tabindex="-1" aria-label="${p.name}">${letters}</h2>${body}`;
@@ -216,10 +213,14 @@
   };
 
   // ---------- choose yourself ----------
-  $('#trail-cards').innerHTML = ['ppt', 'xls', 'm365'].map((k) => {
+  $('#rooms').innerHTML = ['xls', 'ppt', 'cos'].map((k) => {
+    const t = ADV.trails[k];
+    return `<div class="room-col"><p class="room-trail"><b>${t.group} · ${t.useCase}</b><span>${t.app}</span></p>${ADV.rooms.filter((r) => r.trail === k).map((r) => `<a class="room-btn ${r.level}" href="trail.html?t=${k}&level=${r.level}&room=${r.id}"><span class="r-name">Room ${r.room}</span><span class="r-meta">${t.tool} · ${ADV.levels[r.level]}</span></a>`).join('')}</div>`;
+  }).join('');
+  $('#trail-cards').innerHTML = ['xls', 'ppt', 'cos'].map((k) => {
     const t = ADV.trails[k], p = ADV.personas[k];
     return `<button class="card answer" type="button" data-choose="${k}" style="flex-direction:column;align-items:flex-start;gap:6px">
-      <span class="pill ${t.comingSoon ? '' : 'red'}">${t.app}${t.comingSoon ? ' · coming soon' : ''}</span>
+      <span class="pill red">${t.group} · ${t.app}</span>
       <b style="font-size:24px;letter-spacing:-.02em">${t.name}</b><span class="muted" style="font-size:15px">${t.mission}</span>
       <span class="small muted">For the ${p.name}</span></button>`;
   }).join('');

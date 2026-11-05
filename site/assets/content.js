@@ -1,32 +1,58 @@
 // All workshop content in one place. Pages render from this file.
-// Figures quoted here come from input/fact-sheet.md (illustrative, not ERGO results).
+// Every figure in the sample files is invented (illustrative, not ERGO results).
 window.ADV = window.ADV || {};
 
 ADV.config = {
-  // Facilitator: paste the link to a shared Form or Whiteboard for the finale wall.
+  // Facilitator: paste the link to a shared Form or Whiteboard for the share-out wall.
   wallUrl: '',
-  // Floating Copilot companion (tips and radio messages). Parked for now; set to true to bring it back.
+  // Floating Copilot companion. Parked; set to true to bring it back.
   buddy: false,
-  totalMinutes: 45,
+  totalMinutes: 60,
   chapters: [
-    { from: 0, to: 5, title: 'Find your trail', note: 'Intro, quiz and reveal. Group the room by trail.' },
-    { from: 5, to: 8, title: 'Anatomy of a skill', note: 'Everyone scrolls the anatomy page.' },
-    { from: 8, to: 38, title: 'On the trail', note: 'First: pack your gear (add the skills, 2 min). Then core steps 1-4. Step 5 and side quests for fast finishers.' },
-    { from: 38, to: 45, title: 'Finale', note: 'Live board rehearsal, one Excel scenario, and "what skill would your team need?"' },
+    { from: 0, to: 5, title: 'Get started', note: 'Everyone opens the site and picks their room. Open the web apps, not the desktop apps. Model on Auto. No premium licence? Pair up.' },
+    { from: 5, to: 50, title: 'On the trail', note: 'Prompts first, skills later. Anyone can skip ahead: every step has its own start file. Use the waiting time for the parallel task.' },
+    { from: 50, to: 60, title: 'Prepare the share-out', note: 'Two people per group prepare two minutes for the room monitor or the main room.' },
   ],
 };
 
+ADV.event = { name: 'ERGO Female Leadership Summit', date: '17 November 2026', city: 'Berlin', sessions: '11:15–13:30' };
 ADV.label = 'Illustrative figures for training purposes, not ERGO results';
 
+// Rooms and groups. Basic and Advanced follow the same trail; Advanced moves faster and skips ahead.
+ADV.rooms = [
+  { id: 'de-meer', room: 'De Meer', group: '1 Basic', trail: 'xls', level: 'basic', assigned: 17, capacity: 20 },
+  { id: 'olimpico', room: 'Olimpico', group: '1 Advanced', trail: 'xls', level: 'advanced', assigned: 14, capacity: 14 },
+  { id: 'ballymore', room: 'Ballymore', group: '2 Basic', trail: 'ppt', level: 'basic', assigned: 15, capacity: 20 },
+  { id: 'warm-up', room: 'Warm-up', group: '2 Advanced', trail: 'ppt', level: 'advanced', assigned: 16, capacity: 16 },
+  { id: 'hall-of-fame', room: 'Hall of Fame', group: '3 Basic', trail: 'cos', level: 'basic', assigned: 26, capacity: 30 },
+  { id: 'anfield', room: 'Anfield', group: '3 Advanced', trail: 'cos', level: 'advanced', assigned: 12, capacity: 12 },
+];
+ADV.levels = { basic: 'Basic', advanced: 'Advanced' };
+
+// Shown at the start of every trail.
+ADV.basics = [
+  ['🌐', 'Use the web apps', 'Open Excel, PowerPoint and Outlook in the browser, not the desktop apps. Some features, such as Interactive Slides and the <b>Add skill</b> button, only appear on the web.'],
+  ['⚙️', 'Leave the model on Auto', 'If Copilot offers a model choice, keep <b>Auto</b>. Today is about what you ask, not which model answers.'],
+  ['👥', 'No premium licence?', 'Pair up with a neighbour and work on one screen. You can still follow every step.'],
+  ['⏭️', 'Skip whenever you like', 'Every step has its own start file, so you never need the result of an earlier step.'],
+];
+
+// Troubleshooting, shown (collapsed) on every trail page. Trail-specific items are added per trail.
+ADV.trouble = [
+  ['There’s no skills folder in my OneDrive', 'In the Copilot pane, select <b>…</b> → <b>Manage plugins &amp; skills</b> → <b>Custom skills</b> → <b>Create OneDrive folder</b>. Copilot creates it. Then select <b>Open skills folder</b>.'],
+  ['The Add skill button is missing', 'You’re probably in the desktop app. Open the same file in the browser (<b>File</b> → <b>Open in browser</b>, or via office.com) and look again.'],
+  ['My skill isn’t showing up yet', 'It can take a few minutes after the upload. Select <b>Refresh</b> under <b>Custom skills</b>, wait a moment and ask again. The folder name must match the <code>name:</code> line in SKILL.md.'],
+  ['How do I know a skill was used?', 'Look for a line like <b>“Loaded … skill”</b> in the Copilot chat, just above the answer.'],
+  ['I don’t have a premium Copilot licence', 'Work with a partner on one screen. Copy the prompts into their Copilot and take turns.'],
+];
+
 ADV.skills = {
-  'ergo-brand': { app: 'PowerPoint', title: 'ERGO Brand', what: 'Restyles any slide into ERGO board style: message headlines, one red accent, flat charts. Never changes a figure.', trigger: '"make these slides board-ready"' },
-  'ergo-board-pack': { app: 'PowerPoint', title: 'Board Pack', what: 'Turns raw notes into five board slides: message, KPI strip, what changed, risks, decision. Speaker notes included.', trigger: '"board pack", "what we need from the board"' },
-  'ergo-board-sparring': { app: 'PowerPoint', title: 'Board Sparring', what: 'The Chair, the CFO, a supervisor and the works council each ask their toughest question, with an answer from your deck.', trigger: '"rehearse", "what will they ask"' },
-  'ergo-data-cleaning': { app: 'Excel', title: 'Data Cleaning', what: 'ERGO’s rules for any data clean-up: originals untouched, clean tables, every change flagged, nothing guessed, and a Data_Quality sheet with live counts and a readiness verdict.', trigger: '"clean", "check", "is it ready"' },
-  'ergo-calculations': { app: 'Excel', title: 'Calculations', what: 'How ERGO builds any calculation: live formulas, inputs in one place, check cells, scenarios side by side and a plain-language documentation sheet.', trigger: '"calculate", "KPIs", "scenarios", "what if"' },
-  'ergo-pivot-analysis': { app: 'Excel', title: 'Pivot Analysis', what: 'Real PivotTables from the clean data, then a one-sentence headline and the top three drivers, one-offs separated from trends.', trigger: '"break down", "what drives", "PivotTables"' },
-  'ergo-exec-dashboard': { app: 'Excel', title: 'Exec Dashboard', what: 'One screen for the board: KPI tiles, sentence headlines on every chart, ERGO red and greys, all linked to the data.', trigger: '"dashboard", "one-pager", "board summary"' },
-  'my-voice': { app: 'Any', title: 'My Voice', what: 'Your own writing style as rules. You build this one yourself in a side quest.', trigger: '"in my voice"', sideQuest: true },
+  'ergo-register-cleaner': { app: 'Excel', title: 'Register Cleaner', what: 'Your own skill, from our template: standardises a KPI register, applies colour rules, adds a summary row and logs every change.', trigger: '"clean my register", "prepare the monthly KPI file"', zip: 'downloads/ergo-register-cleaner.zip', md: 'downloads/ergo-register-cleaner-SKILL.md' },
+  'ergo-brand': { app: 'PowerPoint', title: 'ERGO Brand', what: 'Restyles any deck in ERGO board style: message headlines, one red accent, flat charts. Never changes a figure.', trigger: '"make these slides board-ready"', zip: 'downloads/ergo-brand.zip', md: 'downloads/ergo-brand-SKILL.md' },
+  'ergo-board-sparring': { app: 'PowerPoint', title: 'Board Rehearsal', what: 'Our version of the skill you build in step 7: the Chair, the CFO, a supervisor and the works council each ask their hardest question, answered from your deck.', trigger: '"rehearse", "what will they ask"', zip: 'downloads/ergo-board-sparring.zip', md: 'downloads/ergo-board-sparring-SKILL.md' },
+  'interactive-slides-workaround': { app: 'PowerPoint', title: 'Interactive Slides (workaround)', what: 'Only if the built-in Interactive Slides skill is missing: turns one slide into a clickable overview with detail slides.', trigger: '"make this slide interactive"', zip: 'downloads/interactive-slides-workaround.zip', md: 'downloads/interactive-slides-workaround-SKILL.md' },
+  'chief-of-staff': { app: 'Copilot Chat', title: 'Chief-of-Staff agent', kind: 'agent', what: 'The agent you build in Agent Builder: knows your priorities, organises your day and week, and drafts replies in your voice.', trigger: '@mention it in Copilot Chat or Outlook' },
+  'my-voice': { app: 'Any', title: 'My Voice', what: 'Your writing style as short rules. Built into your Chief-of-Staff agent, or used as a skill on its own.', trigger: '"in my voice"', md: 'downloads/my-voice-SKILL.md' },
 };
 
 ADV.badges = {
@@ -37,199 +63,420 @@ ADV.badges = {
 };
 
 ADV.personas = {
-  ppt: { name: 'Storyteller', line: 'You turn complexity into one clear message.' },
   xls: { name: 'Analyst', line: 'You spot what is off in the numbers before anyone else.' },
-  m365: { name: 'Orchestrator', line: 'You keep twelve workstreams moving and everyone aligned.' },
+  ppt: { name: 'Storyteller', line: 'You turn complexity into one clear message.' },
+  cos: { name: 'Orchestrator', line: 'You keep twelve workstreams moving and everyone aligned.' },
 };
 
 ADV.quiz = [
-  { q: 'Your Sunday-evening dread is…', a: [['ppt', 'a deck for Monday’s board'], ['xls', 'a spreadsheet nobody has checked'], ['m365', 'an inbox with 214 unread']] },
-  { q: 'In meetings you’re the one who…', a: [['ppt', 'tells the story'], ['xls', 'asks “what do the numbers say?”'], ['m365', 'makes sure everyone’s aligned afterwards']] },
-  { q: 'Your superpower is…', a: [['ppt', 'turning complexity into one clear message'], ['xls', 'spotting what’s off in the numbers'], ['m365', 'keeping twelve workstreams moving']] },
+  { q: 'Your Sunday-evening dread is…', a: [['ppt', 'a deck for Monday’s board'], ['xls', 'a spreadsheet nobody has checked'], ['cos', 'an inbox with 214 unread']] },
+  { q: 'In meetings you’re the one who…', a: [['ppt', 'tells the story'], ['xls', 'asks “what do the numbers say?”'], ['cos', 'makes sure everyone’s aligned afterwards']] },
+  { q: 'Your superpower is…', a: [['ppt', 'turning complexity into one clear message'], ['xls', 'spotting what’s off in the numbers'], ['cos', 'keeping twelve workstreams moving']] },
 ];
 
-ADV.trails = {
+// How to upload a skill, per app. Used wherever a step adds a custom skill.
+ADV.upload = {
   ppt: {
-    app: 'PowerPoint', name: 'The Board Meeting', persona: 'Storyteller',
-    mission: 'The board meets next week on Q3. Walk in prepared.',
-    kit: { file: 'downloads/powerpoint-kit.zip', size: 'about 0.6 MB', contents: ['messy-draft.pptx', 'board-pack-start.pptx', 'cfo-raw-notes.docx', 'q3-figures.xlsx', 'ergo-board-template.potx', '3 skill ZIPs'] },
-    setup: [
-      'Download the kit and unzip it once. Keep the three files inside <code>skills/</code> zipped.',
-      'Upload <code>messy-draft.pptx</code>, <code>board-pack-start.pptx</code> and <code>cfo-raw-notes.docx</code> to your OneDrive.',
+    steps: [
+      { text: 'In the Copilot pane, select <b>…</b> → <b>Manage plugins &amp; skills</b> → <b>Custom skills</b> → <b>Add</b>.', gif: 'assets/media/ppt-skill-add.gif' },
+      { text: 'Select <b>Upload</b> and choose the ZIP, or drag the file onto the pane. Keep it zipped.', gif: 'assets/media/ppt-skill-upload.gif' },
+      { text: 'Check the skill is switched on. If it’s missing, select <b>Refresh</b> and give it a minute.' },
     ],
-    pack: {
-      intro: 'Three skills, about two minutes. Without them Copilot still helps, but it won’t work the ERGO way.',
-      files: [['ergo-brand', 'downloads/ergo-brand.zip'], ['ergo-board-pack', 'downloads/ergo-board-pack.zip'], ['ergo-board-sparring', 'downloads/ergo-board-sparring.zip']],
-      fileNote: 'Keep them zipped. PowerPoint reads the ZIP directly.',
-      explore: { pick: 'upload' },
-      steps: [
-        { text: 'Open <code>messy-draft.pptx</code> in PowerPoint for the web and select <b>Copilot</b>. In the Copilot pane select <b>…</b> → <b>Manage plugins &amp; skills</b> → <b>Custom skills</b> → <b>Add</b>.', gif: 'assets/media/ppt-skill-add.gif' },
-        { text: 'Select <b>Upload</b> and choose <code>ergo-brand.zip</code>. Repeat for <code>ergo-board-pack.zip</code> and <code>ergo-board-sparring.zip</code>.', gif: 'assets/media/ppt-skill-upload.gif' },
-        { text: 'Make sure <b>Custom skills</b> and all three skills are switched on. Select <b>Refresh</b> if one is missing.' },
-      ],
-      gifNote: 'Recorded in rehearsal with an earlier workshop skill. The clicks are the same.',
+  },
+  xls: {
+    steps: [
+      { text: 'In the Copilot pane, select <b>…</b> → <b>Manage plugins &amp; skills</b> → <b>Custom skills</b> → <b>Add</b>. If you see <b>Create OneDrive folder</b>, select it first.', gif: 'assets/media/xls-skill-add.gif' },
+      { text: 'Select <b>Upload</b> and choose the ZIP. Or select <b>Add in OneDrive</b> and use <b>Create or upload</b> → <b>Folder upload</b> for the unzipped folder.', gif: 'assets/media/xls-skill-folder.gif' },
+      { text: 'Back in Excel, select <b>Refresh</b> and check the skill is switched on. Make sure <b>Allow editing</b> is on.' },
+    ],
+  },
+  gifNote: 'Screen recordings from our rehearsal, made with an earlier skill. The clicks are the same.',
+};
+
+ADV.trails = {
+  // ======================================================================
+  // Trail 1 · Excel · Performance Review
+  // ======================================================================
+  xls: {
+    app: 'Excel', tool: 'Excel', name: 'The Numbers Room', persona: 'Analyst', group: 1, useCase: 'Performance Review',
+    web: ['Excel for the web', 'https://excel.cloud.microsoft'],
+    mission: 'A messy half-year performance register lands on your desk before the leadership meeting. Understand it, extend it, clean it and turn it into a dashboard.',
+    kit: { file: 'downloads/excel-kit.zip', size: 'about 130 KB', contents: ['kpi-register.xlsx', 'kpi-register-clean.xlsx', 'kpi-register-dashboard.xlsx', 'kpi-register-q3.xlsx', 'project-updates.txt', 'skill template'] },
+    setup: [
+      'Download the kit and unzip it.',
+      'Upload the four <code>.xlsx</code> files to your OneDrive and open <code>kpi-register.xlsx</code> in Excel for the web. Copilot in Excel only works on files saved in OneDrive or SharePoint.',
+      'Select <b>Copilot</b> on the Home tab to open the pane.',
+    ],
+    levels: {
+      basic: 'Aim for steps 1–5. Take steps 6–9 if you have time.',
+      advanced: 'Move quickly through steps 1–4, then pick from 5–9, or jump straight to the side quest <b>Bring your own skill</b>.',
     },
+    trouble: [
+      ['Copilot is greyed out in Excel', 'Save the file to OneDrive or SharePoint and turn on <b>AutoSave</b>. Copilot needs a saved, online file.'],
+      ['Copilot changed something I didn’t want', 'Press <b>Ctrl+Z</b>, or ask Copilot to undo it. Your start files are always there to download again.'],
+    ],
     steps: [
       {
-        title: 'The brand makeover', goal: 'See what a skill does in one move.', time: 5,
-        open: 'messy-draft.pptx', prompt: 'Make these slides board-ready.', skills: ['ergo-brand'],
-        wow: 'Same facts, now in ERGO style: message headlines, clean layout, one red accent and a proper chart.',
-        media: { type: 'compare', before: 'assets/media/messy-draft-s2.jpg', after: 'assets/media/ppt-step1-s2.jpg', caption: 'Drag to compare. Before: the messy draft. After: with the ERGO Brand skill.' },
-        yours: { text: 'Open <b>Custom skills</b>, select <b>ergo-brand</b> and change “Maximum 3 bullets” to “Maximum 2 bullets”. Ask again and watch the slides follow your rule.', prompt: 'Make these slides board-ready.' },
-        check: ['Every number is unchanged', 'Titles are full sentences that say “so what”', 'One red accent per slide; the 3D chart is now flat'],
-        fallback: { file: 'downloads/fallback/ppt-step1.pptx', images: ['assets/media/ppt-step1-s1.jpg', 'assets/media/ppt-step1-s2.jpg', 'assets/media/ppt-step1-s3.jpg'] },
+        title: 'What am I looking at?', goal: 'Understand: let Copilot explain a table you have never seen before.', time: 4,
+        start: [['downloads/kpi-register.xlsx', 'kpi-register.xlsx']],
+        prompt: 'What am I looking at in this table?',
+        prompt2: 'What looks inconsistent or messy in this data?',
+        wow: 'Copilot reads the whole register in seconds: six countries, five KPIs, January to June. The second question gets it listing the mess: € next to EUR, dates in four formats, Deutschland next to Germany.',
+        check: ['A plain-language summary of the columns and the period', 'Copilot names the countries and KPIs in the register', 'At least two kinds of mess: currencies, dates or spellings'],
       },
       {
-        title: 'Raw notes → board pack', goal: 'Watch a skill carry a whole format.', time: 8,
-        open: 'board-pack-start.pptx, with cfo-raw-notes.docx attached', prompt: 'Turn the CFO’s notes into a board pack for next week’s meeting.', skills: ['ergo-board-pack', 'ergo-brand'],
-        how: 'In the Copilot pane, select <b>+</b> (Add) and attach <code>cfo-raw-notes.docx</code> from OneDrive before you send the prompt.',
-        wow: 'Three pages of messy notes become a five-slide ERGO board deck, with speaker notes, in about a minute.',
-        media: { type: 'morph', notes: ['assets/media/cfo-notes-p1.jpg', 'assets/media/cfo-notes-p2.jpg', 'assets/media/cfo-notes-p3.jpg'], slides: ['assets/media/ppt-step2-s1.jpg', 'assets/media/ppt-step2-s2.jpg', 'assets/media/ppt-step2-s3.jpg', 'assets/media/ppt-step2-s4.jpg', 'assets/media/ppt-step2-s5.jpg'], caption: 'Three pages of notes in, five board slides out.' },
-        yours: null,
-        check: ['Five slides: message, KPI strip, what changed, risks and outlook, decision', 'The KPI strip compares with plan and prior year', 'Each slide has speaker notes with a source line'],
-        fallback: { file: 'downloads/fallback/ppt-step2.pptx', images: ['assets/media/ppt-step2-s1.jpg', 'assets/media/ppt-step2-s2.jpg', 'assets/media/ppt-step2-s3.jpg', 'assets/media/ppt-step2-s4.jpg', 'assets/media/ppt-step2-s5.jpg'] },
+        title: 'One formula, every row', goal: 'Extend: add a calculated column that works for 1 row or 10,000.', time: 5,
+        start: [['downloads/kpi-register.xlsx', 'kpi-register.xlsx']],
+        prompt: 'Add a column that shows how far Actual is from Target, in percent. Use a formula.',
+        prompt2: 'Explain the formula in plain words. What happens if this table grows to 10,000 rows?',
+        wow: 'A new column, filled down the whole table. Click any cell and you see the same formula. It works for one row or ten thousand, and it updates when a number changes.',
+        yours: { text: 'Change one Actual value and watch the percentage update on its own.' },
+        check: ['A new column with a percentage in every row', 'Clicking a cell shows a formula, not a typed number', 'Rows without an Actual stay empty or are flagged'],
       },
       {
-        title: 'Sharpen the story', goal: 'Make the deck argue something.', time: 6,
-        open: 'your new board pack', prompt: 'What’s the one message of this deck? Make sure the last slide says exactly what we need from the board.', skills: ['ergo-board-pack'],
-        wow: 'One sentence the whole room can repeat, and a decision slide that can be read in five seconds.',
-        media: { type: 'compare', before: 'assets/media/ppt-step2-s5.jpg', after: 'assets/media/ppt-step3-s5.jpg', caption: 'Drag to compare the decision slide before and after sharpening.' },
-        yours: { text: 'Ask for the same message for a different audience.', prompt: 'Now give me the same message for our claims teams, in two sentences.' },
-        check: ['A one-sentence message of 20 words or fewer', 'The last slide starts with “Decision needed:”', 'The ask, amount, timing and recommendation are all visible'],
-        fallback: { file: 'downloads/fallback/ppt-step3.pptx', images: ['assets/media/ppt-step3-s1.jpg', 'assets/media/ppt-step3-s5.jpg'] },
+        title: 'Bring in outside data', goal: 'Enrich: add information that isn’t in the workbook yet.', time: 7, test: true,
+        start: [['downloads/kpi-register.xlsx', 'kpi-register.xlsx'], ['downloads/project-updates.txt', 'project-updates.txt']],
+        intro: 'Pick one. The first two use the web, the third uses your work data. For the third, imagine the notes in <code>project-updates.txt</code> are in your mailbox.',
+        variants: [
+          ['From the web', 'Add a column with the current EUR exchange rate for each currency in this table, and name your source.'],
+          ['From the web', 'Add an industry benchmark for each KPI as a new column, with the source.'],
+          ['From your emails and notes', 'Fill in Latest_Status on the Initiatives sheet with the latest status of each initiative from my emails and meeting notes.'],
+        ],
+        alt: { label: 'If web or work data isn’t available in your tenant', text: 'Open <code>project-updates.txt</code>, copy all of it, and paste it in after this prompt:', prompt: 'Here are the latest project notes. Fill in Latest_Status on the Initiatives sheet with one short sentence per initiative, based only on these notes:' },
+        note: 'Whether Copilot in Excel can search the web or read your emails depends on your organisation’s settings. We’re still testing this in ERGO’s tenant, which is why the fallback prompt is there.',
+        wow: 'The register now knows something it didn’t before: an exchange rate with its source, or a status for every initiative, pulled from notes in seconds.',
+        check: ['A new column or filled Latest_Status cells', 'Copilot says where the information came from', 'Nothing in the existing columns changed'],
       },
       {
-        title: 'Boardroom rehearsal', goal: 'Walk in feeling prepared.', time: 8,
-        open: 'your sharpened board pack', prompt: 'Rehearse the board meeting with me. What will they ask?', skills: ['ergo-board-sparring'],
-        wow: 'The Chair, the CFO, a supervisor and the works council take their seats. Each asks the hardest fair question, with an answer built from your deck.',
+        title: 'Clean it up', goal: 'Clean and standardise: one messy column at a time.', time: 6,
+        start: [['downloads/kpi-register.xlsx', 'kpi-register.xlsx']],
+        prompt: 'Clean the Currency column: use ISO codes such as EUR and PLN everywhere, and show me what you changed.',
+        prompt2: 'Now convert every date in Reported_On to the format yyyy-mm-dd and tell me which ones you couldn’t read.',
+        more: { label: 'Advanced', prompt: 'Standardise the country, business unit and KPI names, and list which spellings you merged.' },
+        note: 'Basic groups: one column is enough. The point is to see Copilot explain what it changed.',
+        wow: '€, Euro and eur become EUR; zł becomes PLN; 04.03.2026 and 4 Mar 2026 become 2026-03-04. Copilot tells you what it changed, so you can check it.',
+        check: ['Only ISO codes left in Currency', 'One date format in Reported_On', 'Dates that don’t exist, such as 31 June, are flagged, not guessed'],
+      },
+      {
+        title: 'Colour tells the story', goal: 'Conditional formatting: see what matters without reading every number.', time: 4,
+        start: [['downloads/kpi-register-clean.xlsx', 'kpi-register-clean.xlsx']],
+        prompt: 'Highlight the Variance_vs_Target column: red below −10%, amber from −10% to 0%, green from 0% up.',
+        prompt2: 'Also shade every row with Status “Off track” in light red.',
+        yours: { text: 'Change the thresholds to the ones your team uses and ask again.' },
+        wow: 'The red cells jump out. You see which countries and KPIs are behind before you read a single number.',
+        check: ['Three colours in Variance_vs_Target', 'Off-track rows shaded', 'The rules show up under Home → Conditional Formatting → Manage Rules'],
+      },
+      {
+        title: 'A skill Microsoft already wrote', goal: 'Use one of Excel’s built-in skills on the finished table.', time: 5,
+        start: [['downloads/kpi-register-clean.xlsx', 'kpi-register-clean.xlsx']],
+        intro: 'Excel comes with skills built in. Type <b>@</b> in the Copilot prompt box to see them, or select <b>+</b> → <b>Choose plugins and skills</b>. Pick one:',
+        variants: [
+          ['Formatting', '@theme-design Make this workbook look professional and consistent.'],
+          ['Visualisation', '@chart-design Create a chart that compares Actual and Target by country for Gross written premium.'],
+          ['Analysis', '@clean-data Check this workbook for data issues and explain what you find.'],
+        ],
+        note: 'Microsoft is still rolling these skills out. If you don’t see one, try another, or ask your trainer.',
+        wow: 'The chat says which skill it loaded, then follows rules Microsoft wrote for that task. It is the same idea as a custom skill, written by someone else.',
+        check: ['The chat shows that a skill was loaded', 'The sheet or chart changed the way the skill describes'],
+      },
+      {
+        title: 'Dashboard, level 1', goal: 'A native Excel dashboard with PivotTables and charts.', time: 7,
+        start: [['downloads/kpi-register-clean.xlsx', 'kpi-register-clean.xlsx']],
+        prompt: 'Create a dashboard on a new sheet with PivotTables and charts: Actual vs Target by country, the monthly trend of Actual_EUR, and how many KPIs are on track, at risk and off track.',
+        media: { type: 'image', image: 'assets/media/kpi-dashboard.jpg', caption: 'One possible result. Yours will look different.' },
+        wow: 'A new sheet with PivotTables and charts, built from your register. Change a number in the register, refresh, and the dashboard follows.',
+        check: ['A new sheet with at least two PivotTables', 'Charts next to them', 'Spot-check one country: the totals match the register'],
+      },
+      {
+        title: 'Dashboard, level 2', goal: 'Make the dashboard interactive.', time: 6,
+        start: [['downloads/kpi-register-dashboard.xlsx', 'kpi-register-dashboard.xlsx']],
+        prompt: 'Make this dashboard interactive: add slicers for Country and KPI and a timeline for Month, connected to all PivotTables.',
+        variants: [['Or try the built-in skill', '@interactive-canvas Turn this workbook into an interactive executive review I can click through.']],
+        note: '<code>@interactive-canvas</code> is still rolling out and may not be there yet.',
+        wow: 'Click Poland and every PivotTable and chart follows. Your dashboard now answers questions you haven’t asked yet.',
+        check: ['Slicers for Country and KPI', 'Clicking a slicer changes every PivotTable', 'A timeline for Month, if your Excel supports it'],
+      },
+      {
+        title: 'Dashboard, final stage', goal: 'An HTML dashboard from one prompt, designed your way.', time: 8,
+        start: [['downloads/kpi-register-clean.xlsx', 'kpi-register-clean.xlsx']],
+        prompt: 'Create a self-contained HTML dashboard from the Register sheet: KPI tiles, a chart of Actual vs Target by country and a monthly trend. Use ERGO’s colours (red #BF1629, charcoal #242424, white), the word “ERGO” as a text logo, and the label “Illustrative figures for training purposes, not ERGO results” in the footer. No external files or links. Show the complete HTML in one code block.',
+        ideas: ['Add a filter by country', 'Add a search box for KPIs', 'Let me select several countries at once', 'Make the tiles clickable so they filter the charts', 'Add a switch between English and German'],
+        how: 'When the code appears, copy it, paste it into Notepad and save it as <code>dashboard.html</code> (under “Save as type” choose <b>All files</b>). Double-click the file to open it in your browser.',
+        note: 'HTML dashboards don’t render inside Excel yet in every tenant. That’s why you save the code and open it in the browser.',
+        wow: 'A web page with your numbers, in ERGO colours. Then make it yours: every idea below is one more prompt.',
+        check: ['The file opens in your browser', 'Tiles and charts show the register’s numbers', 'At least one idea of your own added'],
+      },
+    ],
+    sideQuests: [
+      { id: 'xls-byo', type: 'byo', title: 'Bring your own skill', time: 15, skill: 'ergo-register-cleaner' },
+      { id: 'xls-to-ppt', type: 'link', title: 'Finished early?', time: 0, what: 'Go to the PowerPoint trail and build a board deck from a memo.', href: 'trail.html?t=ppt', cta: 'PowerPoint trail →' },
+    ],
+    byo: {
+      why: 'You just did steps 4–6 by hand. If you do this every month, a skill does it in one go, and always the same way.',
+      parts: [
+        ['Name and description', 'When Copilot should use it, with trigger phrases such as “clean my register” or “prepare the monthly KPI file”.'],
+        ['Steps', 'Standardise currencies and dates, fix spelling variants, flag missing values, apply colour rules with thresholds, add a summary row.'],
+        ['Output rules', 'What the finished sheet looks like: column order, colours, table name.'],
+        ['Don’t rules', 'Never delete rows. List every change in a note.'],
+      ],
+      steps: [
+        'Download the template below.',
+        'Change one rule to fit your team, for example a different threshold or colour. Lines marked <code>Change this rule</code> are a good place to start.',
+        'Upload it. The clicks are shown below.',
+        'Open the second messy file, <code>kpi-register-q3.xlsx</code>, and ask: <b>Clean my register.</b>',
+        'Check the result. If something is off, fix the instructions.',
+        'Upload the new version and run it again.',
+      ],
+      files: [['downloads/kpi-register-q3.xlsx', 'Second messy file: kpi-register-q3.xlsx']],
+      prompt: 'Clean my register.',
+      builder: '@skill-builder Save what we just did to a new skill.',
+      ideas: [
+        ['ERGO monthly report formatter', 'Same layout, colours and summary row every month.'],
+        ['KPI commentary writer', 'Three bullet points per KPI in management language.'],
+        ['Data quality checker', 'Lists the problems in a sheet without changing anything.'],
+      ],
+      success: 'Your skill worked if Copilot says it loaded the skill, and the second file looks like the first one did after step 6.',
+    },
+  },
+
+  // ======================================================================
+  // Trail 2 · PowerPoint · Executive Presentation
+  // ======================================================================
+  ppt: {
+    app: 'PowerPoint', tool: 'PowerPoint', name: 'The Board Meeting', persona: 'Storyteller', group: 2, useCase: 'Executive Presentation',
+    web: ['PowerPoint for the web', 'https://powerpoint.cloud.microsoft'],
+    mission: 'The board meets next week. Build the deck from a memo and the numbers, rehearse the questions, then make it ERGO.',
+    kit: { file: 'downloads/powerpoint-kit.zip', size: 'about 250 KB', contents: ['board-memo.docx', 'q3-figures.xlsx', 'board-pack-ready.pptx', 'messy-draft.pptx', '3 skill ZIPs'] },
+    setup: [
+      'Download the kit and unzip it once. Keep the files in <code>skills/</code> zipped.',
+      'Upload <code>board-memo.docx</code>, <code>q3-figures.xlsx</code>, <code>board-pack-ready.pptx</code> and <code>messy-draft.pptx</code> to your OneDrive.',
+      'Open PowerPoint for the web and select <b>Copilot</b> on the Home tab.',
+    ],
+    levels: {
+      basic: 'Aim for steps 1–4, then step 6 if you have time.',
+      advanced: 'Run steps 1–4 quickly, then go for 5–8. Step 8 is for you.',
+    },
+    trouble: [
+      ['Creating the deck takes ages', 'That’s normal: a few minutes. Don’t wait. Open <code>board-pack-ready.pptx</code> in a new tab and do step 2.'],
+      ['Copilot can’t find my Word file', 'Make sure it’s in OneDrive, then attach it with <b>+</b> (Add) → <b>Attach</b>, or type <b>/</b> and start typing the file name.'],
+    ],
+    steps: [
+      {
+        title: 'A deck from a document', goal: 'Start this first: it takes a few minutes.', time: 6,
+        start: [['downloads/board-memo.docx', 'board-memo.docx'], ['downloads/q3-figures.xlsx', 'q3-figures.xlsx']],
+        open: 'a new blank presentation in PowerPoint for the web',
+        how: 'In the Copilot pane, select <b>+</b> (Add) and attach <code>board-memo.docx</code> from OneDrive, or type <b>/</b> and pick the file. Then send one of these:',
+        variants: [
+          ['Word only', 'Create a board presentation from this document.'],
+          ['Word plus Excel numbers', 'Create a board presentation from this document. Use the figures in q3-figures.xlsx for a KPI slide.'],
+        ],
+        waiting: { text: 'This takes a few minutes. Don’t wait: open <code>board-pack-ready.pptx</code> in a new tab and go to step 2.', href: 2 },
+        media: { type: 'morph', notes: ['assets/media/cfo-notes-p1.jpg', 'assets/media/cfo-notes-p2.jpg', 'assets/media/cfo-notes-p3.jpg'], slides: ['assets/media/ppt-step2-s1.jpg', 'assets/media/ppt-step2-s2.jpg', 'assets/media/ppt-step2-s3.jpg', 'assets/media/ppt-step2-s4.jpg', 'assets/media/ppt-step2-s5.jpg'], caption: 'Three pages of notes in, a board deck out. Yours will look different.' },
+        wow: 'Three pages of notes become a full board deck with speaker notes, while you work on something else.',
+        check: ['A deck with a title slide and the memo’s main points', 'Speaker notes on the slides', 'With the Excel variant: a slide with the Q3 figures'],
+      },
+      {
+        title: 'Rehearse the board', goal: 'Know the questions before the board asks them.', time: 8,
+        start: [['downloads/board-pack-ready.pptx', 'board-pack-ready.pptx']],
+        prompt: 'What is this deck about?',
+        prompt2: 'What questions could the board ask me about this deck?',
+        more: { label: 'Then', prompt: 'Add each question and a short answer to the speaker notes of the slide it belongs to.' },
         media: { type: 'panel', image: 'assets/media/ppt-step4-s6.jpg', caption: 'The panel takes its seats.' },
-        yours: { text: 'Add a persona of your choice to the panel.', prompt: 'Add an activist investor to the panel.' },
-        check: ['Four people, four questions', 'Every suggested answer points to a slide', 'One question to practise out loud first'],
-        fallback: { file: 'downloads/fallback/ppt-step4.pptx', images: ['assets/media/ppt-step4-s6.jpg'] },
+        wow: 'The hardest fair questions, before the meeting, with an answer for each in the notes of the right slide.',
+        yours: { text: 'Pick the board member you’re most nervous about.', prompt: 'Which of these questions would the CFO ask first, and how should I answer in two sentences?' },
+        check: ['A short summary of the deck', 'Five or more questions a board would ask', 'Questions and answers in the speaker notes'],
       },
       {
-        title: 'Leave-behind', goal: 'Take something home.', time: 4, optional: true,
-        open: 'your board pack', prompt: 'Give me a cue card from my speaker notes and a 60-second version I can say out loud.', skills: ['ergo-board-pack'],
-        wow: 'A cue card slide with the three numbers to remember, and a script you can say in one minute.',
-        media: { type: 'image', image: 'assets/media/ppt-step5-s7.jpg', caption: 'The cue card. The 60-second script is in its speaker notes.' },
-        yours: null,
-        check: ['Five one-line messages', 'Three numbers to remember', 'About 150 words to say out loud, ending with the ask'],
-        fallback: { file: 'downloads/fallback/ppt-step5.pptx', images: ['assets/media/ppt-step5-s7.jpg'] },
+        title: 'One slide, two ways', goal: 'Compare a text slide with an image-generated one.', time: 6,
+        start: [['downloads/board-pack-ready.pptx', 'board-pack-ready.pptx']],
+        variants: [
+          ['Without image generation (fast)', 'Add a slide after slide 2 that shows our three priorities for 2027 as three columns, each with an icon. No pictures.'],
+          ['With image generation', 'Add the same slide again, this time with a generated image of a modern claims service team.'],
+        ],
+        note: 'Watch the clock: how long does each one take, and which would you show the board?',
+        wow: 'Two versions of the same slide. One appears in seconds, the other takes longer and looks different. You choose.',
+        check: ['Two new slides with the same three priorities', 'One with icons only, one with a generated image', 'You know which you’d keep, and why'],
+      },
+      {
+        title: 'Auf Deutsch, bitte', goal: 'Translate the deck for the supervisory board.', time: 4,
+        start: [['downloads/board-pack-ready.pptx', 'board-pack-ready.pptx']],
+        prompt: 'Make a German version of this deck for the supervisory board.',
+        wow: 'The same deck in German, figures unchanged, ready for German-speaking board members.',
+        check: ['Every slide in German', 'Numbers and dates unchanged', 'Speaker notes translated too'],
+      },
+      {
+        title: 'Interactive Slides', goal: 'A built-in skill: slides your audience can click through.', time: 5, test: true,
+        start: [['downloads/board-pack-ready.pptx', 'board-pack-ready.pptx']],
+        how: 'PowerPoint has skills built in. In the Copilot pane, select <b>+</b> → <b>Choose skills</b> and look for <b>Interactive Slides</b>, or type <b>@</b>.',
+        prompt: 'Make slide 3 interactive so viewers can explore each KPI on their own.',
+        alt: { label: 'If Interactive Slides isn’t listed', text: 'Upload our workaround skill (the clicks are the same as in step 6), then send:', prompt: 'Make slide 3 interactive: one tile per KPI that links to a detail slide, and a “Back to overview” link on every detail slide.' },
+        skillFiles: ['interactive-slides-workaround'],
+        note: 'Every viewer clicks around on their own, so this is great to explore and less suited to presenting. Optional: try it in pairs in a Teams meeting on the room monitor.',
+        wow: 'A slide that works like a small website: everyone explores the part they care about.',
+        check: ['A slide with clickable elements', 'In Slide Show, clicking takes you to the detail and back'],
+      },
+      {
+        title: 'Make it ERGO', goal: 'Your first custom skill: the ERGO brand.', time: 7,
+        start: [['downloads/messy-draft.pptx', 'messy-draft.pptx']],
+        open: 'your deck from step 1, or messy-draft.pptx',
+        upload: { skill: 'ergo-brand', app: 'ppt', explore: true },
+        prompt: 'Make these slides board-ready.',
+        media: { type: 'compare', before: 'assets/media/messy-draft-s2.jpg', after: 'assets/media/ppt-step1-s2.jpg', caption: 'Drag to compare. Before: the messy draft. After: with the ERGO Brand skill.' },
+        wow: 'Same facts in ERGO style: message headlines, clean layout, one red accent and a flat chart. You never named the skill: Copilot read its description and picked it.',
+        yours: { text: 'Open <b>Custom skills</b>, select <b>ergo-brand</b> and change “Maximum 3 bullets” to “Maximum 2 bullets”. Ask again and watch the slides follow your rule.', prompt: 'Make these slides board-ready.' },
+        check: ['“Loaded ergo-brand skill” (or similar) in the chat', 'Every number unchanged', 'Message headlines and one red accent per slide'],
+        skills: ['ergo-brand'],
+      },
+      {
+        title: 'Turn it into a skill', goal: 'You’ll rehearse every board meeting. Turn exactly that into a skill.', time: 6,
+        start: [['downloads/board-pack-ready.pptx', 'board-pack-ready.pptx']],
+        prompt: 'Turn what we did in step 2 into a custom skill: summarise the deck, list the questions the board could ask, and add each question with a short answer to the speaker notes of the right slide. Write it as a SKILL.md with a name, a description of when to use it, and numbered steps.',
+        how: 'Copy the SKILL.md Copilot writes. Then select <b>…</b> → <b>Manage plugins &amp; skills</b> → <b>Custom skills</b> → <b>Add</b> → <b>Create manually</b> and paste it in.',
+        more: { label: 'Test it', prompt: 'Rehearse the board meeting with me. What will they ask?' },
+        alt: { label: 'If your own skill doesn’t work yet', text: 'Upload our version, Board Rehearsal, and test it with the same prompt.' },
+        skillFiles: ['ergo-board-sparring'],
+        wow: 'A routine you did once is now a skill. Next quarter, one sentence does it.',
+        check: ['A SKILL.md with name, description and steps', 'The skill shows up under Custom skills', '“Loaded … skill” when you test it'],
+        skills: ['ergo-board-sparring'],
+      },
+      {
+        title: 'Record a skill', goal: 'Advanced: show Copilot once, reuse it everywhere.', time: 6, level: 'advanced',
+        start: [['downloads/board-pack-ready.pptx', 'board-pack-ready.pptx'], ['downloads/messy-draft.pptx', 'messy-draft.pptx']],
+        how: '<ol><li>Select <b>+</b> → <b>Choose skills</b> → <b>Manage plugins &amp; skills</b> → <b>Custom skills</b> → <b>Add</b> → <b>Record a skill</b>.</li><li>Make simple changes by hand, for example make the heading bigger, and set all slide text to Arial.</li><li>Select <b>Stop</b>, review the draft Copilot writes, and upload it.</li><li>Open the other deck and reuse it. Say the scope out loud:</li></ol>',
+        variants: [
+          ['All slides', 'Apply my recorded skill to all slides in this deck.'],
+          ['This slide only', 'Apply my recorded skill to this slide only.'],
+        ],
+        more: { label: 'Bonus, outside PowerPoint', prompt: 'Turn this deck into an email to my team.' },
+        wow: 'You never wrote a rule. You showed Copilot once, and now the other deck looks the same.',
+        check: ['A recorded skill under Custom skills', 'The other deck changed in the scope you asked for'],
       },
     ],
     sideQuests: [
       { id: 'ppt-persona', title: 'A tougher panel', time: 3, prompt: 'Add a journalist and an activist investor to the rehearsal.', what: 'Two more seats at the table, same rules.' },
-      { id: 'ppt-german', title: 'Auf Deutsch, bitte', time: 4, prompt: 'Make a German version of this board pack for the supervisory board.', what: 'The same pack, ready for German-speaking board members.' },
-      { id: 'ppt-townhall', title: 'Town hall', time: 4, prompt: 'Turn this board pack into a three-minute town-hall talk for employees.', what: 'Same facts, different audience, different tone.' },
-      { id: 'my-voice', title: 'My Voice', time: 8, voice: true, what: 'Teach Copilot how you write, then run your speaker notes through it.' },
+      { id: 'ppt-townhall', title: 'Town hall', time: 4, prompt: 'Turn this board deck into a three-minute town-hall talk for employees.', what: 'Same facts, different audience, different tone.' },
+      { id: 'ppt-to-cos', type: 'link', title: 'Finished early?', time: 0, what: 'Try the Chief-of-Staff trail and build your own agent.', href: 'trail.html?t=cos', cta: 'Chief-of-Staff trail →' },
     ],
   },
-  xls: {
-    app: 'Excel', name: 'The Numbers Room', persona: 'Analyst',
-    mission: 'The board meets on Thursday and wants to know why claims are up. Bring a claims review you can stand behind, from raw data to a page you can send.',
-    kit: { file: 'downloads/excel-kit.zip', size: 'about 140 KB', contents: ['claims-workbook.xlsx', '4 skill folders'] },
+
+  // ======================================================================
+  // Trail 3 · Chief of Staff · Outlook / Copilot Chat
+  // ======================================================================
+  cos: {
+    app: 'Copilot Chat & Outlook', tool: 'Outlook / Copilot Chat', name: 'The Chief of Staff', persona: 'Orchestrator', group: 3, useCase: 'Chief-of-Staff',
+    web: ['Microsoft 365 Copilot', 'https://m365.cloud.microsoft/chat'],
+    mission: 'Make Copilot your own Chief of Staff. Start with prompts, notice what you do every day, then build an agent that does it your way.',
+    kit: { file: 'downloads/chief-of-staff-kit.zip', size: 'about 10 KB', contents: ['demo-meeting-transcript.txt', 'sample-emails.md', 'my-priorities.md', 'sample-voice-texts.md'] },
     setup: [
-      'Download the kit and unzip it. Inside you’ll find <code>claims-workbook.xlsx</code>, a fictional export of 3,100 policies and about 330 claims from Q1–Q3, and a <code>skills</code> folder.',
-      'Upload <code>claims-workbook.xlsx</code> to your OneDrive.',
+      'Download the kit and unzip it. Nothing needs uploading yet.',
+      'Open Microsoft 365 Copilot in the browser (<b>m365.cloud.microsoft</b>) and keep Outlook for the web open in a second tab.',
+      'Your mailbox doesn’t have workshop content, so the kit has a demo meeting transcript and sample emails. Imagine they are yours.',
     ],
-    pack: {
-      intro: 'Four skills, about three minutes. Your prompt says what you need. The skills hold how ERGO does it: never touch the original data, live formulas, real PivotTables, one-screen dashboards in ERGO colours. They work on any workbook, not just this one.',
-      files: [['ergo-data-cleaning', 'downloads/ergo-data-cleaning.zip'], ['ergo-calculations', 'downloads/ergo-calculations.zip'], ['ergo-pivot-analysis', 'downloads/ergo-pivot-analysis.zip'], ['ergo-exec-dashboard', 'downloads/ergo-exec-dashboard.zip']],
-      fileNote: 'Unzip them. Excel reads skills from folders, each containing a <code>SKILL.md</code>. They’re also already in the kit’s <code>skills</code> folder.',
-      steps: [
-        { text: 'Open <code>claims-workbook.xlsx</code> in Excel for the web and select <b>Copilot</b>. In the Copilot pane select <b>…</b> → <b>Manage plugins &amp; skills</b> → <b>Custom skills</b> → <b>Add</b> → <b>Add in OneDrive</b>. If you see <b>Create skills folder</b>, select it first.', gif: 'assets/media/xls-skill-add.gif' },
-        { text: 'Your OneDrive <b>skills</b> folder opens. Select <b>Create or upload</b> → <b>Folder upload</b> and upload the four skill folders, one by one. Folders, not ZIPs.', gif: 'assets/media/xls-skill-folder.gif' },
-        { text: 'Back in Excel, select <b>Refresh</b> in <b>Custom skills</b> and check that all four are listed and switched on. Make sure <b>Allow editing</b> is on so Copilot can build sheets.' },
-      ],
-      gifNote: 'Recorded in rehearsal with an earlier workshop skill. The clicks are the same.',
+    levels: {
+      basic: 'Aim for step 1 and an agent from step 2 with starter prompts.',
+      advanced: 'Run step 1 quickly, build the full agent in step 2 including My Voice, then go for steps 3–5.',
     },
+    trouble: [
+      ['I can’t find Agent Builder', 'In Microsoft 365 Copilot, look for <b>Agents</b> → <b>New agent</b> (or <b>Create agent</b>) in the left pane. If it isn’t there, it may not be enabled in your tenant yet: ask your trainer and pair up.'],
+      ['Copilot doesn’t find any emails', 'Your mailbox may be new or empty. Use <code>sample-emails.md</code>: paste it in and ask the same question.'],
+      ['My agent can’t send or draft emails', 'That’s expected: agents built in Agent Builder can read but not write. See step 3 for the trick.'],
+    ],
     steps: [
       {
-        title: 'Clean before you count', goal: 'Data cleaning: never analyse data you haven’t checked.', time: 6,
-        open: 'claims-workbook.xlsx',
-        prompt: 'You are my claims data analyst. Before we analyse anything, check the Claims and Policies sheets: duplicate claims and policies, missing amounts, invalid or impossible dates, amounts stored as text, inconsistent region, line-of-business and status names (use the Lookups sheet), and claims without a matching policy. Clean the data into new sheets and create a Data_Quality sheet with the issue counts, the affected IDs and a short verdict on whether the data is ready for analysis.',
-        skills: ['ergo-data-cleaning'],
-        adds: ['Claims and Policies stay untouched; the clean data goes into new tables', 'German formats such as “1.234,50” are converted, gaps are never guessed', 'Every changed row is flagged in a Data_Flags column with an amber fill', 'Unusable rows are excluded with Include_in_Analysis, not deleted', 'Each count is a live formula, with a log of every transformation and why'],
-        wow: 'A Data_Quality sheet with 42 issues across twelve checks, the affected claim and policy IDs, a “Ready with caveats” verdict and a log of every change. Claims_Clean and Policies_Clean sit next to the originals.',
-        media: { type: 'image', image: 'assets/media/xls-step1.jpg', caption: 'Data_Quality: verdict, live issue counts, IDs, treatment and the transformation log.' },
-        yours: { text: 'Add your own rule to the skill. Open <code>ergo-data-cleaning/SKILL.md</code> in your OneDrive skills folder and add a line under the checks, for example “A claim reported more than 30 days after the loss date is a late report: flag it.” Save, select <b>Refresh</b> and ask again.', prompt: 'Run the data checks again and tell me what changed.' },
-        check: ['Twelve checks and 42 issues in total', 'Verdict: Ready with caveats, 323 of 326 claims usable', 'Claims and Policies unchanged; Claims_Clean and Policies_Clean added'],
-        fallback: { file: 'downloads/fallback/xls-step1.xlsx', images: ['assets/media/xls-step1.jpg'] },
+        title: 'Prompts first', goal: 'Copilot Chat as your Chief of Staff, with no setup.', time: 10,
+        start: [['downloads/demo-meeting-transcript.txt', 'demo-meeting-transcript.txt'], ['downloads/sample-emails.md', 'sample-emails.md']],
+        open: 'Microsoft 365 Copilot Chat',
+        variants: [
+          ['Your day', 'Prioritise my day.'],
+          ['Your week', 'Prioritise my week.'],
+          ['Your inbox', 'Which emails from last week still need a reply? Draft replies for the three most important.'],
+          ['A meeting', 'Summarise this meeting: decisions, action items with owners and dates, and open questions.'],
+        ],
+        how: 'For the meeting, attach <code>demo-meeting-transcript.txt</code> with <b>+</b>, or paste its text after the prompt. Open a draft reply in Outlook and edit it before sending, or don’t send it at all.',
+        alt: { label: 'If your mailbox is empty', text: 'Paste the content of <code>sample-emails.md</code> after this prompt:', prompt: 'Here are emails from last week. Which still need a reply? Draft replies for the three most important:' },
+        wow: 'In a few minutes: a prioritised day, the replies you owe, and a meeting reduced to decisions and actions. You’ll want this every morning. That’s where the agent comes in.',
+        check: ['A prioritised list for your day or week', 'At least one draft reply you edited', 'A meeting summary with owners and dates'],
       },
       {
-        title: 'The numbers and the what-ifs', goal: 'Calculations: KPIs and scenarios a reviewer can trace cell by cell.', time: 7,
-        open: 'the same workbook',
-        prompt: 'Now calculate the claims KPIs for the board from the cleaned data. For each line of business and in total: policies, earned premium, number of claims, claim frequency per 1,000 policies, average claim, incurred (paid plus reserve), loss ratio against the target on the Assumptions sheet, and combined ratio. Then apply the Base, Adverse and Severe scenarios from Assumptions (reserve inflation, IBNR load and the extra storm load for Property) and give me a scenario-weighted loss ratio. Put it on a new sheet called KPI_Model and explain the method on a sheet called Assumptions_Documentation.',
-        skills: ['ergo-calculations'],
-        adds: ['Every result is a live formula; no typed numbers', 'All inputs stay on Assumptions, in grey, and nothing is hard-coded', 'Total ratios are recalculated from totals, never averaged', 'Check cells show OK when the parts add up and the weights make 100%', 'EUR without decimals, ratios to one decimal, scenarios called sensitivities'],
-        wow: 'KPI_Model with every number as a live formula: a loss ratio of 73.5% against a 65.4% target, Property far above the rest, and a scenario-weighted loss ratio of 80.9%. The check cells show OK.',
-        media: { type: 'image', image: 'assets/media/xls-step2.jpg', caption: 'KPI_Model: summary on top, one row per line of business, scenarios side by side.' },
-        yours: { text: 'Move a weight and watch the model follow. On <b>Assumptions</b>, change Severe from 15% to 25% and Base from 50% to 40%. The weighted loss ratio goes to about 83.0%, because every number is a formula.', prompt: null },
-        check: ['Loss ratio 73.5% against a target of 65.4%; combined ratio 99.3%', 'Property 96.5% against 62%; Motor 63.4% against 68%', 'Weighted loss ratio 80.9% (Base 74.9%, Adverse 82.8%, Severe 96.1%)'],
-        fallback: { file: 'downloads/fallback/xls-step2.xlsx', images: ['assets/media/xls-step2.jpg'] },
+        title: 'Build your Chief-of-Staff agent', goal: 'You do this every day. Build an agent that does it your way.', time: 15, test: true,
+        start: [['downloads/my-priorities.md', 'my-priorities.md'], ['downloads/sample-voice-texts.md', 'sample-voice-texts.md']],
+        open: 'Microsoft 365 Copilot → Agents → New agent',
+        how: 'Describe the agent in the chat on the left. Don’t paste long instructions: describe it like you would to a new assistant, then make small tweaks in <b>Configure</b>.',
+        prompt: 'Create an agent called “My Chief of Staff”. It helps me, a Head of Customer Service, organise my day and week, decide which emails need a reply, and draft replies in my voice. Everything from my team is priority 1. Requests from the board office are answered the same day. For meetings without an agenda, suggest I ask for one.',
+        build: [
+          ['Personalise it', 'Add your role, your three priorities and your own rules, for example “everything from my team is priority 1”.'],
+          ['Add My Voice', 'Paste three of your own emails or messages, or the samples from <code>sample-voice-texts.md</code>, and ask: <q>Describe my tone of voice in the instructions so drafts sound like me.</q> Or upload them as knowledge.'],
+          ['Add knowledge', 'Upload <code>my-priorities.md</code> under <b>Knowledge</b>, and switch on file upload so you can give it documents later.'],
+          ['Starter prompts', '“Organise my day” · “Organise my week” · “What do I need to do today?” · “Draft a reply in my voice”.'],
+          ['An icon', 'In <b>Configure</b>, change the icon. Ask Copilot to create one, or upload your own.'],
+        ],
+        more: { label: 'Test it', prompt: 'Draft a reply in my voice to the most urgent email from my team.' },
+        wow: 'An agent that knows your role, your rules and how you write. Next Monday, “Organise my week” is one click.',
+        check: ['The agent appears under Agents', 'Its instructions mention your priorities and your tone', 'A test draft that sounds like you'],
+        skills: ['chief-of-staff', 'my-voice'],
       },
       {
-        title: 'Follow the tracks', goal: 'PivotTables: find out what is driving the number.', time: 6,
-        open: 'the same workbook',
-        prompt: 'Why is the loss ratio above target? Build PivotTables from the cleaned claims on a new sheet called Pivot_Analysis: incurred by region and line of business, by line and cause of loss, and by loss month. Then tell me the three biggest drivers, and which of them are one-off events and which are trends.',
-        skills: ['ergo-pivot-analysis'],
-        adds: ['Real PivotTables you can re-slice, not pasted copies', 'Built on the clean table, with excluded claims filtered out', 'Largest first, months in order, % of total where it helps', 'A one-sentence headline and three drivers, one-offs separated from trends', 'What the pivots can’t tell you, and small samples marked'],
-        wow: 'Three PivotTables and a headline: Property is above target because of one storm. 36 claims in Bayern and Baden-Württemberg in August add EUR 166,560, 45% of Property incurred.',
-        media: { type: 'image', image: 'assets/media/xls-step3.jpg', caption: 'Pivot_Analysis: headline and drivers on top, three PivotTables below.' },
-        yours: { text: 'Select a PivotTable and add a slicer for <b>Region</b>, or ask a follow-up:', prompt: 'Show the same view for Motor only. Is anything unusual there?' },
-        check: ['August incurred is EUR 279,920, 2.6× any other month', 'Top cause: Motor · Collision, 80 claims and EUR 262,580', 'Without the storm, Property’s loss ratio would be about 54%'],
-        fallback: { file: 'downloads/fallback/xls-step3.xlsx', images: ['assets/media/xls-step3.jpg'] },
+        title: 'The agent reads, Copilot writes', goal: 'Use the agent in context, then let Copilot Chat do the writing.', time: 6,
+        how: 'Agents built in Agent Builder can read but not write. So ask the agent first, then remove it from the chat and let Copilot draft or send. Very few people know this.',
+        variants: [
+          ['1 · Ask the agent', '@My Chief of Staff Which emails do I need to write today?'],
+          ['2 · Remove the agent, then ask Copilot', 'Draft those replies, short and in my voice, so I can review them in Outlook.'],
+        ],
+        note: 'To remove the agent, select the <b>×</b> on its name above the prompt box, or start a new chat without it.',
+        wow: 'Your agent’s judgement plus Copilot’s ability to write: the list of replies, then the drafts, in one conversation.',
+        check: ['The agent answered with a list', 'Copilot drafted the replies without the agent selected', 'At least one draft opened in Outlook'],
       },
       {
-        title: 'The view from the top', goal: 'Dashboard: the board gets the message in ten seconds.', time: 6,
-        open: 'the same workbook',
-        prompt: 'Build a one-screen claims dashboard for the board on a new sheet called Dashboard. KPI tiles for loss ratio, combined ratio, number of claims and incurred, each compared with its target or total. Then charts for the loss ratio against target by line of business, the monthly trend, the top causes of loss and the scenario view. Link everything to the model so it updates when the data changes.',
-        skills: ['ergo-exec-dashboard'],
-        adds: ['One screen: title with the period, a one-line message, the illustrative label', 'Every chart headline is a sentence that says the message', 'ERGO red for the focus, greys for targets, no pies, no 3D, no gridlines', 'Values labelled directly, amounts in EUR thousands', 'A source line naming the workbook and sheets'],
-        wow: 'A dashboard with four tiles and five charts, each headline telling you what to see. Property is the only bar above its target and August stands out in the trend.',
-        media: { type: 'image', image: 'assets/media/xls-step4.jpg', caption: 'Dashboard: tiles across the top, charts with sentence headlines below.' },
-        yours: { text: 'Ask for a version for a different audience.', prompt: 'Make a second dashboard for the Property team only.' },
-        check: ['Loss ratio tile 73.5%, ▲ 8.1 pts against the 65.4% target', 'Property is the only line above its target', 'The August spike is visible in the monthly trend'],
-        fallback: { file: 'downloads/fallback/xls-step4.xlsx', images: ['assets/media/xls-step4.jpg'] },
+        title: 'Your agent in Outlook', goal: 'Bring the agent to where the emails are.', time: 5,
+        open: 'Outlook for the web',
+        how: 'Open the Copilot pane in Outlook and pick your agent, or type <b>@</b> and its name.',
+        prompt: '@My Chief of Staff What do I need to do today?',
+        wow: 'The same agent, right next to your inbox.',
+        check: ['Your agent answers inside Outlook', 'It uses your priorities and rules'],
       },
       {
-        title: 'Send it as a web page', goal: 'A branded HTML file from one prompt, no skill needed.', time: 5,
-        open: 'the same workbook',
-        how: 'When the code appears, copy it, paste it into Notepad and save it as <code>claims-dashboard.html</code> (in “Save as type” choose <b>All files</b>). Double-click the file to open it in your browser.',
-        prompt: 'Turn this dashboard into one self-contained HTML page I can send to the board. Use ERGO’s style: red #BF1629 for the focus, charcoal #242424 text on white, Segoe UI or Arial, and the word “ERGO” as a text logo in the header. Show the four KPI tiles and four charts as inline SVG, and add dropdown filters for line of business and region that update the tiles and charts. Put “Illustrative figures for training purposes, not ERGO results” in the footer. No external files, fonts or links. Show the complete HTML file in one code block.',
-        skills: [],
-        wow: 'A branded web page with working filters, built from your workbook in one prompt. Filter to Property and the loss ratio jumps to 96.5%.',
-        media: { type: 'image', image: 'assets/media/xls-step5.jpg', caption: 'Example page, saved as claims-dashboard.html and opened in the browser.' },
-        yours: { text: 'Ask for the same page in German, or for your own team.', prompt: 'Make a German version of this page for the supervisory board.' },
-        check: ['It opens in the browser with no internet connection', 'Filtering to Property shows a 96.5% loss ratio', 'The illustrative label is in the footer'],
-        fallback: { file: 'downloads/fallback/claims-dashboard.html', images: ['assets/media/xls-step5.jpg'] },
+        title: 'Weekly briefing as a Page', goal: 'A briefing you can tick off.', time: 6, test: true,
+        prompt: 'Create my weekly briefing: top priorities, meetings that matter, replies I owe, and a to-do list I can tick off.',
+        how: 'Then select <b>Edit in Pages</b> (or ask Copilot to put it in a Copilot Page) and turn the to-dos into a checklist.',
+        note: 'Without Cowork, Copilot can only recommend calendar clean-up, such as cancelling a meeting. It can’t do it for you. Researcher is optional and slower.',
+        wow: 'A living page: your week, in one place, with boxes to tick.',
+        check: ['A Copilot Page with your briefing', 'A to-do list you can tick off'],
       },
     ],
     sideQuests: [
-      { id: 'xls-scenario', title: 'Your own scenario', time: 4, prompt: 'Add a fourth scenario, “Hail season”: weight 10%, reserve inflation 10%, IBNR load 8%, extra Property load 15%. Take the 10% from Base so the weights still add to 100%.', what: 'Design a stress nobody asked for yet, and see the model take it.' },
-      { id: 'xls-bridge', title: 'Bridge to PowerPoint', time: 5, prompt: 'Make this slide board-ready.', what: 'Copy the loss ratio chart onto a slide and watch the ERGO Brand skill style it. Needs the PowerPoint skills.' },
-      { id: 'xls-plain', title: 'No jargon', time: 3, prompt: 'Explain loss ratio, combined ratio, reserves and IBNR to someone outside insurance finance, in five sentences, using this workbook as the example.', what: 'The same story for an audience outside finance.' },
-      { id: 'my-voice', title: 'My Voice', time: 8, voice: true, what: 'Teach Copilot how you write, then use it for your note to the board.' },
+      { id: 'cos-researcher', title: 'Researcher (optional, slow)', time: 8, prompt: 'Research what changed in customer service expectations in German insurance this year and give me three implications for my team.', what: 'A deeper, slower answer with sources. Start it, then do something else.' },
+      { id: 'cos-to-xls', type: 'link', title: 'Finished early?', time: 0, what: 'Try the Excel trail and clean a messy KPI register.', href: 'trail.html?t=xls', cta: 'Excel trail →' },
     ],
-  },
-  m365: {
-    app: 'Microsoft Copilot', name: 'The Orchestrator', persona: 'Orchestrator', comingSoon: true,
-    mission: 'Coming soon. Ask your facilitator which trail to join today.',
   },
 };
 
-ADV.voiceQuest = {
-  steps: [
-    'Copy two or three short pieces of your own non-confidential writing, or use the sample texts.',
-    'Paste them into Copilot with the prompt below.',
-    'Read the rules Copilot proposes. Change anything that does not sound like you.',
-    'Save the result as <code>SKILL.md</code> in a folder named <code>my-voice</code> and upload it like the other skills.',
-    'Test it on something you made today.',
-  ],
-  prompt: 'Read these texts and fill in the my-voice skill template: describe my voice as short, testable rules.',
-  test: 'Rewrite the speaker notes on slide 1 in my voice.',
-  files: [['downloads/my-voice-SKILL.md', 'my-voice template'], ['downloads/sample-voice-texts.md', 'sample texts']],
+// Bonus track for anyone who finishes early, on every trail.
+ADV.bonus = {
+  title: 'Bonus: Copilot Notebooks',
+  text: 'Pick a project or a customer of your choice. Create a notebook, add the files, notes and pages that matter, then try the audio overview. No prompts this time: it’s yours to explore.',
 };
+
+ADV.shareOut = {
+  intro: 'Two people from your group present for two minutes, on the room monitor or in the main room. Prepare it together.',
+  parts: [
+    ['What we tried', 'One sentence about your trail and how far you got.'],
+    ['The moment it clicked', 'Show it on screen: the slide, the dashboard or the agent.'],
+    ['Where it struggled', 'Honest is useful. What didn’t work, or took longer than expected?'],
+    ['Monday morning', 'One thing each of you will use next week.'],
+    ['The skill or agent our team would build', 'Finish the sentence: “Our team’s skill would…”'],
+  ],
+  prompt: 'Help me prepare a two-minute share-out of what our group did today. We tried [trail], the moment it clicked was [moment], it struggled with [problem], and on Monday we will [plan]. Keep it to five short bullet points.',
+  stayLive: 'This site stays live for a few more days, so try the other trails too.',
+};
+
+// Facilitator view only (presenter mode): still to be confirmed.
+ADV.openPoints = [
+  'Is Agent Builder enabled in ERGO’s tenants? There are several.',
+  'Rebecca tests the prompts in an ERGO environment.',
+  'Test with a user without usage-based billing and not on Frontier: the experience differs.',
+  'Is Interactive Slides available in ERGO’s PowerPoint for the web?',
+  'Do web data and work data (emails) work in Excel in ERGO’s tenant? (Trail 1, step 3)',
+];
 
 ADV.library = [
   { mood: '🎯 Sharpen', items: [
@@ -239,23 +486,18 @@ ADV.library = [
   ] },
   { mood: '🔄 Reshape', items: [
     ['Turn this into a one-page memo for the board.', 'A memo with a subject line, the message first and the ask last.'],
-    ['Make this a table: unit, actual, plan, gap.', 'A four-column table, ready to paste.'],
-    ['Turn the decision slide into an email to the Chair.', 'A short email draft. You send it, not Copilot.'],
+    ['Make this a table: unit, actual, target, gap.', 'A four-column table, ready to paste.'],
+    ['Turn this into an email to my team.', 'A short email draft. You send it, not Copilot.'],
   ] },
   { mood: '🌍 Translate', items: [
-    ['Make a German version for the supervisory board.', 'The same slides in German, figures unchanged.'],
+    ['Make a German version for the supervisory board.', 'The same content in German, figures unchanged.'],
     ['Explain this to a new team member in five sentences.', 'Plain language, no abbreviations.'],
     ['What would our customers care about in this?', 'Two or three points from a customer’s point of view.'],
   ] },
-  { mood: '📊 Go deeper', items: [
-    ['Which month changed the quarter?', 'August, and why.'],
-    ['What’s the biggest risk hiding in these numbers?', 'One risk, the evidence for it, and what to watch.'],
-    ['What would change your recommendation?', 'The two or three facts that would flip the decision.'],
-  ] },
   { mood: '🧠 Learn', items: [
-    ['Which custom skill did you use, and what did it change?', 'The skill name and the rules it followed.'],
+    ['Which skill did you use, and what did it change?', 'The skill name and the rules it followed.'],
     ['What would you add to this skill to make it better?', 'Two or three concrete rule suggestions.'],
-    ['Write a skill for a task I repeat every week: [describe it].', 'A draft SKILL.md with a name, description and rules.'],
+    ['Write a skill for a task I repeat every week: [describe it].', 'A draft SKILL.md with a name, description and steps.'],
   ] },
 ];
 
@@ -277,53 +519,26 @@ ADV.anatomy = {
   ],
 };
 
-// ---------- Summit expedition layer (animations) ----------
-// Each skill is a piece of gear in the backpack.
+// ---------- Summit expedition layer (kept light) ----------
+// Each skill or agent is a piece of gear in the backpack.
 ADV.gear = {
-  'ergo-brand': ['🧭', 'Compass'], 'ergo-board-pack': ['🗺️', 'Map'], 'ergo-board-sparring': ['🪢', 'Rope team'],
-  'ergo-data-cleaning': ['🔦', 'Headlamp'], 'ergo-calculations': ['⌚', 'Altimeter'], 'ergo-pivot-analysis': ['🔭', 'Binoculars'], 'ergo-exec-dashboard': ['📸', 'Summit camera'],
-  'my-voice': ['🚩', 'Your own flag'],
+  'ergo-register-cleaner': ['🔦', 'Headlamp'],
+  'ergo-brand': ['🧭', 'Compass'], 'ergo-board-sparring': ['🪢', 'Rope team'], 'interactive-slides-workaround': ['🗺️', 'Map'],
+  'chief-of-staff': ['📟', 'Radio'], 'my-voice': ['🚩', 'Your own flag'],
 };
+ADV.altitude = { base: 1200, perStep: 300, flag: 50 };
+ADV.think = {};
+ADV.radio = {};
 
-// Altitudes: base camp, then one camp per core step; the optional step plants a flag on the summit.
-ADV.altitude = { base: 1200, perStep: 450, flag: 50 };
-
-// "Watch Copilot think": what the Copilot pane typically shows for each step (an illustration, not a recording).
-ADV.think = {
-  'ppt-1': ['Read the three slides and their figures', 'Apply ERGO Brand: headlines, colours, bullets', 'Rewrite topic titles as “so what” headlines', 'Replace the 3D chart with a flat, labelled chart', 'Check: every number unchanged'],
-  'ppt-2': ['Read the CFO’s notes (3 pages)', 'Find the one message for the board', 'Build five slides in the ERGO structure', 'Separate one-off from structural causes', 'Write speaker notes with the source line'],
-  'ppt-3': ['Read all five slides and notes', 'Condense the deck into one sentence', 'Rewrite the last slide as “Decision needed:”', 'Put the ask, amount and recommendation up front'],
-  'ppt-4': ['Read the deck and speaker notes', 'Seat the panel: Chair, CFO, supervisor, works council', 'Find each person’s hardest fair question', 'Draft answers that point to a slide', 'Pick the question to practise first'],
-  'ppt-5': ['Collect the five slide messages', 'Pick the three numbers to remember', 'Add a cue card slide', 'Write about 150 words to say out loud'],
-  'xls-1': ['Read Claims, Policies, Assumptions and Lookups', 'Find duplicates, blanks and impossible dates', 'Convert “1.234,50” amounts stored as text', 'Map region, line and status names to Lookups', 'Match claims to policies', 'Write Data_Quality with live counts and a verdict'],
-  'xls-2': ['Use only rows marked Include_in_Analysis', 'Count claims and sum incurred per line with SUMIFS', 'Pull targets and expense ratios from Assumptions', 'Apply the three scenarios and their weights', 'Add check cells and Assumptions_Documentation'],
-  'xls-3': ['Build PivotTables on Claims_Clean', 'Region × line, line × cause, loss month', 'Sort largest first, add % of total', 'Spot the August spike in Property', 'Write the headline and three drivers'],
-  'xls-4': ['Pick four KPI tiles and their comparisons', 'Choose charts that tell the story', 'Write a sentence headline for each chart', 'Apply ERGO red and greys', 'Link everything to KPI_Model'],
-  'xls-5': ['Read the dashboard figures and the clean data', 'Embed the data in the page', 'Draw tiles and SVG charts in ERGO style', 'Wire up the line and region filters', 'Return one HTML code block'],
-};
-
-// Radio messages from Copilot, triggered once after a step is done. Never a trap: an invitation.
-ADV.radio = {
-  ppt: [
-    { id: 'ppt-r1', after: 2, title: 'Weather change', text: 'The Chair just called: two supervisory board members would prefer the pack in German.', prompt: 'Make a German version of this board pack for the supervisory board.', quest: 'ppt-german' },
-    { id: 'ppt-r2', after: 4, title: 'Visitor at base camp', text: 'A journalist has asked about the claims automation plan. Want to add them to your rehearsal?', prompt: 'Add a journalist and an activist investor to the rehearsal.', quest: 'ppt-persona' },
-  ],
-  xls: [
-    { id: 'xls-r1', after: 2, title: 'Message from the reserving team', text: 'Hail season is coming and the team wants a fourth scenario in the model before Thursday.', prompt: 'Add a fourth scenario, “Hail season”: weight 10%, reserve inflation 10%, IBNR load 8%, extra Property load 15%. Take the 10% from Base so the weights still add to 100%.', quest: 'xls-scenario' },
-    { id: 'xls-r2', after: 4, title: 'Message from the summit', text: 'The CEO loves the dashboard. Can the loss ratio chart go straight onto a board slide?', prompt: 'Make this slide board-ready.', quest: 'xls-bridge' },
-  ],
-};
-
-// The companion's lines. Short, friendly, never more than one sentence or two.
 ADV.buddyLines = {
   anatomy: 'Hi, I’m your Copilot for this climb. Scroll down to see what a skill is made of.',
-  base: 'I’ll climb with you. First stop: get the kit and add the skills.',
+  base: 'I’ll climb with you. First stop: open the web app.',
   step: 'Copy the prompt and paste it into my pane in {app}. I’ll wait here.',
   copied: 'Got it. Paste it into Copilot in {app}. Come back when you see the result.',
   done: 'Camp reached. +{m} m.',
-  summit: 'Summit! {alt} m. Want to try a scenic detour, or head to the finale?',
-  quests: 'Scenic detours. Pick any, they’re short.',
-  library: 'Pick a mood, copy a prompt, try it on anything you made today.',
+  summit: 'Summit! {alt} m. Time to prepare your share-out.',
+  quests: 'Scenic detours. Pick any.',
+  library: 'Every prompt from every trail, step by step.',
   finale: 'Look how far you climbed. Let’s make your summit certificate.',
   playground: 'That’s all a skill is: rules you can change.',
 };

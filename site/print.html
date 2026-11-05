@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Print view · Make Copilot yours</title>
+<link rel="icon" href="assets/img/favicon.png">
+<link rel="stylesheet" href="assets/app.css">
+<link rel="stylesheet" href="assets/fx.css">
+<style>
+  .pv { max-width: 860px; margin: 0 auto; padding: 30px 24px 60px; }
+  .pv h1 { font-size: 40px; margin: 6px 0 8px; }
+  .pv h2 { font-size: 24px; margin: 28px 0 6px; padding-top: 18px; border-top: 1px solid var(--line); }
+  .pv h3 { font-size: 16px; margin: 14px 0 4px; }
+  .pv .p { border-left: 3px solid var(--red); background: #fff; padding: 8px 12px; margin: 6px 0; border-radius: 0 8px 8px 0; font-size: 15px; }
+  .pv .p small { display: block; color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .06em; }
+  .pv .meta { color: var(--muted); font-size: 14px; }
+  .pv ul, .pv ol { margin: 4px 0; padding-left: 20px; }
+  .pv-bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 10px; }
+  @media print {
+    .topbar, footer.site, .pv-bar, .skip, .drawer, .scrim { display: none !important; }
+    body { background: #fff; }
+    .pv { padding: 0; max-width: none; }
+    .pv h2 { break-after: avoid; }
+    .pv .step { break-inside: avoid; }
+    a { color: inherit; text-decoration: none; }
+  }
+</style>
+</head>
+<body>
+<main id="main"><div class="pv" id="pv"></div></main>
+<script src="assets/content.js"></script>
+<script src="assets/skills-data.js"></script>
+<script src="assets/facts-data.js"></script>
+<script src="assets/vendor/gsap.min.js"></script>
+<script src="assets/app.js"></script>
+<script src="assets/fx.js"></script>
+<script>
+(function () {
+  ADV.shell({ active: 'trail' });
+  const esc = ADV.esc;
+  const key = ADV.trails[ADV.param('t')] ? ADV.param('t') : (ADV.state.trail || 'xls');
+  const T = ADV.trails[key];
+  document.title = `${T.name} · print view`;
+  const P = (p, label) => `<div class="p">${label ? `<small>${esc(label)}</small>` : ''}${esc(p)}</div>`;
+  const files = (list) => (list || []).map(([, l]) => `<code>${esc(l)}</code>`).join(', ');
+  const steps = T.steps.map((st, i) => `<section class="step"><h2>Step ${i + 1} · ${esc(st.title)}</h2>
+      <p class="meta">${esc(st.goal)} · ${st.time} min${st.level === 'advanced' ? ' · Advanced' : ''}${st.test ? ' · to be tested in ERGO’s tenant' : ''}</p>
+      ${st.start ? `<p><b>Start file:</b> ${files(st.start)}</p>` : ''}${st.open ? `<p><b>Open:</b> ${esc(st.open)}</p>` : ''}
+      ${st.intro ? `<p>${st.intro}</p>` : ''}${st.how ? `<div>${st.how}</div>` : ''}
+      ${st.upload ? `<p><b>Add the skill</b> <code>${st.upload.skill}</code>: ${ADV.upload[st.upload.app].steps.map((x) => x.text).join(' ')}</p>` : ''}
+      ${st.prompt ? P(st.prompt) : ''}${st.prompt2 ? P(st.prompt2, 'Then') : ''}${(st.variants || []).map(([l, p]) => P(p, l)).join('')}${st.more ? P(st.more.prompt, st.more.label) : ''}
+      ${st.ideas ? `<p><b>Ideas:</b> ${st.ideas.map(esc).join(' · ')}</p>` : ''}
+      ${st.alt ? `<p><b>Plan B (${esc(st.alt.label)}):</b> ${st.alt.text}</p>${st.alt.prompt ? P(st.alt.prompt, 'Plan B') : ''}` : ''}
+      ${st.waiting ? `<p><b>While you wait:</b> ${st.waiting.text}</p>` : ''}${st.note ? `<p class="meta">${st.note}</p>` : ''}
+      ${st.build ? `<ul>${st.build.map(([h, t]) => `<li><b>${h}:</b> ${t}</li>`).join('')}</ul>` : ''}
+      ${st.yours && st.yours.prompt ? P(st.yours.prompt, 'Make it yours') : ''}
+      <h3>Done when</h3><ul>${st.check.map((c) => `<li>${esc(c)}</li>`).join('')}</ul></section>`).join('');
+  const byo = T.byo ? `<section class="step"><h2>Side quest · Bring your own skill</h2><p>${T.byo.why}</p>
+      <ul>${T.byo.parts.map(([h, t]) => `<li><b>${h}:</b> ${t}</li>`).join('')}</ul><ol>${T.byo.steps.map((x) => `<li>${x}</li>`).join('')}</ol>
+      ${P(T.byo.prompt)}${P(T.byo.builder, 'No time to edit a file')}<p>${T.byo.success}</p></section>` : '';
+  const quests = T.sideQuests.filter((q) => q.prompt).map((q) => `<h3>${esc(q.title)}</h3><p class="meta">${q.what}</p>${P(q.prompt)}`).join('');
+  document.getElementById('pv').innerHTML = `<div class="pv-bar"><button class="btn red small" type="button" onclick="window.print()">Print / save as PDF</button>
+      ${Object.keys(ADV.trails).map((k) => `<a class="btn small ghost" href="print.html?t=${k}">${ADV.trails[k].app}</a>`).join('')}<a class="btn small ghost" href="trail.html?t=${key}">Back to the trail</a></div>
+    <p class="eyebrow">${ADV.event.name} · Trail ${T.group} · ${T.app} · ${esc(T.useCase)}</p>
+    <h1>${T.name}</h1><p>${T.mission}</p>
+    <h2>Before you start</h2><ul>${ADV.basics.map(([, h, t]) => `<li><b>${h}:</b> ${t}</li>`).join('')}</ul>
+    <p><b>Files:</b> ${T.kit.contents.map((c) => `<code>${c}</code>`).join(', ')} (kit on the workshop site).</p>
+    <ul>${Object.entries(T.levels).map(([k, v]) => `<li><b>${ADV.levels[k]}:</b> ${v}</li>`).join('')}</ul>
+    ${steps}${byo}${quests ? `<section class="step"><h2>Side quests</h2>${quests}</section>` : ''}
+    <section class="step"><h2>Bonus · Copilot Notebooks</h2><p>${ADV.bonus.text}</p></section>
+    <section class="step"><h2>Your 2-minute share-out</h2><p>${ADV.shareOut.intro}</p><ol>${ADV.shareOut.parts.map(([h, t]) => `<li><b>${h}:</b> ${t}</li>`).join('')}</ol></section>
+    <section class="step"><h2>Troubleshooting</h2><ul>${ADV.trouble.concat(T.trouble || []).map(([q, a]) => `<li><b>${q}:</b> ${a}</li>`).join('')}</ul></section>
+    <p class="meta" style="margin-top:24px">${ADV.label}. ${ADV.shareOut.stayLive}</p>`;
+})();
+</script>
+</body>
+</html>

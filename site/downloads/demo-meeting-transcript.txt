@@ -1,0 +1,129 @@
+Illustrative figures for training purposes, not ERGO results
+Imagine this was your meeting.
+
+Customer Service leadership weekly
+ERGO Customer Service, Region West (fictional unit)
+Tuesday 3 November 2026, 09:00 to 09:31, Microsoft Teams
+Attendees: Miriam Kessler (Head of Customer Service), Leonie Schäfer (Team lead, phone service), Daniel Ott (Team lead, complaints), Murat Yilmaz (Workforce planning), Hanna Brecht (Quality and training), Felix Neumann (Digital channels)
+
+00:00:41 Miriam Kessler: Morning, everyone. Let's get going, Felix said he's a minute late. Three things today: phone waiting times, the complaints backlog and the callback pilot. I'd like to finish by half past.
+
+00:01:05 Felix Neumann: I'm here, sorry. The call before ran over.
+
+00:01:09 Miriam Kessler: No problem. Leonie, you start with the phones?
+
+00:01:14 Leonie Schäfer: Yes. So, last week was still heavy. The storm claims are mostly through now, but Monday and Tuesday we were at about three and a half minutes average waiting time, and then around two minutes for the rest of the week. Abandoned calls were eleven percent on Monday, which is just too high.
+
+00:01:48 Miriam Kessler: And the Saturday?
+
+00:01:51 Leonie Schäfer: Saturday was fine, because we had the extra people in. And that's really the point. Whenever we staff the Saturday, the Monday is easier, because we clear all the callbacks before the week starts.
+
+00:02:16 Murat Yilmaz: I can confirm that from the planning side. On the two Saturdays where we had eight people in, the Monday morning queue was about half.
+
+00:02:29 Miriam Kessler: Okay. So what are you proposing?
+
+00:02:32 Leonie Schäfer: Keep the Saturday shift for another four weeks, so until the end of November. Eight people, nine to one.
+
+00:02:44 Murat Yilmaz: Honestly, I think six is enough. Eight was for the storm peak. If I put eight on Saturday for four more weeks, I'm short on Thursday afternoons, and Thursday is our second worst day.
+
+00:02:58 Leonie Schäfer: Six won't do it if Monday is still at three minutes. I'd rather be a bit short on Thursday than have Monday blow up again.
+
+00:03:12 Murat Yilmaz: But Thursday isn't nothing either. We had nine percent abandoned last Thursday. I don't want to fix one day by breaking another.
+
+00:03:21 Leonie Schäfer: I know, but the customers calling on Monday are the ones who already waited all weekend.
+
+00:03:27 Miriam Kessler: Okay, I hear you both. Can we split it? Six fixed on Saturday, and two more on standby for the first two Saturdays, people who opt in.
+
+00:03:39 Leonie Schäfer: I can live with that if the standby people are actually confirmed. Not a "maybe".
+
+00:03:45 Murat Yilmaz: Fine by me. I'll build the rota with six fixed and two volunteers.
+
+00:03:50 Miriam Kessler: Good. So that's decided: we extend the Saturday shift for four weeks, six people fixed plus two volunteers on standby. Murat, when can we see the rota?
+
+00:04:01 Murat Yilmaz: Friday. End of day Friday.
+
+00:04:04 Miriam Kessler: And Leonie, this needs the works council, doesn't it?
+
+00:04:08 Leonie Schäfer: Yes, it's an extension of the current agreement. I'll call Petra from the works council before next Tuesday, so we have it before the next weekly.
+
+00:04:19 Miriam Kessler: Perfect. Anything else on phones? No? Then complaints. Daniel.
+
+00:04:25 Daniel Ott: Right. We have 412 open complaints at the moment. That's about forty more than two weeks ago. Most of them are fine, they're inside the normal handling time. The ones that worry me are the old ones: 58 are older than ten days.
+
+00:04:47 Miriam Kessler: Fifty-eight. Which topics?
+
+00:04:50 Daniel Ott: Mostly storm claims, people who feel the claim takes too long, and then a group from the letter mix-up in October, where customers got the wrong renewal letter.
+
+00:05:04 Hanna Brecht: The letter ones should be quick though, no? It's the same answer every time.
+
+00:05:08 Daniel Ott: They should be, but they sit in the general queue with everything else, so nobody picks them up first. That's my proposal, actually. Anything older than ten days goes straight to a team lead, not back into the general queue. Then someone owns it.
+
+00:05:25 Hanna Brecht: My only worry is that the team leads are already full. If we push fifty cases on top, what drops?
+
+00:05:33 Daniel Ott: It's not fifty each. It's spread over five team leads, so ten, twelve each, and many of them are the quick letter cases.
+
+00:05:42 Miriam Kessler: I think we should do it. Ten days is already long for a customer. Let's start next Monday and look at it again in four weeks. Okay with everyone?
+
+00:05:51 Leonie Schäfer: Yes.
+
+00:05:52 Hanna Brecht: Okay, yes. Let's just watch the team leads' load.
+
+00:05:56 Miriam Kessler: Agreed. So the second decision: from Monday the ninth, complaints older than ten days go directly to a team lead. Daniel, can you send me the list of the 58, by topic and by team?
+
+00:06:10 Daniel Ott: Yes, I'll send it tomorrow. Wednesday latest.
+
+00:06:14 Hanna Brecht: One more thing on complaints. The four new starters in Daniel's team haven't had the complaint handling module yet. They're taking calls, and some of these turn into complaints because they don't know the goodwill rules.
+
+00:06:30 Miriam Kessler: That's not great. Can we get them through it soon?
+
+00:06:34 Hanna Brecht: I can sort a training slot for them, probably before the end of the month. I need to find a day when Daniel can spare all four.
+
+00:06:43 Daniel Ott: Not a Monday, please.
+
+00:06:45 Hanna Brecht: Not a Monday. Got it.
+
+00:06:48 Miriam Kessler: Thanks, Hanna. Okay, last topic, the callback pilot. Felix.
+
+00:06:53 Felix Neumann: So, the pilot has been running in Leonie's team B for two weeks now. Customers who would wait more than three minutes get an offer to be called back instead. About 300 people took the offer, and we called back 85 percent of them within two hours. The rest within the same day.
+
+00:07:15 Leonie Schäfer: And the team likes it. It takes the pressure off at peak times.
+
+00:07:19 Felix Neumann: Complaints about waiting from team B also went down, but two weeks is short, I wouldn't read too much into it yet.
+
+00:07:26 Miriam Kessler: So the question is whether we roll it out to all teams in December.
+
+00:07:30 Felix Neumann: That's the big question, yes. The issue is IT. To roll it out we need more phone lines in the system, and there's the change freeze in December. I don't know if they can do it before the freeze or if it has to wait until January.
+
+00:07:46 Murat Yilmaz: Does it need the lines? I thought we could run it on the existing ones.
+
+00:07:50 Felix Neumann: Not for all teams. For one team yes, for six no.
+
+00:07:55 Miriam Kessler: Does anyone know when the freeze starts exactly?
+
+00:07:58 Leonie Schäfer: I heard the first week of December, but I'm not sure that's official.
+
+00:08:03 Miriam Kessler: Okay, then we can't answer that today. Let's park it as an open question. Felix, can you put the pilot numbers together properly, the two weeks, waiting time before and after, how many callbacks? Then we decide next week.
+
+00:08:17 Felix Neumann: Yes, I'll pull that together before we meet next week.
+
+00:08:21 Miriam Kessler: Thanks. Daniel, you wanted to say something?
+
+00:08:24 Daniel Ott: Just that I'm a bit sceptical about pushing everything to callbacks. Some customers want to talk now, especially in a claim. I don't want us to train people to wait.
+
+00:08:35 Felix Neumann: It's an offer, not a rule. Nobody is forced.
+
+00:08:38 Daniel Ott: Sure, I just want us to look at who takes it and who doesn't before we roll it out everywhere.
+
+00:08:44 Miriam Kessler: Fair point. Felix, can you include that in the numbers, if you have it?
+
+00:08:48 Felix Neumann: I can try. Not sure we track it by claim type, but I'll check.
+
+00:08:53 Miriam Kessler: Good. Okay, let me sum up so we're all on the same page. Saturday shift: extended four weeks, six fixed and two volunteers. Murat does the rota by Friday, Leonie talks to the works council before Tuesday. Complaints older than ten days go to the team leads from Monday, Daniel sends me the list by Wednesday. Hanna organises the training for the four new starters. Felix brings the pilot numbers next week. And the IT question stays open for now.
+
+00:09:22 Hanna Brecht: Sounds right.
+
+00:09:24 Miriam Kessler: Then thanks, everyone. Short one today, enjoy the extra twenty minutes.
+
+00:09:28 Leonie Schäfer: Thanks, bye.
+
+00:09:29 Murat Yilmaz: Bye.

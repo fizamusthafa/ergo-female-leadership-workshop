@@ -14,25 +14,22 @@
     <div class="narrow">
       <p class="eyebrow reveal-up">Back together</p>
       <h1 class="display reveal-up d1">The <em>finale.</em></h1>
-      <p class="lede reveal-up d2" style="margin:0 auto">Seven minutes. One live board rehearsal, one scenario, and the skill your team needs next.</p>
+      <p class="lede reveal-up d2" style="margin:0 auto">The share-out round: two people per group, two minutes each, on the room monitor or in the main room.</p>
     </div>
   </section>
 
   <section>
     <div class="wrap grid two">
       <article class="card">
-        <p class="eyebrow">On the projector · 3 min</p>
-        <h2 style="font-size:32px">Live board rehearsal</h2>
-        <p class="muted">A Storyteller volunteers their board pack. The room plays the board.</p>
-        <div id="p-rehearse"></div>
-        <p class="small muted">Then ask the room: which question would you add?</p>
+        <p class="eyebrow">2 minutes per group</p>
+        <h2 style="font-size:32px">Your share-out</h2>
+        <ol class="muted" id="share-parts"></ol>
       </article>
       <article class="card">
-        <p class="eyebrow">Next to it · 2 min</p>
-        <h2 style="font-size:32px">One scenario, live</h2>
-        <p class="muted">An Analyst changes one grey input cell on the Assumptions sheet. Everyone watches the result move.</p>
-        <div id="p-scenario"></div>
-        <p class="small muted">Sensitivity, not a forecast.</p>
+        <p class="eyebrow">Let Copilot help</p>
+        <h2 style="font-size:32px">Prepare it in one prompt</h2>
+        <div id="p-share"></div>
+        <p class="small muted" id="stay-live"></p>
       </article>
     </div>
   </section>
@@ -68,7 +65,7 @@
       <p class="eyebrow">Your collection</p>
       <h2 id="tally">What you take home</h2>
       <div class="grid three" id="haul" style="margin-top:20px"></div>
-      <p class="row" style="margin-top:30px"><a class="btn ghost" href="library.html">Prompt library</a><a class="btn ghost" href="downloads/powerpoint-kit.zip" download>PowerPoint kit ↓</a><a class="btn ghost" href="downloads/excel-kit.zip" download>Excel kit ↓</a></p>
+      <p class="row" style="margin-top:30px"><a class="btn ghost" href="library.html">Prompt library</a><a class="btn ghost" href="downloads/excel-kit.zip" download>Excel kit ↓</a><a class="btn ghost" href="downloads/powerpoint-kit.zip" download>PowerPoint kit ↓</a><a class="btn ghost" href="downloads/chief-of-staff-kit.zip" download>Chief-of-Staff kit ↓</a></p>
     </div>
   </section>
 </main>
@@ -86,8 +83,9 @@
 (function () {
   ADV.shell({ active: 'finale' });
   const $ = ADV.$;
-  $('#p-rehearse').innerHTML = ADV.promptBox('Rehearse the board meeting with me. What will they ask?');
-  $('#p-scenario').innerHTML = ADV.promptBox('What happens to the weighted loss ratio if the Severe weight goes from 15% to 25% and Base from 50% to 40%?');
+  $('#share-parts').innerHTML = ADV.shareOut.parts.map(([h, t]) => `<li><b style="color:var(--text)">${h}.</b> ${t}</li>`).join('');
+  $('#p-share').innerHTML = ADV.promptBox(ADV.shareOut.prompt);
+  $('#stay-live').textContent = ADV.shareOut.stayLive;
   const sentence = () => {
     const team = $('#team').value.trim(), task = $('#task').value.trim();
     return task ? `${team || 'My team'}’s skill would teach Copilot to ${task.replace(/\.$/, '')}.` : '';

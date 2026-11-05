@@ -337,7 +337,12 @@ figcaption { font-size: 14px; color: var(--muted); margin-top: 12px; }
 .lib-card .preview { font-size: 14px; color: var(--muted); border-top: 1px dashed var(--line); padding-top: 10px; }
 
 /* presenter */
-.presenter { --text: #f4f4f5; --muted: #a1a1aa; --faint: #6b6b74; --panel: #1f1f22; --line: rgba(255, 255, 255, .1); color: var(--text); position: fixed; inset: 0; z-index: 95; background: #0a0a0b; display: grid; grid-template-rows: auto 1fr auto; padding: 32px 48px; }
+.presenter { --text: #f4f4f5; --muted: #a1a1aa; --faint: #6b6b74; --panel: #1f1f22; --line: rgba(255, 255, 255, .1); color: var(--text); position: fixed; inset: 0; z-index: 95; background: #0a0a0b; display: grid; grid-template-rows: auto 1fr auto auto; padding: 32px 48px; overflow-y: auto; }
+.presenter .p-notes { margin-top: 16px; color: var(--muted); }
+.presenter .p-notes summary { cursor: pointer; color: var(--text); }
+.presenter .p-rooms { border-collapse: collapse; margin-top: 10px; font-size: 14px; }
+.presenter .p-rooms th, .presenter .p-rooms td { text-align: left; padding: 4px 14px 4px 0; border-bottom: 1px solid var(--line); }
+.presenter .p-notes ul { list-style: none; padding: 0; margin: 6px 0 0; display: grid; gap: 4px; }
 .presenter[hidden] { display: none; }
 .presenter .clock { font-size: clamp(60px, 12vw, 160px); font-variant-numeric: tabular-nums; letter-spacing: -.04em; font-weight: 650; }
 .presenter .chapter { font-size: clamp(40px, 7vw, 96px); letter-spacing: -.04em; line-height: 1; }

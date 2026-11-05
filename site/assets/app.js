@@ -77,7 +77,7 @@
   };
   ADV.checkQuests = (trailKey) => {
     const t = ADV.trails[trailKey];
-    if (t && t.sideQuests && t.sideQuests.every((q) => ADV.state.quests[q.id])) ADV.award('all-quests');
+    if (t && t.sideQuests && t.sideQuests.filter((q) => q.type !== 'link').every((q) => ADV.state.quests[q.id])) ADV.award('all-quests');
   };
 
   // ---------- top bar, drawer, footer ----------
@@ -128,8 +128,8 @@
     const s = ADV.state; const owned = Object.keys(ADV.skills).filter((k) => s.skills[k]);
     if (count) count.textContent = owned.length + Object.keys(s.badges).length;
     if (!drawer) return;
-    const order = s.trail === 'xls' ? ['ergo-data-cleaning', 'ergo-calculations', 'ergo-pivot-analysis', 'ergo-exec-dashboard', 'ergo-brand', 'ergo-board-pack', 'ergo-board-sparring', 'my-voice']
-      : ['ergo-brand', 'ergo-board-pack', 'ergo-board-sparring', 'ergo-data-cleaning', 'ergo-calculations', 'ergo-pivot-analysis', 'ergo-exec-dashboard', 'my-voice'];
+    const trailSkills = (k) => { const t = ADV.trails[k]; return t ? [...new Set(t.steps.flatMap((x) => (x.skills || []).concat(x.upload ? [x.upload.skill] : [], x.skillFiles || [])).concat(t.sideQuests.map((q) => q.skill).filter(Boolean)))] : []; };
+    const order = [...new Set(trailSkills(s.trail).concat(Object.keys(ADV.skills)))];
     const skillText = window.SKILL_TEXT || {};
     const cards = order.map((k) => {
       const sk = ADV.skills[k]; const lit = !!s.skills[k]; const isNew = (ADV.lastNew || []).includes(k);
@@ -141,8 +141,8 @@
     const badges = Object.entries(ADV.badges).filter(([k]) => s.badges[k]).map(([k, b]) => `<article class="skill-card lit badge-card"><span class="ic" aria-hidden="true">${b.icon}</span><div><h4>${b.title}</h4><p>${b.what}</p>${b.download ? `<p style="margin-top:8px"><a class="btn small ghost" href="${b.download}" download>Download the skill</a></p>` : ''}</div></article>`).join('');
     ADV.lastNew = [];
     drawer.innerHTML = `<button class="btn small ghost close" type="button" style="float:right">Close</button>
-      <p class="eyebrow">Your backpack</p><h2>${owned.length} of ${Object.keys(ADV.skills).length} skills</h2>
-      <p class="muted small">Each skill is a piece of gear. It lights up when you finish a step that uses it.</p>
+      <p class="eyebrow">Your backpack</p><h2>${owned.length} of ${Object.keys(ADV.skills).length} skills and agents</h2>
+      <p class="muted small">Each skill or agent is a piece of gear. It lights up when you finish the step that adds it.</p>
       ${badges ? `<h3 style="margin-top:24px">Badges</h3>${badges}` : ''}
       <h3 style="margin-top:24px">Skills</h3>${cards}
       <p style="margin-top:24px"><button class="linkish" type="button" data-reset>Start again on this device</button></p>`;
@@ -158,10 +158,13 @@
     $('.topbar').appendChild(btn);
     const el = document.createElement('div'); el.className = 'presenter'; el.hidden = true; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Presenter mode');
     el.innerHTML = `<div class="row" style="justify-content:space-between"><div class="chapters"></div><div class="row"><button class="btn small ghost" data-act="start">Start</button><button class="btn small ghost" data-act="reset">Reset</button><button class="btn small ghost" data-act="close">Close</button></div></div>
-      <div style="align-self:center"><p class="eyebrow">Now</p><div class="chapter"></div><p class="lede note" style="max-width:60ch"></p><div class="clock" aria-live="off">45:00</div></div>
-      <div class="row" style="justify-content:space-between"><button class="btn red" data-act="cue">Move everyone to the finale</button>
+      <div style="align-self:center"><p class="eyebrow">Now</p><div class="chapter"></div><p class="lede note" style="max-width:60ch"></p><div class="clock" aria-live="off">60:00</div></div>
+      <div class="row" style="justify-content:space-between"><button class="btn red" data-act="cue">Call the share-out</button>
       <span class="muted">${cfg.wallUrl ? `Live wall: <a href="${cfg.wallUrl}" target="_blank" rel="noopener">${cfg.wallUrl}</a>` : 'Live wall: set <code>wallUrl</code> in assets/content.js'}</span></div>
-      <div class="cue" hidden><div><p class="eyebrow" style="color:#fff">Time’s up, explorers</p><h2>Back together for the finale.</h2><p class="lede" style="color:#fff;margin:0 auto">Save your work. Bring your best slide or chart.</p><p style="margin-top:30px"><button class="btn" data-act="uncue">Hide</button></p></div></div>`;
+      <details class="p-notes"><summary>Rooms and open points</summary>
+        <table class="p-rooms"><tr><th>Group</th><th>Room</th><th>Trail</th><th>Assigned / capacity</th></tr>${(ADV.rooms || []).map((r) => `<tr><td>${r.group}</td><td>${r.room}</td><td>${ADV.trails[r.trail].app}</td><td>${r.assigned} / ${r.capacity}</td></tr>`).join('')}</table>
+        <p class="eyebrow" style="margin-top:16px">Open points (TODO)</p><ul>${(ADV.openPoints || []).map((p) => `<li>☐ ${p}</li>`).join('')}</ul></details>
+      <div class="cue" hidden><div><p class="eyebrow" style="color:#fff">Ten minutes left</p><h2>Prepare your 2-minute share-out.</h2><p class="lede" style="color:#fff;margin:0 auto">Two people per group. Bring your best slide, chart or agent to the room monitor.</p><p style="margin-top:30px"><button class="btn" data-act="uncue">Hide</button></p></div></div>`;
     document.body.appendChild(el);
     const st = JSON.parse(sessionStorage.getItem('ergo-presenter-clock') || '{"start":null,"paused":0}');
     const saveSt = () => sessionStorage.setItem('ergo-presenter-clock', JSON.stringify(st));
