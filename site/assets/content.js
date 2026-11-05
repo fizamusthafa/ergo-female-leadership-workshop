@@ -191,18 +191,19 @@ ADV.trails = {
         title: 'Dashboard, level 2', goal: 'Make the dashboard interactive.', time: 6,
         start: [['downloads/kpi-register-dashboard.xlsx', 'kpi-register-dashboard.xlsx']],
         prompt: 'Make this dashboard interactive: add slicers for Country and KPI and a timeline for Month, connected to all PivotTables.',
-        variants: [['Or try the built-in skill', '@interactive-canvas Turn this workbook into an interactive executive review I can click through.']],
-        note: '<code>@interactive-canvas</code> is still rolling out and may not be there yet.',
+        variants: [['Only if you see it: a built-in skill that’s still rolling out', '@interactive-canvas Turn this workbook into an interactive executive review I can click through.', { how: 'Type <b>@</b> in the Copilot prompt box. If <b>interactive-canvas</b> isn’t in the list, skip this: most people won’t have it yet.' }]],
+        note: '<code>interactive-canvas</code> is a Microsoft built-in skill for Excel, but it’s still rolling out and isn’t available to everyone. The slicers above work everywhere.',
         wow: 'Click Poland and every PivotTable and chart follows. Your dashboard now answers questions you haven’t asked yet.',
         check: ['Slicers for Country and KPI', 'Clicking a slicer changes every PivotTable', 'A timeline for Month, if your Excel supports it'],
       },
       {
         title: 'Dashboard, final stage', goal: 'An HTML dashboard from one prompt, designed your way.', time: 8,
         start: [['downloads/kpi-register-clean.xlsx', 'kpi-register-clean.xlsx']],
-        prompt: 'Create a self-contained HTML dashboard from the Register sheet: KPI tiles, a chart of Actual vs Target by country and a monthly trend. Use ERGO’s colours (red #BF1629, charcoal #242424, white), the word “ERGO” as a text logo, and the label “Illustrative figures for training purposes, not ERGO results” in the footer. No external files or links. Show the complete HTML in one code block.',
+        switchTo: { pill: 'Copilot Chat, not Excel', title: 'This step leaves Excel', text: 'Open Microsoft 365 Copilot Chat in a new tab. Select <b>+</b> (or type <b>/</b>) and attach <code>kpi-register-clean.xlsx</code> from OneDrive, then send the prompt there.', url: 'https://m365.cloud.microsoft/chat', cta: 'Open Copilot Chat' },
+        prompt: 'Create a self-contained HTML dashboard from the Register sheet of kpi-register-clean.xlsx: KPI tiles, a chart of Actual vs Target by country and a monthly trend. Use ERGO’s colours (red #BF1629, charcoal #242424, white), the word “ERGO” as a text logo, and the label “Illustrative figures for training purposes, not ERGO results” in the footer. No external files or links. Show the complete HTML in one code block.',
         ideas: ['Add a filter by country', 'Add a search box for KPIs', 'Let me select several countries at once', 'Make the tiles clickable so they filter the charts', 'Add a switch between English and German'],
-        how: 'When the code appears, copy it, paste it into Notepad and save it as <code>dashboard.html</code> (under “Save as type” choose <b>All files</b>). Double-click the file to open it in your browser.',
-        note: 'HTML dashboards don’t render inside Excel yet in every tenant. That’s why you save the code and open it in the browser.',
+        how: 'If Copilot Chat shows a preview, try it right there. To keep the page, copy the code, paste it into Notepad and save it as <code>dashboard.html</code> (under “Save as type” choose <b>All files</b>). Double-click the file to open it in your browser.',
+        note: 'Why not in Excel? HTML dashboards don’t render inside Excel yet in every tenant, so this step uses Copilot Chat with your workbook attached.',
         wow: 'A web page with your numbers, in ERGO colours. Then make it yours: every idea below is one more prompt.',
         check: ['The file opens in your browser', 'Tiles and charts show the register’s numbers', 'At least one idea of your own added'],
       },
@@ -389,16 +390,15 @@ ADV.trails = {
     steps: [
       {
         title: 'Prompts first', goal: 'Copilot Chat as your Chief of Staff, with no setup.', time: 10,
-        start: [['downloads/demo-meeting-transcript.txt', 'demo-meeting-transcript.txt'], ['downloads/sample-emails.md', 'sample-emails.md']],
         open: 'Microsoft 365 Copilot Chat',
+        intro: 'Try these one by one. The first three use your own mailbox and calendar. The last one uses a demo meeting.',
         variants: [
           ['Your day', 'Prioritise my day.'],
           ['Your week', 'Prioritise my week.'],
-          ['Your inbox', 'Which emails from last week still need a reply? Draft replies for the three most important.'],
-          ['A meeting', 'Summarise this meeting: decisions, action items with owners and dates, and open questions.'],
+          ['Your inbox', 'Which emails from last week still need a reply? Draft replies for the three most important.', { how: 'Open a draft reply in Outlook and edit it before sending, or don’t send it at all.' }],
+          ['A meeting', 'Summarise this meeting: decisions, action items with owners and dates, and open questions.', { files: [['downloads/demo-meeting-transcript.txt', 'demo-meeting-transcript.txt']], how: 'Imagine this was your meeting. Download the transcript, then in Copilot Chat select <b>+</b> and upload the file. Or open it, copy all the text and paste it after the prompt.' }],
         ],
-        how: 'For the meeting, attach <code>demo-meeting-transcript.txt</code> with <b>+</b>, or paste its text after the prompt. Open a draft reply in Outlook and edit it before sending, or don’t send it at all.',
-        alt: { label: 'If your mailbox is empty', text: 'Paste the content of <code>sample-emails.md</code> after this prompt:', prompt: 'Here are emails from last week. Which still need a reply? Draft replies for the three most important:' },
+        alt: { label: 'If your mailbox is empty', files: [['downloads/sample-emails.md', 'sample-emails.md']], text: 'Download the sample emails, open the file, copy all of it and paste it in after this prompt:', prompt: 'Here are emails from last week. Which still need a reply? Draft replies for the three most important:' },
         wow: 'In a few minutes: a prioritised day, the replies you owe, and a meeting reduced to decisions and actions. You’ll want this every morning. That’s where the agent comes in.',
         check: ['A prioritised list for your day or week', 'At least one draft reply you edited', 'A meeting summary with owners and dates'],
       },
@@ -415,6 +415,11 @@ ADV.trails = {
           ['Starter prompts', '“Organise my day” · “Organise my week” · “What do I need to do today?” · “Draft a reply in my voice”.'],
           ['An icon', 'In <b>Configure</b>, change the icon. Ask Copilot to create one, or upload your own.'],
         ],
+        use: { label: 'Open and use your agent', steps: [
+          'Select <b>Create</b> in the top right. Agent Builder saves the agent for you.',
+          'When it says your agent is ready, select <b>Go to agent</b>. Later you’ll find it under <b>Agents</b> in the left pane of Copilot Chat.',
+          'You’re now chatting with your agent: its name is at the top. Select one of the starter prompts, or type the test prompt below.',
+        ] },
         more: { label: 'Test it', prompt: 'Draft a reply in my voice to the most urgent email from my team.' },
         wow: 'An agent that knows your role, your rules and how you write. Next Monday, “Organise my week” is one click.',
         check: ['The agent appears under Agents', 'Its instructions mention your priorities and your tone', 'A test draft that sounds like you'],
@@ -422,9 +427,10 @@ ADV.trails = {
       },
       {
         title: 'The agent reads, Copilot writes', goal: 'Use the agent in context, then let Copilot Chat do the writing.', time: 6,
+        switchTo: { pill: 'New Copilot Chat', title: 'Start a new Copilot Chat window', text: 'Leave Agent Builder. Open Copilot Chat in a new tab (or select <b>New chat</b>), so you’re in normal Copilot Chat, not in the agent you just built.', url: 'https://m365.cloud.microsoft/chat', cta: 'Open Copilot Chat' },
         how: 'Agents built in Agent Builder can read but not write. So ask the agent first, then remove it from the chat and let Copilot draft or send. Very few people know this.',
         variants: [
-          ['1 · Ask the agent', '@My Chief of Staff Which emails do I need to write today?'],
+          ['1 · Ask the agent', '@My Chief of Staff Which emails do I need to write today?', { how: 'In the new chat, type <b>@</b> and pick <b>My Chief of Staff</b>.' }],
           ['2 · Remove the agent, then ask Copilot', 'Draft those replies, short and in my voice, so I can review them in Outlook.'],
         ],
         note: 'To remove the agent, select the <b>×</b> on its name above the prompt box, or start a new chat without it.',
@@ -481,6 +487,7 @@ ADV.openPoints = [
   'Test with a user without usage-based billing and not on Frontier: the experience differs.',
   'Interactive Slides: Microsoft’s rollout to PowerPoint for the web finished end of October 2026 and there are no admin controls. Confirm the button shows in ERGO’s tenant.',
   'Do web data and work data (emails) work in Excel in ERGO’s tenant? (Trail 1, step 3)',
+  'Which built-in Excel skills are live in ERGO’s tenant? @theme-design, @chart-design, @clean-data and @interactive-canvas are still rolling out. (Trail 1, steps 6 and 8)',
 ];
 
 ADV.library = [

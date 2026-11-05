@@ -65,7 +65,8 @@
   };
   const nav = (prev, next) => `<div class="next-nav">${prev ? `<a class="btn ghost" href="${prev[0]}">← ${esc(prev[1])}</a>` : '<span></span>'}${next ? `<a class="btn red" href="${next[0]}">${esc(next[1])} →</a>` : ''}</div>`;
   const fileBtn = ([href, label]) => `<a class="file-chip" href="${href}" download><span aria-hidden="true">${/\.xlsx$/.test(href) ? '📗' : /\.pptx$/.test(href) ? '📙' : /\.docx$/.test(href) ? '📘' : '📄'}</span>${esc(label)}<span class="dl" aria-hidden="true">↓</span></a>`;
-  const variant = ([label, p]) => `<p class="v-label">${esc(label)}</p>${ADV.promptBox(p)}`;
+  const variant = ([label, p, x]) => `<p class="v-label">${esc(label)}</p>${x && x.files ? `<div class="files">${x.files.map(fileBtn).join('')}</div>` : ''}${x && x.how ? `<p class="muted how">${x.how}</p>` : ''}${ADV.promptBox(p)}`;
+  const switchBox = (w) => `<div class="switch card"><span aria-hidden="true">↗️</span><div><b>${w.title}</b><p>${w.text}</p><a class="btn small red" href="${w.url}" target="_blank" rel="noopener">${w.cta} ↗</a></div></div>`;
   const testPill = '<span class="pill test" title="Still being tested in ERGO’s tenant">🧪 To be tested in ERGO’s tenant</span>';
   const trouble = () => `<details class="trouble"><summary>🛠️ Something not working? Troubleshooting</summary>
       <dl>${ADV.trouble.concat(T.trouble || []).map(([q, a]) => `<dt>${q}</dt><dd>${a}</dd>`).join('')}</dl></details>`;
@@ -120,18 +121,19 @@
       st.prompt2 ? `<p class="v-label">Then</p>${ADV.promptBox(st.prompt2)}` : '',
       (st.variants || []).map(variant).join(''),
       st.build ? `<p class="v-label">Then shape it</p><div class="byo-parts build">${st.build.map(([h, t], i) => `<div><span class="num">${i + 1}</span><b>${h}</b><p>${t}</p></div>`).join('')}</div>` : '',
+      st.use ? `<p class="v-label">${esc(st.use.label)}</p><ol class="use-steps">${st.use.steps.map((x) => `<li>${x}</li>`).join('')}</ol>` : '',
       st.more ? variant([st.more.label, st.more.prompt]) : '',
       st.ideas ? `<p class="v-label">Make it yours: add one idea at a time</p><div class="ideas">${st.ideas.map((x) => `<button type="button" class="idea" data-copy="${esc(x)}">${esc(x)} <span aria-hidden="true">⧉</span></button>`).join('')}</div>` : '',
-      st.alt ? `<div class="alt card"><p class="eyebrow">Plan B · ${esc(st.alt.label)}</p><p>${st.alt.text}</p>${st.alt.prompt ? ADV.promptBox(st.alt.prompt) : ''}</div>` : '',
+      st.alt ? `<div class="alt card"><p class="eyebrow">Plan B · ${esc(st.alt.label)}</p>${st.alt.files ? `<div class="files">${st.alt.files.map(fileBtn).join('')}</div>` : ''}<p>${st.alt.text}</p>${st.alt.prompt ? ADV.promptBox(st.alt.prompt) : ''}</div>` : '',
       st.note ? `<p class="note-line">ℹ️ ${st.note}</p>` : '',
     ].join('');
-    return `<header class="step-head"><div class="meta"><span class="pill">Step ${n} of ${T.steps.length}</span><span class="pill">${st.time} min</span>${st.level === 'advanced' ? '<span class="pill">Advanced</span>' : ''}${st.test ? testPill : ''}</div>
+    return `<header class="step-head"><div class="meta"><span class="pill">Step ${n} of ${T.steps.length}</span><span class="pill">${st.time} min</span>${st.level === 'advanced' ? '<span class="pill">Advanced</span>' : ''}${st.switchTo ? `<span class="pill red">↗ ${esc(st.switchTo.pill)}</span>` : ''}${st.test ? testPill : ''}</div>
         <h1 class="display" style="font-size:clamp(40px,7vw,84px)">${st.title}</h1><p class="lede">${st.goal}</p></header>
       ${skipBar(n)}
       <div data-fx="profile"></div>
       <div class="beat"><h3><b>①</b>Open</h3><div>
-        ${st.start ? `<div class="files">${st.start.map(fileBtn).join('')}</div><p class="small muted">Start file${st.start.length > 1 ? 's' : ''} for this step. Upload to OneDrive and open in ${T.web[0]}, or keep working in your own file.</p>` : ''}
-        ${st.open ? `<p style="font-size:19px">Open <b>${esc(st.open)}</b>.</p>` : ''}${st.how ? `<div class="muted how">${st.how}</div>` : ''}</div></div>
+        ${st.start ? `<div class="files">${st.start.map(fileBtn).join('')}</div><p class="small muted">Start file${st.start.length > 1 ? 's' : ''} for this step. ${st.switchTo ? 'Upload it to OneDrive so you can attach it in Copilot Chat.' : `Upload to OneDrive and open in ${T.web[0]}, or keep working in your own file.`}</p>` : ''}
+        ${st.open ? `<p style="font-size:19px">Open <b>${esc(st.open)}</b>.</p>` : ''}${st.switchTo ? switchBox(st.switchTo) : ''}${st.how ? `<div class="muted how">${st.how}</div>` : ''}</div></div>
       <div class="beat"><h3><b>②</b>Ask Copilot</h3><div>
         ${st.upload ? uploadBlock(st.upload) : ''}
         ${runBits}
