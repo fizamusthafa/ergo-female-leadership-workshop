@@ -238,11 +238,11 @@
     rail();
     if (now) {
       const dot = document.querySelectorAll('#rail .dot')[s]; if (dot) dot.classList.add('stamp');
-      ADV.collectSkills(ADV.stepSkills(stepObj));
+      const gear = ADV.collectSkills(ADV.stepSkills(stepObj), { quiet: true });
       if (profile) profile.update();
       const all = T.steps.every((x, i) => ADV.state.done[`${key}-${i + 1}`]);
-      if (all && !ADV.state.seen[`${key}-complete`]) { ADV.update((st) => { st.seen[`${key}-complete`] = true; }); ADV.confetti(); fx.highFive(key, 'Summit! Time to prepare your share-out.'); }
-      else fx.highFive(key, `High five! Step ${s} done.`);
+      if (all && !ADV.state.seen[`${key}-complete`]) { ADV.update((st) => { st.seen[`${key}-complete`] = true; }); ADV.confetti(); fx.highFive(key, 'Summit! Time to prepare your share-out.', gear); }
+      else fx.highFive(key, `High five! Step ${s} done.`, gear);
     } else if (profile) profile.update();
   });
   $('#page').addEventListener('click', (e) => {
@@ -250,11 +250,11 @@
     const id = b.dataset.quest; const now = !ADV.state.quests[id];
     ADV.update((st) => { if (now) st.quests[id] = true; else delete st.quests[id]; });
     const q = T.sideQuests.find((x) => x.id === id);
-    if (now && q && q.skill) ADV.collectSkills([q.skill]);
+    const gear = now && q && q.skill ? ADV.collectSkills([q.skill], { quiet: true }) : '';
     ADV.checkQuests(key);
     $('#page').innerHTML = quests(); rail();
     const again = document.querySelector(`[data-quest="${id}"]`); if (again) again.focus();
-    if (now) ADV.fx.highFive(key, 'High five! Side quest done.'); else ADV.toast('Marked as not completed.');
+    if (now) ADV.fx.highFive(key, 'High five! Side quest done.', gear); else ADV.toast('Marked as not completed.');
   });
 })();
 </script>

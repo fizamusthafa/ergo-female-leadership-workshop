@@ -63,14 +63,17 @@
   // ---------- skills and progress ----------
   // Skills a step adds: its own list plus any uploaded or downloadable skill in its tasks.
   ADV.stepSkills = (st) => [...new Set((st.skills || []).concat(...(st.tasks || [st]).map((x) => (x.upload ? [x.upload.skill] : []).concat(x.skillFiles || []))))];
-  ADV.collectSkills = (names) => {
+  // opts.quiet: no toast (the caller shows the message itself, e.g. in the high five). Returns the toast text.
+  ADV.collectSkills = (names, opts = {}) => {
     const fresh = names.filter((n) => !ADV.state.skills[n]);
-    if (!fresh.length) return;
+    if (!fresh.length) return '';
     ADV.update((s) => fresh.forEach((n) => { s.skills[n] = true; }));
     const btn = $('.drawer-btn'); if (btn) { btn.classList.remove('bump'); void btn.offsetWidth; btn.classList.add('bump'); }
     if (ADV.fx && ADV.fx.flyGear) ADV.fx.flyGear(fresh, document.activeElement);
-    ADV.toast(`Gear added: ${fresh.map((n) => (ADV.gear && ADV.gear[n] ? ADV.gear[n].join(' ') + ' · ' : '') + ADV.skills[n].title).join(', ')}`);
+    const msg = `Gear added: ${fresh.map((n) => (ADV.gear && ADV.gear[n] ? ADV.gear[n][0] + ' ' : '') + ADV.skills[n].title).join(', ')}`;
+    if (!opts.quiet) ADV.toast(msg);
     ADV.lastNew = fresh;
+    return msg;
   };
   ADV.award = (badge) => {
     if (ADV.state.badges[badge]) return;

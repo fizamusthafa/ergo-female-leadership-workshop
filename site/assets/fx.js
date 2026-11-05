@@ -534,12 +534,13 @@ ${rules().map(([k, t]) => `<span class="pg-line" data-line="${k}">${esc(t)}</spa
     el.setAttribute('aria-label', `Copilot and ${t.tool.split(' / ')[0]} working together`);
     el.innerHTML = inner;
   };
-  fx.highFive = (key, msg) => {
+  fx.highFive = (key, msg, sub) => {
     const t = ADV.trails[key]; if (!t || !t.logo) return;
     document.querySelectorAll('.hi5-pop').forEach((x) => x.remove());
     const pop = document.createElement('div'); pop.className = 'hi5-pop'; pop.setAttribute('role', 'status'); pop.setAttribute('aria-live', 'polite');
     pop.style.setProperty('--c', ({ xls: '#1f9d55', ppt: '#d83b01', cos: '#0f6cbd' })[key] || '#bf1629');
-    pop.innerHTML = `<div class="hi5"><img class="h-cp" src="${CP_LOGO}" alt=""><span class="h-burst">${[0, 45, 90, 135, 180, 225, 270, 315].map((r) => `<i style="--r:${r}deg"></i>`).join('')}</span><img class="h-app" src="${t.logo}" alt=""></div><b>${esc(msg || 'High five!')}</b>`;
+    pop.innerHTML = `<div class="hi5"><img class="h-cp" src="${CP_LOGO}" alt=""><span class="h-burst">${[0, 45, 90, 135, 180, 225, 270, 315].map((r) => `<i style="--r:${r}deg"></i>`).join('')}</span><img class="h-app" src="${t.logo}" alt=""></div><div class="h-text"><b>${esc(msg || 'High five!')}</b>${sub ? `<span>${esc(sub)}</span>` : ''}</div>`;
+    const t0 = document.querySelector('.toast.show'); if (t0) t0.classList.remove('show');
     document.body.appendChild(pop);
     requestAnimationFrame(() => pop.classList.add('in'));
     setTimeout(() => { pop.classList.remove('in'); setTimeout(() => pop.remove(), 400); }, reduce() ? 1800 : 2800);

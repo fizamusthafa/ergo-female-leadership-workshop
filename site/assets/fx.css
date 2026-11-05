@@ -391,7 +391,9 @@ a.node:hover b { color: var(--red); }
 /* ---------- high five when a step is done ---------- */
 .hi5-pop { position: fixed; left: 50%; bottom: 26px; z-index: 120; display: flex; align-items: center; gap: 12px; padding: 10px 22px 10px 12px; border-radius: 999px; background: #fff; border: 1px solid var(--line); box-shadow: 0 18px 50px rgba(0,0,0,.18); transform: translate(-50%, 140%); opacity: 0; transition: transform .45s cubic-bezier(.3,1.4,.5,1), opacity .3s; }
 .hi5-pop.in { transform: translate(-50%, 0); opacity: 1; }
+.hi5-pop .h-text { display: grid; gap: 2px; }
 .hi5-pop b { font-size: 17px; }
+.hi5-pop .h-text span { font-size: 13px; color: var(--muted); }
 .hi5 { position: relative; width: 120px; height: 56px; }
 .hi5 img { position: absolute; top: 4px; width: 48px; height: 48px; max-width: none; filter: drop-shadow(0 5px 10px rgba(0,0,0,.15)); }
 .hi5 .h-cp { left: 4px; animation: h5L 1.6s cubic-bezier(.3,1.4,.5,1) .15s both; }
