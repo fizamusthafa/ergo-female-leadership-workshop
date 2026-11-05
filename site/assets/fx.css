@@ -351,3 +351,55 @@ a.node:hover b { color: var(--red); }
 .task-nav a { font-size: 14px; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line); background: #fff; color: var(--text); text-decoration: none; }
 .task-nav a b { color: var(--red); margin-right: 4px; }
 .sheet-line { font-size: 17px; margin: 10px 0 4px; }
+
+/* ---------- Copilot + app: hero ("doing the job together") ---------- */
+.bc-head { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 24px; align-items: center; }
+.duo-hero { position: relative; height: 180px; border-radius: 18px; background: radial-gradient(circle at 50% 45%, #fff 0, #f3f0ea 72%); border: 1px solid var(--line); display: grid; place-items: center; overflow: hidden; }
+.duo-hero img { max-width: none; display: block; filter: drop-shadow(0 8px 14px rgba(0,0,0,.14)); }
+.dh { position: relative; width: 250px; height: 150px; }
+.dh-xl .dh-app { position: absolute; left: 0; top: 46px; width: 60px; height: 60px; }
+.dh-xl .dh-grid { position: absolute; left: 72px; top: 44px; display: grid; grid-template-columns: repeat(4, 30px); gap: 4px; }
+.dh-xl .dh-grid i { height: 20px; border-radius: 4px; background: #e9e6df; animation: dhCell 4.8s ease-in-out infinite; animation-delay: calc(var(--n) * .18s); }
+.dh-xl .dh-cp { position: absolute; left: 68px; top: 2px; width: 40px; height: 40px; animation: dhHop 4.8s ease-in-out infinite; }
+@keyframes dhCell { 0%, 8% { background: #e9e6df; } 18%, 70% { background: #7ddc6c; } 85%, 100% { background: #e9e6df; } }
+@keyframes dhHop { 0% { transform: translate(0, 0); } 12% { transform: translate(34px, -6px); } 24% { transform: translate(68px, 0); } 36% { transform: translate(102px, -6px); } 48% { transform: translate(136px, 0); } 60% { transform: translate(140px, 40px); } 72% { transform: translate(70px, 92px) rotate(-10deg); } 86%, 100% { transform: translate(0, 0); } }
+.dh-pp .dh-app { position: absolute; left: 4px; top: 44px; width: 60px; height: 60px; z-index: 3; }
+.dh-pp .dh-cp { position: absolute; right: 4px; top: 44px; width: 60px; height: 60px; z-index: 3; animation: dhWiggle 4.5s ease-in-out infinite; }
+.dh-pp .dh-slide { position: absolute; left: 66px; top: 54px; width: 64px; height: 40px; border-radius: 5px; background: #fff; border: 1px solid #ddd; box-shadow: 0 6px 12px rgba(0,0,0,.1); animation: dhFan 4.5s cubic-bezier(.3,1.2,.4,1) infinite; animation-delay: calc(var(--n) * .25s); }
+.dh-pp .dh-slide::before { content: ""; position: absolute; left: 7px; top: 7px; width: 30px; height: 5px; border-radius: 3px; background: #c9c9c9; animation: dhTitle 4.5s infinite; animation-delay: inherit; }
+.dh-pp .dh-slide::after { content: ""; position: absolute; left: 7px; bottom: 7px; width: 18px; height: 12px; border-radius: 2px; background: #e5e5e5; animation: dhChart 4.5s infinite; animation-delay: inherit; }
+@keyframes dhFan { 0% { transform: translate(0, 0) scale(.6); opacity: 0; } 18% { opacity: 1; } 35%, 80% { transform: translate(calc(var(--n) * 34px), calc(var(--n) * -14px + 14px)) rotate(calc(var(--n) * 6deg - 6deg)); opacity: 1; } 100% { transform: translate(0, 0) scale(.6); opacity: 0; } }
+@keyframes dhTitle { 0%, 45% { background: #c9c9c9; } 55%, 85% { background: #242424; } 100% { background: #c9c9c9; } }
+@keyframes dhChart { 0%, 45% { background: #e5e5e5; } 55%, 85% { background: #bf1629; } 100% { background: #e5e5e5; } }
+@keyframes dhWiggle { 0%, 40% { transform: rotate(0); } 46% { transform: rotate(-12deg) scale(1.08); } 52% { transform: rotate(10deg) scale(1.08); } 58%, 100% { transform: rotate(0); } }
+.dh-ol .dh-app { position: absolute; left: 4px; top: 44px; width: 60px; height: 60px; z-index: 2; }
+.dh-ol .dh-cp { position: absolute; right: 4px; top: 44px; width: 60px; height: 60px; z-index: 2; }
+.dh-ol .dh-env { position: absolute; left: 58px; top: 62px; font-size: 24px; opacity: 0; animation: dhFly 3.6s ease-in-out infinite; animation-delay: calc(var(--n) * .6s); }
+.dh-ol .dh-tick { position: absolute; right: 62px; top: 68px; width: 24px; height: 24px; border-radius: 50%; background: #15803d; color: #fff; font-size: 14px; font-weight: 700; display: grid; place-items: center; opacity: 0; animation: dhBack 3.6s ease-in-out infinite; animation-delay: calc(var(--n) * .6s); }
+@keyframes dhFly { 0% { opacity: 0; transform: translate(0, 0) rotate(-10deg); } 10% { opacity: 1; } 45% { opacity: 1; transform: translate(110px, -34px) rotate(10deg); } 50%, 100% { opacity: 0; transform: translate(120px, -10px) scale(.4); } }
+@keyframes dhBack { 0%, 50% { opacity: 0; transform: translate(0, 0) scale(.4); } 58% { opacity: 1; transform: translate(-10px, 26px) scale(1); } 95% { opacity: 1; transform: translate(-120px, 30px) scale(1); } 100% { opacity: 0; transform: translate(-130px, 30px) scale(.4); } }
+.duo-mini { display: inline-flex; align-items: center; margin-bottom: 6px; }
+.duo-mini img { width: 30px; height: 30px; filter: drop-shadow(0 3px 6px rgba(0,0,0,.15)); }
+.duo-mini img + img { margin-left: -4px; }
+.room-col:hover .duo-mini img { animation: dmHop .45s ease-in-out infinite alternate; }
+.room-col:hover .duo-mini img + img { animation-delay: .15s; }
+@keyframes dmHop { to { transform: translateY(-5px); } }
+.pill.app-pill { padding-left: 4px; }
+.pill.app-pill img { width: 18px; height: 18px; }
+@media (max-width: 760px) { .bc-head { grid-template-columns: 1fr; } .duo-hero { height: 170px; } }
+
+/* ---------- high five when a step is done ---------- */
+.hi5-pop { position: fixed; left: 50%; bottom: 26px; z-index: 120; display: flex; align-items: center; gap: 12px; padding: 10px 22px 10px 12px; border-radius: 999px; background: #fff; border: 1px solid var(--line); box-shadow: 0 18px 50px rgba(0,0,0,.18); transform: translate(-50%, 140%); opacity: 0; transition: transform .45s cubic-bezier(.3,1.4,.5,1), opacity .3s; }
+.hi5-pop.in { transform: translate(-50%, 0); opacity: 1; }
+.hi5-pop b { font-size: 17px; }
+.hi5 { position: relative; width: 120px; height: 56px; }
+.hi5 img { position: absolute; top: 4px; width: 48px; height: 48px; max-width: none; filter: drop-shadow(0 5px 10px rgba(0,0,0,.15)); }
+.hi5 .h-cp { left: 4px; animation: h5L 1.6s cubic-bezier(.3,1.4,.5,1) .15s both; }
+.hi5 .h-app { right: 4px; animation: h5R 1.6s cubic-bezier(.3,1.4,.5,1) .15s both; }
+.hi5 .h-burst { position: absolute; left: 50%; top: 28px; width: 0; height: 0; opacity: 0; animation: h5Burst 1.6s ease-out .15s both; }
+.hi5 .h-burst i { position: absolute; left: -2px; top: -6px; width: 4px; height: 12px; border-radius: 4px; background: var(--c, #bf1629); transform: rotate(var(--r)) translateY(-20px); }
+@keyframes h5L { 0% { transform: translateX(-50px) rotate(-20deg); } 35% { transform: translateX(14px) rotate(10deg); } 50% { transform: translateX(0) rotate(0); } 70% { transform: translateY(-6px); } 85%, 100% { transform: translateY(0); } }
+@keyframes h5R { 0% { transform: translateX(50px) rotate(20deg); } 35% { transform: translateX(-14px) rotate(-10deg); } 50% { transform: translateX(0) rotate(0); } 78% { transform: translateY(-6px); } 92%, 100% { transform: translateY(0); } }
+@keyframes h5Burst { 0%, 30% { opacity: 0; transform: scale(.3); } 38% { opacity: 1; transform: scale(1); } 60%, 100% { opacity: 0; transform: scale(1.5); } }
+@media (prefers-reduced-motion: reduce) { .duo-hero *, .hi5 *, .duo-mini img { animation: none !important; } .dh-ol .dh-env, .dh-ol .dh-tick { opacity: 1; } .dh-xl .dh-grid i:nth-child(-n+8) { background: #7ddc6c; } .hi5-pop { transition: none; } }
+html.reduce .duo-hero *, html.reduce .hi5 * { animation: none !important; }

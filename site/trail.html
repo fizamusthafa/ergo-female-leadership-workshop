@@ -92,8 +92,8 @@
   // ---------- pages ----------
   const baseCamp = () => {
     const where = myRoom ? `<span class="pill red">Room ${esc(myRoom.room)} · ${ADV.levels[myRoom.level]}</span>` : '';
-    return `<header class="step-head"><div class="meta"><span class="pill">Trail ${T.group} · ${T.app}</span><span class="pill">${esc(T.useCase)}</span>${where}</div>
-      <h1 class="display" style="font-size:clamp(44px,8vw,96px)">${T.name}</h1><p class="lede">${T.mission}</p></header>
+    return `<header class="step-head bc-head"><div><div class="meta"><span class="pill app-pill"><img src="${T.logo}" alt="">Trail ${T.group} · ${T.app}</span><span class="pill">${esc(T.useCase)}</span>${where}</div>
+      <h1 class="display" style="font-size:clamp(44px,8vw,96px)">${T.name}</h1><p class="lede">${T.mission}</p></div><div data-fx="duo"></div></header>
       <div data-fx="profile"></div>
       <div class="beat"><h3><b>1</b>Before you start</h3><div>
         <div class="basics">${ADV.basics.map(([ic, h, t]) => `<div class="basic"><span aria-hidden="true">${ic}</span><div><b>${h}</b><p>${t}</p></div></div>`).join('')}</div>
@@ -146,7 +146,7 @@
       st.intro ? `<p class="muted">${st.intro}</p>` : '',
     ].join('');
     const tasks = st.tasks.map((x, i) => `<section class="task ${x.level === 'advanced' ? 'adv' : ''}" id="task-${i + 1}"><h2 class="task-h"><span class="t-letter">${letters[i]}</span>${esc(x.title)}${x.level === 'advanced' ? ' <span class="pill">Advanced</span>' : ''}${x.test ? ` ${testPill}` : ''}${x.switchTo ? ` <span class="pill red">↗ ${esc(x.switchTo.pill)}</span>` : ''}</h2>${taskBits(x)}</section>`).join('');
-    return `<header class="step-head"><div class="meta"><span class="pill">Step ${n} of ${T.steps.length}</span><span class="pill">${st.time} min</span><span class="pill">${st.tasks.length} task${st.tasks.length > 1 ? 's' : ''}</span>${st.test ? testPill : ''}</div>
+    return `<header class="step-head"><div class="meta"><span class="pill app-pill"><img src="${T.logo}" alt="">Step ${n} of ${T.steps.length}</span><span class="pill">${st.time} min</span><span class="pill">${st.tasks.length} task${st.tasks.length > 1 ? 's' : ''}</span>${st.test ? testPill : ''}</div>
         <h1 class="display" style="font-size:clamp(40px,7vw,84px)">${st.title}</h1><p class="lede">${st.goal}</p></header>
       ${skipBar(n)}
       <div data-fx="profile"></div>
@@ -227,6 +227,7 @@
   const stepObj = typeof s === 'number' && s > 0 ? T.steps[s - 1] : null;
   const scrubEl = document.querySelector('[data-fx="scrub"]'); if (scrubEl) fx.scrub(scrubEl, stepObj.tasks.map((x) => x.media).find((m) => m && m.type === 'morph'));
   const panelEl = document.querySelector('[data-fx="panel"]'); if (panelEl) fx.panel(panelEl);
+  const duoEl = document.querySelector('[data-fx="duo"]'); if (duoEl) fx.duoHero(duoEl, key);
   const amEl = document.querySelector('[data-fx="addmenu"]'); if (amEl) fx.addmenu(amEl, { pick: 'upload' });
 
   const doneBtn = $('.done-btn:not([data-quest])');
@@ -240,7 +241,8 @@
       ADV.collectSkills(ADV.stepSkills(stepObj));
       if (profile) profile.update();
       const all = T.steps.every((x, i) => ADV.state.done[`${key}-${i + 1}`]);
-      if (all && !ADV.state.seen[`${key}-complete`]) { ADV.update((st) => { st.seen[`${key}-complete`] = true; }); ADV.confetti(); ADV.toast('Summit reached. Time to prepare your share-out.'); }
+      if (all && !ADV.state.seen[`${key}-complete`]) { ADV.update((st) => { st.seen[`${key}-complete`] = true; }); ADV.confetti(); fx.highFive(key, 'Summit! Time to prepare your share-out.'); }
+      else fx.highFive(key, `High five! Step ${s} done.`);
     } else if (profile) profile.update();
   });
   $('#page').addEventListener('click', (e) => {
@@ -252,7 +254,7 @@
     ADV.checkQuests(key);
     $('#page').innerHTML = quests(); rail();
     const again = document.querySelector(`[data-quest="${id}"]`); if (again) again.focus();
-    ADV.toast(now ? 'Side quest completed.' : 'Marked as not completed.');
+    if (now) ADV.fx.highFive(key, 'High five! Side quest done.'); else ADV.toast('Marked as not completed.');
   });
 })();
 </script>

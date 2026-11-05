@@ -98,7 +98,7 @@ ADV.trails = {
   // Trail 1 · Excel · Performance Review  (one workbook for the whole trail)
   // ======================================================================
   xls: {
-    app: 'Excel', tool: 'Excel', name: 'The Numbers Room', persona: 'Analyst', group: 1, useCase: 'Performance Review',
+    app: 'Excel', tool: 'Excel', logo: 'assets/img/brands/excel.png', name: 'The Numbers Room', persona: 'Analyst', group: 1, useCase: 'Performance Review',
     web: ['Excel for the web', 'https://excel.cloud.microsoft'],
     mission: 'A messy half-year performance register lands on your desk before the leadership meeting. Understand it, clean it, make the formulas do the thinking, and turn it into a dashboard. All in one workbook.',
     kit: { file: 'downloads/excel-kit.zip', size: 'about 150 KB', contents: ['kpi-workbook.xlsx', 'project-updates.txt', 'skill template'] },
@@ -249,7 +249,7 @@ ADV.trails = {
   // Trail 2 · PowerPoint · Executive Presentation
   // ======================================================================
   ppt: {
-    app: 'PowerPoint', tool: 'PowerPoint', name: 'The Board Meeting', persona: 'Storyteller', group: 2, useCase: 'Executive Presentation',
+    app: 'PowerPoint', tool: 'PowerPoint', logo: 'assets/img/brands/powerpoint.png', name: 'The Board Meeting', persona: 'Storyteller', group: 2, useCase: 'Executive Presentation',
     web: ['PowerPoint for the web', 'https://powerpoint.cloud.microsoft'],
     mission: 'The board meets next week. Build the deck from a memo and the numbers, rehearse the questions, then make it ERGO.',
     kit: { file: 'downloads/powerpoint-kit.zip', size: 'about 250 KB', contents: ['board-memo.docx', 'q3-figures.xlsx', 'board-pack-ready.pptx', 'messy-draft.pptx', '3 skill ZIPs'] },
@@ -368,7 +368,7 @@ ADV.trails = {
   // Trail 3 · Chief of Staff · Outlook / Copilot Chat
   // ======================================================================
   cos: {
-    app: 'Copilot Chat & Outlook', tool: 'Outlook / Copilot Chat', name: 'The Chief of Staff', persona: 'Orchestrator', group: 3, useCase: 'Chief-of-Staff',
+    app: 'Copilot Chat & Outlook', tool: 'Outlook / Copilot Chat', logo: 'assets/img/brands/outlook.png', name: 'The Chief of Staff', persona: 'Orchestrator', group: 3, useCase: 'Chief-of-Staff',
     web: ['Microsoft 365 Copilot', 'https://m365.cloud.microsoft/chat'],
     mission: 'Make Copilot your own Chief of Staff. Start with prompts, notice what you do every day, then build an agent that does it your way.',
     kit: { file: 'downloads/chief-of-staff-kit.zip', size: 'about 10 KB', contents: ['demo-meeting-transcript.txt', 'sample-emails.md', 'my-priorities.md', 'sample-voice-texts.md'] },

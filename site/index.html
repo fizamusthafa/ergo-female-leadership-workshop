@@ -215,7 +215,7 @@
   // ---------- choose yourself ----------
   $('#rooms').innerHTML = ['xls', 'ppt', 'cos'].map((k) => {
     const t = ADV.trails[k];
-    return `<div class="room-col"><p class="room-trail"><b>${t.group} · ${t.useCase}</b><span>${t.app}</span></p>${ADV.rooms.filter((r) => r.trail === k).map((r) => `<a class="room-btn ${r.level}" href="trail.html?t=${k}&level=${r.level}&room=${r.id}"><span class="r-name">Room ${r.room}</span><span class="r-meta">${t.tool} · ${ADV.levels[r.level]}</span></a>`).join('')}</div>`;
+    return `<div class="room-col"><span class="duo-mini" aria-hidden="true"><img src="assets/img/brands/microsoft-copilot.png" alt=""><img src="${t.logo}" alt=""></span><p class="room-trail"><b>${t.group} · ${t.useCase}</b><span>${t.app}</span></p>${ADV.rooms.filter((r) => r.trail === k).map((r) => `<a class="room-btn ${r.level}" href="trail.html?t=${k}&level=${r.level}&room=${r.id}"><span class="r-name">Room ${r.room}</span><span class="r-meta">${t.tool} · ${ADV.levels[r.level]}</span></a>`).join('')}</div>`;
   }).join('');
   $('#trail-cards').innerHTML = ['xls', 'ppt', 'cos'].map((k) => {
     const t = ADV.trails[k], p = ADV.personas[k];

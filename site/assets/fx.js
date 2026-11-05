@@ -520,6 +520,32 @@ ${rules().map(([k, t]) => `<span class="pg-line" data-line="${k}">${esc(t)}</spa
   };
 
   // ======================================================================
+  // Copilot + the trail's app: hero animation ("doing the job together") and a high five when a step is done
+  // ======================================================================
+  const CP_LOGO = 'assets/img/brands/microsoft-copilot.png';
+  fx.duoHero = (el, key) => {
+    const t = ADV.trails[key]; if (!el || !t || !t.logo) return;
+    const cp = `<img class="dh-cp" src="${CP_LOGO}" alt="">`, app = `<img class="dh-app" src="${t.logo}" alt="">`;
+    let inner;
+    if (key === 'xls') inner = `<div class="dh dh-xl">${app}<div class="dh-grid">${Array.from({ length: 16 }, (_, n) => `<i style="--n:${n}"></i>`).join('')}</div>${cp}</div>`;
+    else if (key === 'ppt') inner = `<div class="dh dh-pp">${app}${[0, 1, 2].map((n) => `<span class="dh-slide" style="--n:${n}"></span>`).join('')}${cp}</div>`;
+    else inner = `<div class="dh dh-ol">${app}${[0, 1, 2].map((n) => `<span class="dh-env" style="--n:${n}">✉️</span><span class="dh-tick" style="--n:${n}">✓</span>`).join('')}${cp}</div>`;
+    el.classList.add('duo-hero'); el.setAttribute('role', 'img');
+    el.setAttribute('aria-label', `Copilot and ${t.tool.split(' / ')[0]} working together`);
+    el.innerHTML = inner;
+  };
+  fx.highFive = (key, msg) => {
+    const t = ADV.trails[key]; if (!t || !t.logo) return;
+    document.querySelectorAll('.hi5-pop').forEach((x) => x.remove());
+    const pop = document.createElement('div'); pop.className = 'hi5-pop'; pop.setAttribute('role', 'status'); pop.setAttribute('aria-live', 'polite');
+    pop.style.setProperty('--c', ({ xls: '#1f9d55', ppt: '#d83b01', cos: '#0f6cbd' })[key] || '#bf1629');
+    pop.innerHTML = `<div class="hi5"><img class="h-cp" src="${CP_LOGO}" alt=""><span class="h-burst">${[0, 45, 90, 135, 180, 225, 270, 315].map((r) => `<i style="--r:${r}deg"></i>`).join('')}</span><img class="h-app" src="${t.logo}" alt=""></div><b>${esc(msg || 'High five!')}</b>`;
+    document.body.appendChild(pop);
+    requestAnimationFrame(() => pop.classList.add('in'));
+    setTimeout(() => { pop.classList.remove('in'); setTimeout(() => pop.remove(), 400); }, reduce() ? 1800 : 2800);
+  };
+
+  // ======================================================================
   // Radio from Copilot
   // ======================================================================
   fx.radioAfter = (key, n) => {
