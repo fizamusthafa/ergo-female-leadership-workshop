@@ -11,7 +11,7 @@ A template skill: read it, then change the rules marked with a comment so they m
 
 ## Steps
 1. Find the register: the sheet with columns such as Entry_ID, Country, KPI, Month, Target and Actual. Read the README sheet first if there is one.
-2. Copy the data to a new sheet `Register_Clean`. Do all changes there.
+2. Copy the data to a new sheet named after the source sheet plus `_Clean` (for example Register_Q3 becomes `Register_Q3_Clean`). Do all changes there.
 3. **Currencies:** use ISO codes only. € / Euro / eur / "EUR " become `EUR`, zł / Zloty become `PLN`. Count KPIs (policies, complaints) have no currency.
 4. **Dates:** convert every date to a real Excel date shown as `yyyy-mm-dd`. Text such as 2026-03-04, 04.03.2026, 4 Mar 2026 counts as a date. Slash dates (03/14/2026) are month/day/year. <!-- Change this rule to fit your team -->
 5. **Names:** for Country, Business_Unit and KPI, use the most common spelling in the column (Deutschland and DE become Germany, Kfz and Car become Motor, GWP becomes Gross written premium). Status must be one of On track, At risk, Off track.
@@ -31,8 +31,8 @@ Below the table, add one row labelled `Total` with: number of rows, number of On
 
 ## Output rules
 - Column order: Entry_ID, Country, Business_Unit, KPI, Month, Target, Actual, Currency, Reported_On, Owner, Status, Comment, Data_Flags, Variance_vs_Target.
-- Format the data as an Excel table named `Register_Clean`. Header row bold, white text on charcoal #242424, freeze the header row. <!-- Change this rule to fit your team -->
-- Keep the original sheet untouched. All output goes to `Register_Clean` and `Change_Log`.
+- Format the data as an Excel table named `<SourceSheet>_Clean`. Header row bold, white text on charcoal #242424, freeze the header row. <!-- Change this rule to fit your team -->
+- Keep the original sheet untouched. All output goes to `<SourceSheet>_Clean` and `Change_Log`.
 - Monetary values stay in thousands of the original currency.
 
 ## Don't

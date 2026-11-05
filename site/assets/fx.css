@@ -339,3 +339,15 @@ a.node:hover b { color: var(--red); }
 .switch > span { font-size: 24px; }
 .switch p { margin: 4px 0 10px; color: var(--text); }
 .use-steps { padding-left: 22px; margin: 4px 0 8px; display: grid; gap: 6px; }
+
+/* ---------- tasks inside a step ---------- */
+.task { padding: 22px 0 8px; border-top: 1px dashed var(--line); }
+.task:first-of-type { border-top: 0; padding-top: 6px; }
+.task-h { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; font-size: clamp(22px, 2.6vw, 28px); letter-spacing: -.02em; margin: 0 0 10px; }
+.t-letter { display: inline-grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--red-deep); color: #fff; font-size: 17px; }
+.task.adv .t-letter { background: #242424; }
+.t-open { font-size: 17px; margin: 0 0 8px; }
+.task-nav { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 12px; }
+.task-nav a { font-size: 14px; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line); background: #fff; color: var(--text); text-decoration: none; }
+.task-nav a b { color: var(--red); margin-right: 4px; }
+.sheet-line { font-size: 17px; margin: 10px 0 4px; }

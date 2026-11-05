@@ -44,7 +44,7 @@
     const items = [['0', 'Base camp', null]].concat(T.steps.map((st, i) => [String(i + 1), st.title, i + 1]), [['quests', 'Side quests', 'q'], ['share', 'Share-out', 'share']]);
     $('#rail').innerHTML = items.map(([id, label, n]) => {
       const done = n === 'q' ? T.sideQuests.some((q) => ADV.state.quests[q.id]) : n === 'share' ? !!ADV.state.seen[`${key}-share`] : n ? isDone(n) : false;
-      const opt = n && typeof n === 'number' && T.steps[n - 1].level === 'advanced';
+      const opt = false;
       const cur = String(s) === id;
       const icon = done ? '✓' : n === 'q' ? '★' : n === 'share' ? '🎤' : n || '⌂';
       return `<li class="${done ? 'done' : ''} ${opt ? 'opt' : ''}"><a href="${url(id)}" ${cur ? 'aria-current="step"' : ''}><span class="dot" aria-hidden="true">${icon}</span><span>${esc(label)}</span>${done ? '<span class="sr-only">(done)</span>' : ''}</a></li>`;
@@ -100,12 +100,12 @@
         <p class="row" style="margin-top:18px"><a class="btn red" href="${T.web[1]}" target="_blank" rel="noopener">Open ${T.web[0]} ↗</a></p></div></div>
       <div class="beat"><h3><b>2</b>Get the files</h3><div>
         <p>Everything for this trail in one download (${T.kit.size}): ${T.kit.contents.map((c) => `<code>${c}</code>`).join(', ')}.</p>
-        <p class="row"><a class="btn red" href="${T.kit.file}" download>Get the kit ↓</a><span class="small muted">${ADV.label}.</span></p>
+        <p class="row">${T.workbook ? `<a class="btn red" href="${T.workbook.file}" download>${T.workbook.name} ↓</a><a class="btn ghost" href="${T.kit.file}" download>Whole kit ↓</a>` : `<a class="btn red" href="${T.kit.file}" download>Get the kit ↓</a>`}<span class="small muted">${ADV.label}.</span></p>
         <ol class="muted">${T.setup.map((x) => `<li>${x}</li>`).join('')}</ol>
-        <p class="small muted">Each step also has its own start file to download, so you can skip ahead without the earlier results.</p></div></div>
+        <p class="small muted">${T.workbook ? 'Prepared <b>_Ready</b> sheets in the same workbook let you skip ahead without the earlier results.' : 'You can skip ahead at any time: every step works with the files in the kit.'}</p></div></div>
       <div class="beat"><h3><b>3</b>The route</h3><div>
         <p class="muted">Prompts first, skills later. You try each task by hand; when it’s something you’d do again and again, you turn it into a skill${key === 'cos' ? ' or an agent' : ''}.</p>
-        <div class="path-line">${T.steps.map((x, i) => `<a class="node ${x.level === 'advanced' ? 'opt' : ''}" href="${url(i + 1)}"><b>${i + 1}. ${x.title}</b><span>${x.time} min${x.level === 'advanced' ? ' · Advanced' : ''}${x.test ? ' · 🧪' : ''}</span></a>`).join('')}</div>
+        <div class="path-line">${T.steps.map((x, i) => `<a class="node" href="${url(i + 1)}"><b>${i + 1}. ${x.title}</b><span>${x.time} min · ${x.tasks.length} task${x.tasks.length > 1 ? 's' : ''}${x.test || x.tasks.some((t) => t.test) ? ' · 🧪' : ''}</span></a>`).join('')}</div>
         ${levelNote()}
         <p class="small muted">Basic and Advanced follow the same steps. Advanced groups move faster and skip ahead. 🧪 marks a step we’re still testing in ERGO’s tenant.</p></div></div>
       ${trouble()}
@@ -113,39 +113,53 @@
       ${nav(['index.html', 'Start'], [url(1), 'Step 1: ' + T.steps[0].title])}`;
   };
 
+  const taskBits = (x) => [
+    x.open ? `<p class="t-open">Open <b>${esc(x.open)}</b>.</p>` : '',
+    x.switchTo ? switchBox(x.switchTo) : '',
+    x.upload ? uploadBlock(x.upload) : '',
+    x.intro ? `<p>${x.intro}</p>` : '',
+    x.how ? `<div class="muted how">${x.how}</div>` : '',
+    x.prompt ? `<p class="muted">Copy this into Copilot:</p>${ADV.promptBox(x.prompt)}` : '',
+    x.prompt2 ? `<p class="v-label">Then</p>${ADV.promptBox(x.prompt2)}` : '',
+    (x.variants || []).map(variant).join(''),
+    x.build ? `<div class="byo-parts build">${x.build.map(([h, t], i) => `<div><span class="num">${i + 1}</span><b>${h}</b><p>${t}</p></div>`).join('')}</div>` : '',
+    x.use ? `<p class="v-label">${esc(x.use.label)}</p><ol class="use-steps">${x.use.steps.map((s) => `<li>${s}</li>`).join('')}</ol>` : '',
+    x.more ? variant([x.more.label, x.more.prompt]) : '',
+    x.ideas ? `<p class="v-label">Make it yours: add one idea at a time</p><div class="ideas">${x.ideas.map((s) => `<button type="button" class="idea" data-copy="${esc(s)}">${esc(s)} <span aria-hidden="true">⧉</span></button>`).join('')}</div>` : '',
+    x.waiting ? `<div class="waiting card"><span aria-hidden="true">⏳</span><div><b>While you wait</b><p>${x.waiting.text}</p></div></div>` : '',
+    x.alt ? `<div class="alt card"><p class="eyebrow">Plan B · ${esc(x.alt.label)}</p>${x.alt.files ? `<div class="files">${x.alt.files.map(fileBtn).join('')}</div>` : ''}<p>${x.alt.text}</p>${x.alt.prompt ? ADV.promptBox(x.alt.prompt) : ''}</div>` : '',
+    x.skillFiles ? `<p class="v-label">Skill files</p>${skillDownloads(x.skillFiles)}` : '',
+    x.note ? `<p class="note-line">ℹ️ ${x.note}</p>` : '',
+    media(x.media),
+  ].join('');
+
   const stepPage = (n) => {
     const st = T.steps[n - 1];
-    const runBits = [
-      st.intro ? `<p>${st.intro}</p>` : '',
-      st.prompt ? `<p class="muted">Copy this into Copilot:</p>${ADV.promptBox(st.prompt)}` : '',
-      st.prompt2 ? `<p class="v-label">Then</p>${ADV.promptBox(st.prompt2)}` : '',
-      (st.variants || []).map(variant).join(''),
-      st.build ? `<p class="v-label">Then shape it</p><div class="byo-parts build">${st.build.map(([h, t], i) => `<div><span class="num">${i + 1}</span><b>${h}</b><p>${t}</p></div>`).join('')}</div>` : '',
-      st.use ? `<p class="v-label">${esc(st.use.label)}</p><ol class="use-steps">${st.use.steps.map((x) => `<li>${x}</li>`).join('')}</ol>` : '',
-      st.more ? variant([st.more.label, st.more.prompt]) : '',
-      st.ideas ? `<p class="v-label">Make it yours: add one idea at a time</p><div class="ideas">${st.ideas.map((x) => `<button type="button" class="idea" data-copy="${esc(x)}">${esc(x)} <span aria-hidden="true">⧉</span></button>`).join('')}</div>` : '',
-      st.alt ? `<div class="alt card"><p class="eyebrow">Plan B · ${esc(st.alt.label)}</p>${st.alt.files ? `<div class="files">${st.alt.files.map(fileBtn).join('')}</div>` : ''}<p>${st.alt.text}</p>${st.alt.prompt ? ADV.promptBox(st.alt.prompt) : ''}</div>` : '',
-      st.note ? `<p class="note-line">ℹ️ ${st.note}</p>` : '',
+    const letters = 'ABCDEF';
+    const files = st.files || [];
+    const wb = T.workbook;
+    const openBits = [
+      wb ? `<div class="files">${fileBtn([wb.file, wb.name])}${files.map(fileBtn).join('')}</div><p class="small muted">The same workbook all session. Already have it open? Just switch to the sheet below.</p>` : '',
+      !wb && files.length ? `<div class="files">${files.map(fileBtn).join('')}</div><p class="small muted">Already downloaded with the kit. Upload to OneDrive if you haven’t yet.</p>` : '',
+      st.sheet ? `<p class="sheet-line">📄 Sheet: <b>${esc(st.sheet)}</b></p>` : '',
+      st.open ? `<p style="font-size:19px">Open <b>${esc(st.open)}</b>.</p>` : '',
+      st.intro ? `<p class="muted">${st.intro}</p>` : '',
     ].join('');
-    return `<header class="step-head"><div class="meta"><span class="pill">Step ${n} of ${T.steps.length}</span><span class="pill">${st.time} min</span>${st.level === 'advanced' ? '<span class="pill">Advanced</span>' : ''}${st.switchTo ? `<span class="pill red">↗ ${esc(st.switchTo.pill)}</span>` : ''}${st.test ? testPill : ''}</div>
+    const tasks = st.tasks.map((x, i) => `<section class="task ${x.level === 'advanced' ? 'adv' : ''}" id="task-${i + 1}"><h2 class="task-h"><span class="t-letter">${letters[i]}</span>${esc(x.title)}${x.level === 'advanced' ? ' <span class="pill">Advanced</span>' : ''}${x.test ? ` ${testPill}` : ''}${x.switchTo ? ` <span class="pill red">↗ ${esc(x.switchTo.pill)}</span>` : ''}</h2>${taskBits(x)}</section>`).join('');
+    return `<header class="step-head"><div class="meta"><span class="pill">Step ${n} of ${T.steps.length}</span><span class="pill">${st.time} min</span><span class="pill">${st.tasks.length} task${st.tasks.length > 1 ? 's' : ''}</span>${st.test ? testPill : ''}</div>
         <h1 class="display" style="font-size:clamp(40px,7vw,84px)">${st.title}</h1><p class="lede">${st.goal}</p></header>
       ${skipBar(n)}
       <div data-fx="profile"></div>
-      <div class="beat"><h3><b>①</b>Open</h3><div>
-        ${st.start ? `<div class="files">${st.start.map(fileBtn).join('')}</div><p class="small muted">Start file${st.start.length > 1 ? 's' : ''} for this step. ${st.switchTo ? 'Upload it to OneDrive so you can attach it in Copilot Chat.' : `Upload to OneDrive and open in ${T.web[0]}, or keep working in your own file.`}</p>` : ''}
-        ${st.open ? `<p style="font-size:19px">Open <b>${esc(st.open)}</b>.</p>` : ''}${st.switchTo ? switchBox(st.switchTo) : ''}${st.how ? `<div class="muted how">${st.how}</div>` : ''}</div></div>
-      <div class="beat"><h3><b>②</b>Ask Copilot</h3><div>
-        ${st.upload ? uploadBlock(st.upload) : ''}
-        ${runBits}
-        ${st.waiting ? `<div class="waiting card"><span aria-hidden="true">⏳</span><div><b>While you wait</b><p>${st.waiting.text}</p>${st.waiting.href ? `<a class="btn small red" href="${url(st.waiting.href)}" target="_blank" rel="noopener">Open step ${st.waiting.href} in a new tab ↗</a>` : ''}</div></div>` : ''}
-        ${st.skillFiles ? `<p class="v-label">Skill files for this step</p>${skillDownloads(st.skillFiles)}` : ''}
-        ${st.skills && st.skills.length ? `<div class="uses"><span class="small muted">Look for:</span>${st.skills.map((x) => `<span class="pill red">${ADV.skills[x].kind === 'agent' ? '' : 'Loaded '}${ADV.skills[x].title}</span>`).join('')}</div>` : ''}
+      ${openBits ? `<div class="beat"><h3><b>①</b>Open</h3><div>${openBits}</div></div>` : ''}
+      <div class="beat"><h3><b>${openBits ? '②' : '①'}</b>Ask Copilot</h3><div>
+        ${st.tasks.length > 1 ? `<nav class="task-nav" aria-label="Tasks in this step">${st.tasks.map((x, i) => `<a href="#task-${i + 1}"><b>${letters[i]}</b> ${esc(x.title)}</a>`).join('')}</nav>` : ''}
+        ${tasks}
+        ${st.skills && st.skills.length ? `<div class="uses"><span class="small muted">Look for:</span>${st.skills.map((s) => `<span class="pill red">${ADV.skills[s].kind === 'agent' ? '' : 'Loaded '}${ADV.skills[s].title}</span>`).join('')}</div>` : ''}
         <p class="wow">${st.wow}</p>
-        ${media(st.media)}
       </div></div>
-      ${st.yours ? `<div class="beat"><h3><b>③</b>Make it yours</h3><div><p>${st.yours.text}</p>${st.yours.prompt ? ADV.promptBox(st.yours.prompt) : ''}</div></div>` : ''}
-      <div class="beat"><h3><b>${st.yours ? '④' : '③'}</b>Done?</h3><div>
-        <p class="muted">You’re there when you see:</p><ul class="checks">${st.check.map((c) => `<li>${esc(c)}</li>`).join('')}</ul>
+      ${st.yours ? `<div class="beat"><h3><b>★</b>Make it yours</h3><div><p>${st.yours.text}</p>${st.yours.prompt ? ADV.promptBox(st.yours.prompt) : ''}</div></div>` : ''}
+      <div class="beat"><h3><b>✓</b>Done?</h3><div>
+        <p class="muted">You’re there when you see:</p><ul class="checks">${st.check.map((s) => `<li>${esc(s)}</li>`).join('')}</ul>
         <div class="done-row" style="margin-top:22px"><button class="btn done-btn ${isDone(n) ? 'is-done' : ''}" type="button" aria-pressed="${isDone(n)}">${isDone(n) ? '✓ Done' : 'Mark as done'}</button>
         ${n < T.steps.length ? `<a class="linkish" href="${url(n + 1)}">Skip to step ${n + 1} →</a>` : `<a class="linkish" href="${url('share')}">Skip to the share-out →</a>`}</div></div></div>
       ${trouble()}
@@ -211,7 +225,7 @@
   let profile = null;
   const pfEl = document.querySelector('[data-fx="profile"]'); if (pfEl) profile = fx.profile(pfEl, key);
   const stepObj = typeof s === 'number' && s > 0 ? T.steps[s - 1] : null;
-  const scrubEl = document.querySelector('[data-fx="scrub"]'); if (scrubEl) fx.scrub(scrubEl, stepObj.media);
+  const scrubEl = document.querySelector('[data-fx="scrub"]'); if (scrubEl) fx.scrub(scrubEl, stepObj.tasks.map((x) => x.media).find((m) => m && m.type === 'morph'));
   const panelEl = document.querySelector('[data-fx="panel"]'); if (panelEl) fx.panel(panelEl);
   const amEl = document.querySelector('[data-fx="addmenu"]'); if (amEl) fx.addmenu(amEl, { pick: 'upload' });
 
@@ -223,7 +237,7 @@
     rail();
     if (now) {
       const dot = document.querySelectorAll('#rail .dot')[s]; if (dot) dot.classList.add('stamp');
-      ADV.collectSkills(stepObj.skills || []);
+      ADV.collectSkills(ADV.stepSkills(stepObj));
       if (profile) profile.update();
       const all = T.steps.every((x, i) => ADV.state.done[`${key}-${i + 1}`]);
       if (all && !ADV.state.seen[`${key}-complete`]) { ADV.update((st) => { st.seen[`${key}-complete`] = true; }); ADV.confetti(); ADV.toast('Summit reached. Time to prepare your share-out.'); }

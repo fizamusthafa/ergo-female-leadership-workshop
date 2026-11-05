@@ -44,16 +44,22 @@
   document.title = `${T.name} · print view`;
   const P = (p, label) => `<div class="p">${label ? `<small>${esc(label)}</small>` : ''}${esc(p)}</div>`;
   const files = (list) => (list || []).map(([, l]) => `<code>${esc(l)}</code>`).join(', ');
+  const taskHtml = (x, i) => `<h3>${'ABCDEF'[i]} · ${esc(x.title)}${x.level === 'advanced' ? ' (Advanced)' : ''}</h3>
+      ${x.open ? `<p><b>Open:</b> ${esc(x.open)}</p>` : ''}${x.switchTo ? `<p><b>${x.switchTo.title}.</b> ${x.switchTo.text}</p>` : ''}
+      ${x.upload ? `<p><b>Add the skill</b> <code>${x.upload.skill}</code>: ${ADV.upload[x.upload.app].steps.map((s) => s.text).join(' ')}</p>` : ''}
+      ${x.intro ? `<p>${x.intro}</p>` : ''}${x.how ? `<div>${x.how}</div>` : ''}
+      ${x.prompt ? P(x.prompt) : ''}${x.prompt2 ? P(x.prompt2, 'Then') : ''}
+      ${(x.variants || []).map(([l, p, e]) => (e && e.files ? `<p><b>File:</b> ${files(e.files)}</p>` : '') + (e && e.how ? `<p>${e.how}</p>` : '') + P(p, l)).join('')}
+      ${x.build ? `<ul>${x.build.map(([h, t]) => `<li><b>${h}:</b> ${t}</li>`).join('')}</ul>` : ''}
+      ${x.use ? `<ol>${x.use.steps.map((s) => `<li>${s}</li>`).join('')}</ol>` : ''}${x.more ? P(x.more.prompt, x.more.label) : ''}
+      ${x.ideas ? `<p><b>Ideas:</b> ${x.ideas.map(esc).join(' · ')}</p>` : ''}${x.waiting ? `<p><b>While you wait:</b> ${x.waiting.text}</p>` : ''}
+      ${x.alt ? `<p><b>Plan B (${esc(x.alt.label)}):</b> ${x.alt.text}</p>${x.alt.prompt ? P(x.alt.prompt, 'Plan B') : ''}` : ''}
+      ${x.note ? `<p class="meta">${x.note}</p>` : ''}`;
   const steps = T.steps.map((st, i) => `<section class="step"><h2>Step ${i + 1} · ${esc(st.title)}</h2>
-      <p class="meta">${esc(st.goal)} · ${st.time} min${st.level === 'advanced' ? ' · Advanced' : ''}${st.test ? ' · to be tested in ERGO’s tenant' : ''}</p>
-      ${st.start ? `<p><b>Start file:</b> ${files(st.start)}</p>` : ''}${st.switchTo ? `<p><b>${st.switchTo.title}</b> ${st.switchTo.text}</p>` : ''}${st.open ? `<p><b>Open:</b> ${esc(st.open)}</p>` : ''}
-      ${st.intro ? `<p>${st.intro}</p>` : ''}${st.how ? `<div>${st.how}</div>` : ''}
-      ${st.upload ? `<p><b>Add the skill</b> <code>${st.upload.skill}</code>: ${ADV.upload[st.upload.app].steps.map((x) => x.text).join(' ')}</p>` : ''}
-      ${st.prompt ? P(st.prompt) : ''}${st.prompt2 ? P(st.prompt2, 'Then') : ''}${(st.variants || []).map(([l, p, x]) => (x && x.files ? `<p><b>File:</b> ${files(x.files)}</p>` : '') + (x && x.how ? `<p>${x.how}</p>` : '') + P(p, l)).join('')}${st.use ? `<p><b>${esc(st.use.label)}:</b></p><ol>${st.use.steps.map((x) => `<li>${x}</li>`).join('')}</ol>` : ''}${st.more ? P(st.more.prompt, st.more.label) : ''}
-      ${st.ideas ? `<p><b>Ideas:</b> ${st.ideas.map(esc).join(' · ')}</p>` : ''}
-      ${st.alt ? `<p><b>Plan B (${esc(st.alt.label)}):</b> ${st.alt.text}</p>${st.alt.prompt ? P(st.alt.prompt, 'Plan B') : ''}` : ''}
-      ${st.waiting ? `<p><b>While you wait:</b> ${st.waiting.text}</p>` : ''}${st.note ? `<p class="meta">${st.note}</p>` : ''}
-      ${st.build ? `<ul>${st.build.map(([h, t]) => `<li><b>${h}:</b> ${t}</li>`).join('')}</ul>` : ''}
+      <p class="meta">${esc(st.goal)} · ${st.time} min${st.test ? ' · to be tested in ERGO’s tenant' : ''}</p>
+      ${T.workbook ? `<p><b>Workbook:</b> <code>${T.workbook.name}</code>${st.sheet ? `, sheet <b>${esc(st.sheet)}</b>` : ''}</p>` : ''}
+      ${st.files ? `<p><b>Files:</b> ${files(st.files)}</p>` : ''}${st.open ? `<p><b>Open:</b> ${esc(st.open)}</p>` : ''}${st.intro ? `<p>${st.intro}</p>` : ''}
+      ${st.tasks.map(taskHtml).join('')}
       ${st.yours && st.yours.prompt ? P(st.yours.prompt, 'Make it yours') : ''}
       <h3>Done when</h3><ul>${st.check.map((c) => `<li>${esc(c)}</li>`).join('')}</ul></section>`).join('');
   const byo = T.byo ? `<section class="step"><h2>Side quest · Bring your own skill</h2><p>${T.byo.why}</p>

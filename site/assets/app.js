@@ -61,6 +61,8 @@
   ADV.clippyImg = '<img src="assets/img/brands/clippy.png" alt="Clippy, the Office assistant" width="150" height="150">';
 
   // ---------- skills and progress ----------
+  // Skills a step adds: its own list plus any uploaded or downloadable skill in its tasks.
+  ADV.stepSkills = (st) => [...new Set((st.skills || []).concat(...(st.tasks || [st]).map((x) => (x.upload ? [x.upload.skill] : []).concat(x.skillFiles || []))))];
   ADV.collectSkills = (names) => {
     const fresh = names.filter((n) => !ADV.state.skills[n]);
     if (!fresh.length) return;
@@ -128,7 +130,7 @@
     const s = ADV.state; const owned = Object.keys(ADV.skills).filter((k) => s.skills[k]);
     if (count) count.textContent = owned.length + Object.keys(s.badges).length;
     if (!drawer) return;
-    const trailSkills = (k) => { const t = ADV.trails[k]; return t ? [...new Set(t.steps.flatMap((x) => (x.skills || []).concat(x.upload ? [x.upload.skill] : [], x.skillFiles || [])).concat(t.sideQuests.map((q) => q.skill).filter(Boolean)))] : []; };
+    const trailSkills = (k) => { const t = ADV.trails[k]; return t ? [...new Set(t.steps.flatMap(ADV.stepSkills).concat(t.sideQuests.map((q) => q.skill).filter(Boolean)))] : []; };
     const order = [...new Set(trailSkills(s.trail).concat(Object.keys(ADV.skills)))];
     const skillText = window.SKILL_TEXT || {};
     const cards = order.map((k) => {

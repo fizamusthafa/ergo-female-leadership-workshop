@@ -31,11 +31,11 @@
   ADV.shell({ active: 'library' });
   const esc = ADV.esc;
   const card = (p, label) => `<article class="lib-card"><q>${esc(p)}</q>${label ? `<p class="preview"><span class="small">${esc(label)}</span></p>` : ''}<button class="btn small ghost" type="button" data-copy="${esc(p)}">Copy</button></article>`;
-  const stepPrompts = (st) => [].concat(
-    st.prompt ? [[st.prompt, '']] : [], st.prompt2 ? [[st.prompt2, 'Then']] : [],
-    (st.variants || []).map(([l, p]) => [p, l]), st.more ? [[st.more.prompt, st.more.label]] : [],
-    st.alt && st.alt.prompt ? [[st.alt.prompt, 'Plan B']] : [], st.yours && st.yours.prompt ? [[st.yours.prompt, 'Make it yours']] : [],
-    (st.ideas || []).map((x) => [x, 'Idea']));
+  const taskPrompts = (x, tag) => [].concat(
+    x.prompt ? [[x.prompt, tag]] : [], x.prompt2 ? [[x.prompt2, tag + ' · then']] : [],
+    (x.variants || []).map(([l, p]) => [p, tag + ' · ' + l]), x.more ? [[x.more.prompt, tag + ' · ' + x.more.label]] : [],
+    x.alt && x.alt.prompt ? [[x.alt.prompt, tag + ' · Plan B']] : [], (x.ideas || []).map((s) => [s, tag + ' · idea']));
+  const stepPrompts = (st) => st.tasks.flatMap((x, i) => taskPrompts(x, 'ABCDEF'[i] + ' · ' + x.title)).concat(st.yours && st.yours.prompt ? [[st.yours.prompt, 'Make it yours']] : []);
   const order = ['xls', 'ppt', 'cos'];
   ADV.$('#jump').innerHTML = order.map((k) => `<a class="btn small ghost" href="#t-${k}">${ADV.trails[k].group} · ${ADV.trails[k].app}</a>`).join('') + '<a class="btn small ghost" href="#more">More ideas</a>';
   ADV.$('#lib').innerHTML = order.map((k) => {
