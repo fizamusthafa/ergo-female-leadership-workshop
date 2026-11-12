@@ -1,0 +1,90 @@
+Illustrative figures for training purposes, not ERGO results
+
+From: Katrin Vogel
+Sent: Monday, 6 July 2026 08:47
+To: Performance review group
+Subject: FW: Initiative updates for the H1 review
+
+Hi all,
+
+ahead of Thursday's H1 review I've collected the latest updates on our eight initiatives below, so we have
+one place to look. Some came by mail, some from Friday's portfolio call. Please shout if anything is out of date.
+
+One unrelated thing: the 4th floor meeting rooms are closed this week for the new screens, so the review
+will be in room 2.14.
+
+Thanks,
+Katrin
+
+-----Notes from portfolio call, Friday 3 July 2026 (taken by Jonas Albrecht)-----
+
+Attendees: Katrin Vogel, Jonas Albrecht, Theresa Huber, Nikos Andreou, Tomasz Lis
+
+- Claims app relaunch (Jonas): release candidate passed user testing on 2 July. App store launch is planned
+  for 20 July as agreed. On track.
+- Fraud detection pilot (Nikos): the data extract from the claims system arrived three weeks late, so the
+  first model results will now come at the end of August instead of July. Delayed, but budget is fine.
+- Tomasz mentioned the canteen survey closes on Wednesday, please fill it in.
+- Self-service health claims (Tomasz): the document upload works in the test environment and the launch is
+  still planned for August. On track.
+- Broker portal (Theresa): single sign-on for brokers is not ready, the supplier needs more time. Go-live
+  moves from July to September. Delayed.
+
+-----Original Message-----
+From: Lucía Romero
+Sent: Thursday, 2 July 2026 17:20
+To: Katrin Vogel
+Subject: RE: Initiative updates for the H1 review
+
+Hola Katrin,
+
+quick one from Madrid: digital first notice of loss has been live in all our regions since 30 June. The old
+paper form is switched off. So from my side this one is done.
+
+Have a good weekend,
+Lucía
+
+-----Original Message-----
+From: Agnieszka Wróbel
+Sent: Thursday, 2 July 2026 10:05
+To: Katrin Vogel
+Subject: RE: Initiative updates for the H1 review
+
+Hi Katrin,
+
+the pricing model refresh is blocked at the moment. We can't load the new claims history until the data
+sharing agreement is signed, and the sign-off meeting has been moved twice. Nothing more we can do until then.
+Could you raise it on Thursday?
+
+Best regards,
+Agnieszka
+
+-----Original Message-----
+From: Sofie Maes
+Sent: Wednesday, 1 July 2026 14:32
+To: Katrin Vogel
+Subject: RE: Initiative updates for the H1 review
+
+Hi Katrin,
+
+the callback service has been running in the first contact centre team since June and customers like it.
+The second team starts on 15 July as planned, so it's on track.
+
+Groetjes,
+Sofie
+
+-----Original Message-----
+From: Katrin Vogel
+Sent: Wednesday, 1 July 2026 09:00
+To: Initiative owners
+Subject: Initiative updates for the H1 review
+
+Dear all,
+
+for the H1 review on 9 July I need a one or two line status for each initiative. Please reply by Friday.
+
+For my own one: the policy document redesign is done. The new templates were signed off by legal and have
+been in use since 1 July.
+
+Thanks,
+Katrin

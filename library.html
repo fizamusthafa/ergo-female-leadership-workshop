@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prompt library · Make Copilot yours</title>
+<link rel="icon" href="assets/img/favicon.png">
+<link rel="stylesheet" href="assets/app.css">
+<link rel="stylesheet" href="assets/fx.css">
+</head>
+<body>
+<main id="main">
+  <section style="padding-bottom:30px">
+    <div class="wrap">
+      <p class="eyebrow">Every prompt, by trail and step</p>
+      <h1 class="display" style="font-size:clamp(44px,8vw,96px)">Prompt <em>library.</em></h1>
+      <p class="lede">All prompts from the three trails in one place. Copy, paste into Copilot, done.</p>
+      <div class="row" id="jump" style="margin-top:24px"></div>
+    </div>
+  </section>
+  <section style="padding-top:20px"><div class="wrap" id="lib"></div></section>
+</main>
+<script src="assets/content.js"></script>
+<script src="assets/skills-data.js"></script>
+<script src="assets/facts-data.js"></script>
+<script src="assets/vendor/gsap.min.js"></script>
+<script src="assets/app.js"></script>
+<script src="assets/fx.js"></script>
+<script>
+(function () {
+  ADV.shell({ active: 'library' });
+  const esc = ADV.esc;
+  const card = (p, label) => `<article class="lib-card"><q>${esc(p)}</q>${label ? `<p class="preview"><span class="small">${esc(label)}</span></p>` : ''}<button class="btn small ghost" type="button" data-copy="${esc(p)}">Copy</button></article>`;
+  const taskPrompts = (x, tag) => [].concat(
+    x.prompt ? [[x.prompt, tag]] : [], x.prompt2 ? [[x.prompt2, tag + ' · then']] : [],
+    (x.variants || []).map(([l, p]) => [p, tag + ' · ' + l]), x.more ? [[x.more.prompt, tag + ' · ' + x.more.label]] : [],
+    x.alt && x.alt.prompt ? [[x.alt.prompt, tag + ' · Plan B']] : [], (x.ideas || []).map((s) => [s, tag + ' · idea']));
+  const stepPrompts = (st) => st.tasks.flatMap((x, i) => taskPrompts(x, 'ABCDEF'[i] + ' · ' + x.title)).concat(st.yours && st.yours.prompt ? [[st.yours.prompt, 'Make it yours']] : []);
+  const order = ['xls', 'ppt', 'cos'];
+  ADV.$('#jump').innerHTML = order.map((k) => `<a class="btn small ghost" href="#t-${k}">${ADV.trails[k].group} · ${ADV.trails[k].app}</a>`).join('') + '<a class="btn small ghost" href="#more">More ideas</a>';
+  ADV.$('#lib').innerHTML = order.map((k) => {
+    const T = ADV.trails[k];
+    const steps = T.steps.map((st, i) => `<div class="lib-step"><h3><a href="trail.html?t=${k}&s=${i + 1}">Step ${i + 1} · ${esc(st.title)}</a></h3><div class="grid three">${stepPrompts(st).map(([p, l]) => card(p, l)).join('')}</div></div>`).join('');
+    const quests = T.sideQuests.filter((q) => q.prompt).map((q) => card(q.prompt, q.title)).join('')
+      + (T.byo ? card(T.byo.prompt, 'Bring your own skill') + card(T.byo.builder, 'Bring your own skill · no file') : '');
+    return `<div class="lib-group" id="t-${k}"><p class="eyebrow">Trail ${T.group} · ${T.app}</p><h2 style="font-size:36px">${T.name}</h2>${steps}
+      ${quests ? `<div class="lib-step"><h3><a href="trail.html?t=${k}&s=quests">Side quests</a></h3><div class="grid three">${quests}</div></div>` : ''}</div>`;
+  }).join('') + `<div class="lib-group" id="more"><p class="eyebrow">Works on anything</p><h2 style="font-size:36px">More ideas</h2>${ADV.library.map((g) => `<div class="lib-step"><h3>${g.mood}</h3><div class="grid three">${g.items.map(([p, out]) => card(p, 'You’ll get: ' + out)).join('')}</div></div>`).join('')}
+    <div class="lib-step"><h3>Your share-out</h3><div class="grid three">${card(ADV.shareOut.prompt, 'Prepare your 2-minute share-out')}</div></div></div>`;
+})();
+</script>
+</body>
+</html>

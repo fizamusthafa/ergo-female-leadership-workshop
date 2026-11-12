@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Anatomy of a skill · Make Copilot yours</title>
+<link rel="icon" href="assets/img/favicon.png">
+<link rel="stylesheet" href="assets/app.css">
+<link rel="stylesheet" href="assets/fx.css">
+</head>
+<body>
+<main id="main">
+  <section class="hero" style="min-height:70vh">
+    <div class="narrow">
+      <p class="eyebrow reveal-up">Three minutes before you start</p>
+      <h1 class="display reveal-up d1" style="font-size:clamp(44px,8vw,96px)">Anatomy of a <em>skill.</em></h1>
+      <p class="lede reveal-up d2" style="margin:0 auto">A skill is a short text file. It tells Copilot how your team does a recurring task, so you can simply ask, and Copilot works your way.</p>
+      <p class="reveal-up d3 muted small" style="margin-top:30px">Scroll ↓</p>
+    </div>
+  </section>
+
+  <section id="source">
+    <div class="wrap">
+      <p class="eyebrow">Where skills come from</p>
+      <h2>Study how the best decks work. <em>Write it down.</em></h2>
+      <p class="lede">We looked at how published results decks are built: slide order, KPI tiles, headline style, chart rules. Then we wrote those patterns into skills, never the content.</p>
+      <div class="source-flow" style="margin-top:44px" id="flow">
+        <figure><div class="wire" aria-hidden="true"><i class="t"></i><div class="tiles"><i></i><i></i><i></i><i></i></div><div class="body"><i></i><i></i><i></i></div></div><figcaption>A published results deck</figcaption></figure>
+        <span class="arrow" aria-hidden="true">→</span>
+        <figure><ul class="rules-list" id="rules"></ul><figcaption>Patterns, not figures</figcaption></figure>
+        <span class="arrow" aria-hidden="true">→</span>
+        <figure><pre class="mini-skill">---
+name: ergo-board-pack
+description: "Use when I ask
+  for a board pack…"
+---
+1. The message
+2. KPI strip
+3. What changed and why
+4. Risks and outlook
+5. Decision needed</pre><figcaption>A skill Copilot can follow</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <p class="eyebrow">Inside the file</p>
+      <h2 style="max-width:18ch">Four parts. That’s all.</h2>
+      <div class="diagram" id="diagram" aria-hidden="true"></div>
+      <div class="anatomy" style="margin-top:30px">
+        <div class="sticky"><pre class="code" id="code" aria-label="The ergo-board-pack SKILL.md file"></pre></div>
+        <div class="beats" id="beats"></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <p class="eyebrow">Why bother?</p>
+      <h2 style="max-width:20ch">Same prompt. Two routes up the <em>mountain.</em></h2>
+      <p class="lede">Both are Copilot, and both are right. The skill adds your house rules.</p>
+      <div data-fx="race"></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <p class="eyebrow">Skill playground</p>
+      <h2 style="max-width:20ch">Change a rule. <em>Watch.</em></h2>
+      <p class="lede">These four lines come from the real ergo-brand skill. Flip them and see what Copilot would do differently.</p>
+      <div data-fx="playground"></div>
+    </div>
+  </section>
+
+  <section class="center">
+    <div class="narrow">
+      <h2>Your turn.</h2>
+      <p class="lede" style="margin:0 auto 30px">You never name the skill. You just ask, the way you would ask a colleague. Copilot reads the description and picks the right one.</p>
+      <div class="row" style="justify-content:center" id="cta"></div>
+    </div>
+  </section>
+</main>
+
+<script src="assets/content.js"></script>
+<script src="assets/skills-data.js"></script>
+<script src="assets/facts-data.js"></script>
+<script src="assets/vendor/gsap.min.js"></script>
+<script src="assets/app.js"></script>
+<script src="assets/fx.js"></script>
+<script>
+(function () {
+  ADV.shell({ active: 'anatomy' });
+  const $ = ADV.$, A = ADV.anatomy;
+  $('#rules').innerHTML = A.rules.map(([k, v], i) => `<li style="transition-delay:${i * 0.12}s"><b>${k}</b>${v}</li>`).join('');
+
+  // Build the code panel from the real SKILL.md text.
+  const text = (window.SKILL_TEXT || {})[A.skill] || '';
+  const lines = text.replace(/\n+$/, '').split('\n');
+  let part = 'name';
+  const tagged = lines.map((l) => {
+    for (const p of A.parts) if (p.match.test(l)) part = p.key;
+    if (l === '---' && part === 'name') return { l, part: 'name' };
+    if (/^# /.test(l)) part = 'how';
+    return { l, part };
+  });
+  $('#code').innerHTML = tagged.map((t, i) => `<span class="ln" data-part="${t.part}" data-i="${i}">${ADV.esc(t.l) || ' '}</span>`).join('');
+  $('#diagram').innerHTML = A.parts.map((p, i) => `<span data-part="${p.key}">${i + 1}. ${p.title}</span>${i < A.parts.length - 1 ? '<span style="border:0;padding:8px 0">→</span>' : ''}`).join('');
+  $('#beats').innerHTML = A.parts.map((p, i) => `<div class="a-beat" data-part="${p.key}"><p class="num">Part ${i + 1}</p><h3 style="font-size:clamp(28px,4vw,42px)">${p.title}</h3><p class="lede">${p.text}</p></div>`).join('');
+
+  const order = A.parts.map((p) => p.key);
+  const activate = (key) => {
+    const upto = order.indexOf(key);
+    document.querySelectorAll('#code .ln').forEach((ln) => {
+      const idx = order.indexOf(ln.dataset.part);
+      ln.classList.toggle('on', idx <= upto); ln.classList.toggle('hl', idx === upto);
+    });
+    document.querySelectorAll('#diagram [data-part]').forEach((s) => s.classList.toggle('on', order.indexOf(s.dataset.part) <= upto));
+    document.querySelectorAll('.a-beat').forEach((b) => b.classList.toggle('active', b.dataset.part === key));
+    const first = document.querySelector(`#code .ln[data-part="${key}"]`);
+    const panel = $('#code');
+    if (first && panel.scrollHeight > panel.clientHeight) panel.scrollTo({ top: Math.max(0, first.offsetTop - 40), behavior: ADV.reduce ? 'auto' : 'smooth' });
+  };
+  const io = new IntersectionObserver((entries) => entries.forEach((e) => { if (e.isIntersecting) activate(e.target.dataset.part); }), { rootMargin: '-45% 0px -45% 0px' });
+  document.querySelectorAll('.a-beat').forEach((b) => io.observe(b));
+  activate('name');
+  if (ADV.reduce) document.querySelectorAll('#code .ln').forEach((ln) => ln.classList.add('on'));
+
+  const flow = new IntersectionObserver((entries) => entries.forEach((e) => { if (e.isIntersecting) { $('#flow').classList.add('in'); flow.disconnect(); } }), { threshold: 0.35 });
+  flow.observe($('#flow'));
+
+  const next = ADV.param('next') || ADV.state.trail;
+  const t = next && ADV.trails[next] && !ADV.trails[next].comingSoon ? next : null;
+  $('#cta').innerHTML = t
+    ? `<a class="btn red" href="trail.html?t=${t}">Start ${ADV.trails[t].name} →</a>`
+    : `<a class="btn red" href="index.html#choose">Choose your trail →</a>`;
+  ADV.update((s) => { s.seen.anatomy = true; });
+  ADV.fx.race(document.querySelector('[data-fx="race"]'));
+  ADV.fx.playground(document.querySelector('[data-fx="playground"]'));
+  setTimeout(() => ADV.fx.buddy.say(ADV.buddyLines.anatomy, { soft: true }), ADV.reduce ? 0 : 1200);
+})();
+</script>
+</body>
+</html>

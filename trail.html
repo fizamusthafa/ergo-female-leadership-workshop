@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trail · Make Copilot yours</title>
+<link rel="icon" href="assets/img/favicon.png">
+<link rel="stylesheet" href="assets/app.css">
+<link rel="stylesheet" href="assets/fx.css">
+</head>
+<body>
+<nav class="rail" aria-label="Trail progress"><ol class="wrap" id="rail"></ol></nav>
+<main id="main"><div class="wrap" id="page"></div></main>
+
+<script src="assets/content.js"></script>
+<script src="assets/skills-data.js"></script>
+<script src="assets/facts-data.js"></script>
+<script src="assets/vendor/gsap.min.js"></script>
+<script src="assets/app.js"></script>
+<script src="assets/fx.js"></script>
+<script>
+(function () {
+  ADV.shell({ active: 'trail' });
+  const $ = ADV.$, esc = ADV.esc;
+  const key = ADV.param('t') || ADV.state.trail || 'xls';
+  const T = ADV.trails[key];
+  if (!T) { location.replace('index.html#choose'); return; }
+  const lvl = ADV.param('level'), room = ADV.param('room');
+  ADV.update((st) => {
+    st.trail = key;
+    if (lvl && ADV.levels[lvl]) st.level = lvl;
+    if (room && ADV.rooms.some((r) => r.id === room)) st.room = room;
+  });
+  const sParam = ADV.param('s');
+  const s = sParam === 'quests' || sParam === 'share' ? sParam : Math.max(0, Math.min(T.steps.length, parseInt(sParam || '0', 10) || 0));
+  const url = (x) => `trail.html?t=${key}&s=${x}`;
+  const isDone = (i) => !!ADV.state.done[`${key}-${i}`];
+  const myRoom = ADV.rooms.find((r) => r.id === ADV.state.room && r.trail === key);
+  const level = myRoom ? myRoom.level : (ADV.state.level || null);
+  document.title = `${T.name} · Make Copilot yours`;
+
+  // ---------- progress rail ----------
+  const rail = () => {
+    const items = [['0', 'Base camp', null]].concat(T.steps.map((st, i) => [String(i + 1), st.title, i + 1]), [['quests', 'Side quests', 'q'], ['share', 'Share-out', 'share']]);
+    $('#rail').innerHTML = items.map(([id, label, n]) => {
+      const done = n === 'q' ? T.sideQuests.some((q) => ADV.state.quests[q.id]) : n === 'share' ? !!ADV.state.seen[`${key}-share`] : n ? isDone(n) : false;
+      const opt = false;
+      const cur = String(s) === id;
+      const icon = done ? '✓' : n === 'q' ? '★' : n === 'share' ? '🎤' : n || '⌂';
+      return `<li class="${done ? 'done' : ''} ${opt ? 'opt' : ''}"><a href="${url(id)}" ${cur ? 'aria-current="step"' : ''}><span class="dot" aria-hidden="true">${icon}</span><span>${esc(label)}</span>${done ? '<span class="sr-only">(done)</span>' : ''}</a></li>`;
+    }).join('');
+  };
+  rail();
+
+  // ---------- building blocks ----------
+  const media = (m) => {
+    if (!m) return '';
+    if (m.type === 'compare') return `<figure><div class="device"><div class="bar"><i></i><i></i><i></i></div>
+      <div class="compare" style="--pos:50%"><img src="${m.before}" alt="Before: the slide without the skill"><img class="after" src="${m.after}" alt="After: the same slide with the skill">
+      <span class="tag l">Before</span><span class="tag r">With skill</span><span class="handle" aria-hidden="true"></span>
+      <input type="range" min="0" max="100" value="50" aria-label="Drag to compare before and after"></div></div><figcaption>${m.caption}</figcaption></figure>`;
+    if (m.type === 'morph') return '<div data-fx="scrub"></div>';
+    if (m.type === 'panel') return '<div data-fx="panel"></div>';
+    return `<figure><div class="device"><div class="bar"><i></i><i></i><i></i></div><img src="${m.image}" alt="${esc(m.caption)}" loading="lazy"></div><figcaption>${m.caption}</figcaption></figure>`;
+  };
+  const nav = (prev, next) => `<div class="next-nav">${prev ? `<a class="btn ghost" href="${prev[0]}">← ${esc(prev[1])}</a>` : '<span></span>'}${next ? `<a class="btn red" href="${next[0]}">${esc(next[1])} →</a>` : ''}</div>`;
+  const fileBtn = ([href, label]) => `<a class="file-chip" href="${href}" download><span aria-hidden="true">${/\.xlsx$/.test(href) ? '📗' : /\.pptx$/.test(href) ? '📙' : /\.docx$/.test(href) ? '📘' : '📄'}</span>${esc(label)}<span class="dl" aria-hidden="true">↓</span></a>`;
+  const variant = ([label, p, x]) => `<p class="v-label">${esc(label)}</p>${x && x.files ? `<div class="files">${x.files.map(fileBtn).join('')}</div>` : ''}${x && x.how ? `<p class="muted how">${x.how}</p>` : ''}${ADV.promptBox(p)}`;
+  const switchBox = (w) => `<div class="switch card"><span aria-hidden="true">↗️</span><div><b>${w.title}</b><p>${w.text}</p><a class="btn small red" href="${w.url}" target="_blank" rel="noopener">${w.cta} ↗</a></div></div>`;
+  const testPill = '<span class="pill test" title="Still being tested in ERGO’s tenant">🧪 To be tested in ERGO’s tenant</span>';
+  const trouble = () => `<details class="trouble"><summary>🛠️ Something not working? Troubleshooting</summary>
+      <dl>${ADV.trouble.concat(T.trouble || []).map(([q, a]) => `<dt>${q}</dt><dd>${a}</dd>`).join('')}</dl></details>`;
+  const skillDownloads = (keys) => `<div class="pack-files">${keys.map((k) => { const sk = ADV.skills[k]; return `<div class="pack-file"><span class="pf-ic" aria-hidden="true">${(ADV.gear[k] || ['🎒'])[0]}</span><span><b>${sk.title}</b><code>${k}</code></span>
+      <span class="pf-links">${sk.zip ? `<a href="${sk.zip}" download>ZIP ↓</a>` : ''}${sk.md ? `<a href="${sk.md}" download>SKILL.md ↓</a>` : ''}</span></div>`; }).join('')}</div>`;
+  const uploadBlock = (u) => {
+    const U = ADV.upload[u.app];
+    return `<div class="upload card"><p class="eyebrow">🎒 Add the skill</p>
+      ${skillDownloads([u.skill])}
+      <p class="small muted">${u.app === 'ppt' ? 'PowerPoint takes the ZIP as it is. Keep it zipped.' : 'Upload the ZIP, or unzip it and upload the folder with its SKILL.md.'}</p>
+      ${u.explore ? '<p style="margin:22px 0 4px"><b>What’s behind Add?</b> Four ways to add a skill. Try the menu and select each option.</p><div data-fx="addmenu"></div>' : ''}
+      <ol class="pack-steps">${U.steps.map((x) => `<li><div><p>${x.text}</p></div>${x.gif ? `<figure class="pack-clip"><img src="${x.gif}" alt="Screen recording of this step" loading="lazy"></figure>` : ''}</li>`).join('')}</ol>
+      <p class="small muted">${ADV.upload.gifNote} While it uploads, read the skill: open the SKILL.md you downloaded.</p>
+      <p class="small" style="margin-top:12px"><b>Check:</b> ask Copilot <q>Which custom skills do you have?</q> It can take a few minutes to appear.</p></div>`;
+  };
+  const skipBar = (n) => `<nav class="skipbar" aria-label="Skip to a step"><span class="small muted">Skip to step</span>${T.steps.map((x, i) => `<a href="${url(i + 1)}" class="${i + 1 === n ? 'on' : ''} ${isDone(i + 1) ? 'done' : ''}" title="${esc(x.title)}">${i + 1}</a>`).join('')}<a href="${url('quests')}" title="Side quests">★</a></nav>`;
+  const levelNote = () => {
+    if (!T.levels) return '';
+    const rows = Object.entries(T.levels).map(([k, v]) => `<li class="${level === k ? 'mine' : ''}"><b>${ADV.levels[k]}</b>${level === k ? ' <span class="pill red">you</span>' : ''}: ${v}</li>`).join('');
+    return `<ul class="levels">${rows}</ul>`;
+  };
+
+  // ---------- pages ----------
+  const baseCamp = () => {
+    const where = myRoom ? `<span class="pill red">Room ${esc(myRoom.room)} · ${ADV.levels[myRoom.level]}</span>` : '';
+    return `<header class="step-head bc-head"><div><div class="meta"><span class="pill app-pill"><img src="${T.logo}" alt="">Trail ${T.group} · ${T.app}</span><span class="pill">${esc(T.useCase)}</span>${where}</div>
+      <h1 class="display" style="font-size:clamp(44px,8vw,96px)">${T.name}</h1><p class="lede">${T.mission}</p></div><div data-fx="duo"></div></header>
+      <div data-fx="profile"></div>
+      <div class="beat"><h3><b>1</b>Before you start</h3><div>
+        <div class="basics">${ADV.basics.map(([ic, h, t]) => `<div class="basic"><span aria-hidden="true">${ic}</span><div><b>${h}</b><p>${t}</p></div></div>`).join('')}</div>
+        <p class="row" style="margin-top:18px"><a class="btn red" href="${T.web[1]}" target="_blank" rel="noopener">Open ${T.web[0]} ↗</a></p></div></div>
+      <div class="beat"><h3><b>2</b>Get the files</h3><div>
+        <p>Everything for this trail in one download (${T.kit.size}): ${T.kit.contents.map((c) => `<code>${c}</code>`).join(', ')}.</p>
+        <p class="row">${T.workbook ? `<a class="btn red" href="${T.workbook.file}" download>${T.workbook.name} ↓</a><a class="btn ghost" href="${T.kit.file}" download>Whole kit ↓</a>` : `<a class="btn red" href="${T.kit.file}" download>Get the kit ↓</a>`}<span class="small muted">${ADV.label}.</span></p>
+        <ol class="muted">${T.setup.map((x) => `<li>${x}</li>`).join('')}</ol>
+        <p class="small muted">${T.workbook ? 'Prepared <b>_Ready</b> sheets in the same workbook let you skip ahead without the earlier results.' : 'You can skip ahead at any time: every step works with the files in the kit.'}</p></div></div>
+      <div class="beat"><h3><b>3</b>The route</h3><div>
+        <p class="muted">Prompts first, skills later. You try each task by hand; when it’s something you’d do again and again, you turn it into a skill${key === 'cos' ? ' or an agent' : ''}.</p>
+        <div class="path-line">${T.steps.map((x, i) => `<a class="node" href="${url(i + 1)}"><b>${i + 1}. ${x.title}</b><span>${x.time} min · ${x.tasks.length} task${x.tasks.length > 1 ? 's' : ''}${x.test || x.tasks.some((t) => t.test) ? ' · 🧪' : ''}</span></a>`).join('')}</div>
+        ${levelNote()}
+        <p class="small muted">Basic and Advanced follow the same steps. Advanced groups move faster and skip ahead. 🧪 marks a step we’re still testing in ERGO’s tenant.</p></div></div>
+      ${trouble()}
+      <p class="small muted" style="margin-top:18px"><a href="print.html?t=${key}">Print view or PDF of this trail</a> · <a href="anatomy.html?next=${key}">What is a skill? (3 min)</a></p>
+      ${nav(['index.html', 'Start'], [url(1), 'Step 1: ' + T.steps[0].title])}`;
+  };
+
+  const taskBits = (x) => [
+    x.open ? `<p class="t-open">Open <b>${esc(x.open)}</b>.</p>` : '',
+    x.switchTo ? switchBox(x.switchTo) : '',
+    x.upload ? uploadBlock(x.upload) : '',
+    x.intro ? `<p>${x.intro}</p>` : '',
+    x.how ? `<div class="muted how">${x.how}</div>` : '',
+    x.prompt ? `<p class="muted">Copy this into Copilot:</p>${ADV.promptBox(x.prompt)}` : '',
+    x.prompt2 ? `<p class="v-label">Then</p>${ADV.promptBox(x.prompt2)}` : '',
+    (x.variants || []).map(variant).join(''),
+    x.build ? `<div class="byo-parts build">${x.build.map(([h, t], i) => `<div><span class="num">${i + 1}</span><b>${h}</b><p>${t}</p></div>`).join('')}</div>` : '',
+    x.use ? `<p class="v-label">${esc(x.use.label)}</p><ol class="use-steps">${x.use.steps.map((s) => `<li>${s}</li>`).join('')}</ol>` : '',
+    x.more ? variant([x.more.label, x.more.prompt]) : '',
+    x.ideas ? `<p class="v-label">Make it yours: add one idea at a time</p><div class="ideas">${x.ideas.map((s) => `<button type="button" class="idea" data-copy="${esc(s)}">${esc(s)} <span aria-hidden="true">⧉</span></button>`).join('')}</div>` : '',
+    x.waiting ? `<div class="waiting card"><span aria-hidden="true">⏳</span><div><b>While you wait</b><p>${x.waiting.text}</p></div></div>` : '',
+    x.alt ? `<div class="alt card"><p class="eyebrow">Plan B · ${esc(x.alt.label)}</p>${x.alt.files ? `<div class="files">${x.alt.files.map(fileBtn).join('')}</div>` : ''}<p>${x.alt.text}</p>${x.alt.prompt ? ADV.promptBox(x.alt.prompt) : ''}</div>` : '',
+    x.skillFiles ? `<p class="v-label">Skill files</p>${skillDownloads(x.skillFiles)}` : '',
+    x.note ? `<p class="note-line">ℹ️ ${x.note}</p>` : '',
+    media(x.media),
+  ].join('');
+
+  const stepPage = (n) => {
+    const st = T.steps[n - 1];
+    const letters = 'ABCDEF';
+    const files = st.files || [];
+    const wb = T.workbook;
+    const openBits = [
+      wb ? `<div class="files">${fileBtn([wb.file, wb.name])}${files.map(fileBtn).join('')}</div><p class="small muted">The same workbook all session. Already have it open? Just switch to the sheet below.</p>` : '',
+      !wb && files.length ? `<div class="files">${files.map(fileBtn).join('')}</div><p class="small muted">Already downloaded with the kit. Upload to OneDrive if you haven’t yet.</p>` : '',
+      st.sheet ? `<p class="sheet-line">📄 Sheet: <b>${esc(st.sheet)}</b></p>` : '',
+      st.open ? `<p style="font-size:19px">Open <b>${esc(st.open)}</b>.</p>` : '',
+      st.intro ? `<p class="muted">${st.intro}</p>` : '',
+    ].join('');
+    const tasks = st.tasks.map((x, i) => `<section class="task ${x.level === 'advanced' ? 'adv' : ''}" id="task-${i + 1}"><h2 class="task-h"><span class="t-letter">${letters[i]}</span>${esc(x.title)}${x.level === 'advanced' ? ' <span class="pill">Advanced</span>' : ''}${x.test ? ` ${testPill}` : ''}${x.switchTo ? ` <span class="pill red">↗ ${esc(x.switchTo.pill)}</span>` : ''}</h2>${taskBits(x)}</section>`).join('');
+    return `<header class="step-head"><div class="meta"><span class="pill app-pill"><img src="${T.logo}" alt="">Step ${n} of ${T.steps.length}</span><span class="pill">${st.time} min</span><span class="pill">${st.tasks.length} task${st.tasks.length > 1 ? 's' : ''}</span>${st.test ? testPill : ''}</div>
+        <h1 class="display" style="font-size:clamp(40px,7vw,84px)">${st.title}</h1><p class="lede">${st.goal}</p></header>
+      ${skipBar(n)}
+      <div data-fx="profile"></div>
+      ${openBits ? `<div class="beat"><h3><b>①</b>Open</h3><div>${openBits}</div></div>` : ''}
+      <div class="beat"><h3><b>${openBits ? '②' : '①'}</b>Ask Copilot</h3><div>
+        ${st.tasks.length > 1 ? `<nav class="task-nav" aria-label="Tasks in this step">${st.tasks.map((x, i) => `<a href="#task-${i + 1}"><b>${letters[i]}</b> ${esc(x.title)}</a>`).join('')}</nav>` : ''}
+        ${tasks}
+        ${st.skills && st.skills.length ? `<div class="uses"><span class="small muted">Look for:</span>${st.skills.map((s) => `<span class="pill red">${ADV.skills[s].kind === 'agent' ? '' : 'Loaded '}${ADV.skills[s].title}</span>`).join('')}</div>` : ''}
+        <p class="wow">${st.wow}</p>
+      </div></div>
+      ${st.yours ? `<div class="beat"><h3><b>★</b>Make it yours</h3><div><p>${st.yours.text}</p>${st.yours.prompt ? ADV.promptBox(st.yours.prompt) : ''}</div></div>` : ''}
+      <div class="beat"><h3><b>✓</b>Done?</h3><div>
+        <p class="muted">You’re there when you see:</p><ul class="checks">${st.check.map((s) => `<li>${esc(s)}</li>`).join('')}</ul>
+        <div class="done-row" style="margin-top:22px"><button class="btn done-btn ${isDone(n) ? 'is-done' : ''}" type="button" aria-pressed="${isDone(n)}">${isDone(n) ? '✓ Done' : 'Mark as done'}</button>
+        ${n < T.steps.length ? `<a class="linkish" href="${url(n + 1)}">Skip to step ${n + 1} →</a>` : `<a class="linkish" href="${url('share')}">Skip to the share-out →</a>`}</div></div></div>
+      ${trouble()}
+      ${nav(n === 1 ? [url(0), 'Base camp'] : [url(n - 1), `Step ${n - 1}`], n < T.steps.length ? [url(n + 1), `Step ${n + 1}: ${T.steps[n].title}`] : [url('quests'), 'Side quests'])}`;
+  };
+
+  const byoCard = (q) => {
+    const B = T.byo, done = !!ADV.state.quests[q.id];
+    return `<article class="card byo" style="grid-column:1/-1">
+      <div class="row" style="justify-content:space-between"><span class="pill">${q.time} min · Advanced groups can start here</span>${done ? '<span class="pill red">✓ Completed</span>' : ''}</div>
+      <h2 style="font-size:clamp(30px,4vw,44px);margin-top:12px">${q.title}</h2>
+      <p class="lede" style="margin:0 0 20px">${B.why}</p>
+      <h3>What’s in the skill</h3>
+      <div class="byo-parts">${B.parts.map(([h, t], i) => `<div><span class="num">${i + 1}</span><b>${h}</b><p>${t}</p></div>`).join('')}</div>
+      <p class="small muted">More on the four parts: <a href="anatomy.html?next=${key}">Anatomy of a skill</a>.</p>
+      <h3 style="margin-top:26px">The second messy file</h3>
+      <div class="files" style="margin-top:10px">${B.files.map(fileBtn).join('')}</div>
+      <h3 style="margin-top:26px">Step by step</h3>
+      <ol class="byo-steps">${B.steps.map((x) => `<li>${x}</li>`).join('')}</ol>
+      ${ADV.promptBox(B.prompt)}
+      ${uploadBlock({ skill: q.skill, app: key, explore: false })}
+      <div class="alt card"><p class="eyebrow">No time to edit a file?</p><p>Let Copilot write the skill for you. Do steps 4–6 in one conversation, then send:</p>${ADV.promptBox(B.builder)}</div>
+      <h3 style="margin-top:26px">Ideas for your own skill</h3>
+      <div class="grid three">${B.ideas.map(([h, t]) => `<div class="idea-card"><b>${h}</b><p>${t}</p></div>`).join('')}</div>
+      <p class="wow" style="margin-top:22px">✅ ${B.success}</p>
+      <button class="btn small ${done ? 'is-done done-btn' : 'ghost'}" type="button" data-quest="${q.id}" aria-pressed="${done}">${done ? '✓ Completed' : 'Mark as completed'}</button></article>`;
+  };
+
+  const quests = () => `<header class="step-head"><p class="eyebrow">For fast finishers</p><h1 class="display" style="font-size:clamp(40px,7vw,84px)">Side quests</h1>
+      <p class="lede">Optional. Pick any, in any order.</p></header>
+      <div class="grid two" style="margin-bottom:30px">${T.sideQuests.map((q) => {
+        if (q.type === 'byo') return byoCard(q);
+        if (q.type === 'link') return `<article class="card glass"><h3>${q.title}</h3><p class="muted">${q.what}</p><a class="btn small red" href="${q.href}">${q.cta}</a></article>`;
+        const done = !!ADV.state.quests[q.id];
+        return `<article class="card"><div class="row" style="justify-content:space-between"><span class="pill">${q.time} min</span>${done ? '<span class="pill red">✓ Completed</span>' : ''}</div>
+          <h3 style="margin-top:12px">${q.title}</h3><p class="muted">${q.what}</p>${ADV.promptBox(q.prompt)}
+          <button class="btn small ${done ? 'is-done done-btn' : 'ghost'}" type="button" data-quest="${q.id}" aria-pressed="${done}">${done ? '✓ Completed' : 'Mark as completed'}</button></article>`;
+      }).join('')}
+      <article class="card" style="grid-column:1/-1"><p class="eyebrow">Bonus track · any trail</p><h3>📓 ${ADV.bonus.title.replace('Bonus: ', '')}</h3><p class="muted">${ADV.bonus.text}</p></article></div>
+      ${nav([url(T.steps.length), `Step ${T.steps.length}`], [url('share'), 'Prepare your share-out'])}`;
+
+  const share = () => {
+    const S = ADV.shareOut;
+    const others = Object.keys(ADV.trails).filter((x) => x !== key);
+    return `<header class="step-head"><p class="eyebrow">Last 10 minutes</p><h1 class="display" style="font-size:clamp(40px,7vw,84px)">Prepare your 2-minute share-out</h1>
+      <p class="lede">${S.intro}</p></header>
+      <div class="grid two" style="margin-bottom:26px">${S.parts.map(([h, t], i) => `<article class="card"><p class="eyebrow">${i + 1}</p><h3>${h}</h3><p class="muted">${t}</p></article>`).join('')}
+        <article class="card glass"><p class="eyebrow">Let Copilot help</p>${ADV.promptBox(S.prompt)}</article></div>
+      <div class="card stay"><p><b>${S.stayLive}</b></p>
+        <p class="row">${others.map((x) => `<a class="btn small ghost" href="trail.html?t=${x}">${ADV.trails[x].app}: ${ADV.trails[x].name}</a>`).join('')}<a class="btn small ghost" href="print.html?t=${key}">Print view / PDF of this trail</a><a class="btn small ghost" href="library.html">All prompts</a></p></div>
+      ${nav([url('quests'), 'Side quests'], ['finale.html', 'Finale'])}`;
+  };
+
+  $('#page').innerHTML = s === 'quests' ? quests() : s === 'share' ? share() : s === 0 ? baseCamp() : stepPage(s);
+  if (s === 'share') ADV.update((st) => { st.seen[`${key}-share`] = true; });
+
+  // ---------- behaviour ----------
+  document.querySelectorAll('.compare').forEach((c) => {
+    const r = c.querySelector('input'); const set = () => c.style.setProperty('--pos', r.value + '%'); r.addEventListener('input', set); set();
+  });
+
+  const fx = ADV.fx;
+  let profile = null;
+  const pfEl = document.querySelector('[data-fx="profile"]'); if (pfEl) profile = fx.profile(pfEl, key);
+  const stepObj = typeof s === 'number' && s > 0 ? T.steps[s - 1] : null;
+  const scrubEl = document.querySelector('[data-fx="scrub"]'); if (scrubEl) fx.scrub(scrubEl, stepObj.tasks.map((x) => x.media).find((m) => m && m.type === 'morph'));
+  const panelEl = document.querySelector('[data-fx="panel"]'); if (panelEl) fx.panel(panelEl);
+  const duoEl = document.querySelector('[data-fx="duo"]'); if (duoEl) fx.duoHero(duoEl, key);
+  const amEl = document.querySelector('[data-fx="addmenu"]'); if (amEl) fx.addmenu(amEl, { pick: 'upload' });
+
+  const doneBtn = $('.done-btn:not([data-quest])');
+  if (doneBtn && stepObj) doneBtn.addEventListener('click', () => {
+    const k = `${key}-${s}`; const now = !ADV.state.done[k];
+    ADV.update((st) => { if (now) st.done[k] = true; else delete st.done[k]; });
+    doneBtn.classList.toggle('is-done', now); doneBtn.textContent = now ? '✓ Done' : 'Mark as done'; doneBtn.setAttribute('aria-pressed', now);
+    rail();
+    if (now) {
+      const dot = document.querySelectorAll('#rail .dot')[s]; if (dot) dot.classList.add('stamp');
+      const gear = ADV.collectSkills(ADV.stepSkills(stepObj), { quiet: true });
+      if (profile) profile.update();
+      const all = T.steps.every((x, i) => ADV.state.done[`${key}-${i + 1}`]);
+      if (all && !ADV.state.seen[`${key}-complete`]) { ADV.update((st) => { st.seen[`${key}-complete`] = true; }); ADV.confetti(); fx.highFive(key, 'Summit! Time to prepare your share-out.', gear); }
+      else fx.highFive(key, `High five! Step ${s} done.`, gear);
+    } else if (profile) profile.update();
+  });
+  $('#page').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-quest]'); if (!b) return;
+    const id = b.dataset.quest; const now = !ADV.state.quests[id];
+    ADV.update((st) => { if (now) st.quests[id] = true; else delete st.quests[id]; });
+    const q = T.sideQuests.find((x) => x.id === id);
+    const gear = now && q && q.skill ? ADV.collectSkills([q.skill], { quiet: true }) : '';
+    ADV.checkQuests(key);
+    $('#page').innerHTML = quests(); rail();
+    const again = document.querySelector(`[data-quest="${id}"]`); if (again) again.focus();
+    if (now) ADV.fx.highFive(key, 'High five! Side quest done.', gear); else ADV.toast('Marked as not completed.');
+  });
+})();
+</script>
+</body>
+</html>
