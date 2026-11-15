@@ -49,6 +49,7 @@ ADV.trouble = [
 ADV.skills = {
   'ergo-register-cleaner': { app: 'Excel', title: 'Register Cleaner', what: 'Your own skill, from our template: standardises a KPI register on any sheet, applies colour rules, adds a summary row and logs every change.', trigger: '"clean my register", "prepare the monthly KPI file"', zip: 'downloads/ergo-register-cleaner.zip', md: 'downloads/ergo-register-cleaner-SKILL.md' },
   'ergo-brand': { app: 'PowerPoint', title: 'ERGO Brand', what: 'Restyles any deck in ERGO board style: message headlines, one red accent, flat charts. Never changes a figure.', trigger: '"make these slides board-ready"', zip: 'downloads/ergo-brand.zip', md: 'downloads/ergo-brand-SKILL.md' },
+  'ergo-deck': { app: 'PowerPoint', title: 'ERGO Deck', what: 'Rebuilds slides in the ERGO layout: red message titles, the ERGO logo, KPI tiles, grey panels, takeaway bands and flat charts. Native shapes, so everything stays editable. Never changes a figure.', trigger: '"ERGO deck", "ERGO style", "slides for ERGO"', zip: 'downloads/ergo-deck.zip', md: 'downloads/ergo-deck-SKILL.md' },
   'ergo-board-sparring': { app: 'PowerPoint', title: 'Board Rehearsal', what: 'Our version of the skill you build in step 4: the Chair, the CFO, a supervisor and the works council each ask their hardest question, answered from your deck.', trigger: '"rehearse", "what will they ask"', zip: 'downloads/ergo-board-sparring.zip', md: 'downloads/ergo-board-sparring-SKILL.md' },
   'ergo-motion-slides': { app: 'PowerPoint', title: 'ERGO Motion', what: 'Animated, clickable ERGO slides: tiles that count up, charts that grow. Live HTML inside the slide, the same mechanism as Interactive Slides, with a still picture for PDF.', trigger: '"animated ERGO slides", "ERGO motion slides"', zip: 'downloads/ergo-motion-slides.zip', md: 'downloads/ergo-motion-slides-SKILL.md' },
   'interactive-slides-workaround': { app: 'PowerPoint', title: 'Interactive Slides (workaround)', what: 'Only if the Interactive Slide button is missing: turns one slide into a clickable overview that links to detail slides.', trigger: '"make this slide interactive"', zip: 'downloads/interactive-slides-workaround.zip', md: 'downloads/interactive-slides-workaround-SKILL.md' },
@@ -337,36 +338,37 @@ ADV.trails = {
         check: ['Two versions of the priorities slide, and you know which you’d keep', 'Every slide in German, figures unchanged', 'An interactive slide you can click through in Slide Show'],
       },
       {
-        title: 'Make it ERGO', goal: 'Two custom skills, two jobs: restyle with ERGO Brand, animate with ERGO Motion.', time: 14,
+        title: 'Make it ERGO', goal: 'Two custom skills, two jobs: rebuild in ERGO layout with ERGO Deck, animate with ERGO Motion.', time: 14,
         files: [['downloads/messy-draft.pptx', 'messy-draft.pptx'], ['downloads/q3-figures.xlsx', 'q3-figures.xlsx']],
         intro: 'Add both skills first. Then try them one by one: each task says which skill should load.',
         tasks: [
-          { title: 'Add the skills', upload: { skills: ['ergo-brand', 'ergo-motion-slides'], app: 'ppt', explore: true } },
-          { title: 'ERGO Brand: restyle what’s there',
+          { title: 'Add the skills', upload: { skills: ['ergo-deck', 'ergo-motion-slides'], app: 'ppt', explore: true } },
+          { title: 'ERGO Deck: rebuild it in ERGO layout',
             open: 'messy-draft.pptx',
-            prompt: 'Make these slides board-ready.',
-            note: 'ERGO Brand is rules only: it restyles your existing slides and never changes a figure.',
-            media: { type: 'compare', before: 'assets/media/messy-draft-s2.jpg', after: 'assets/media/ppt-step1-s2.jpg', caption: 'Drag to compare. Before: the messy draft. After: with the ERGO Brand skill.' } },
+            prompt: 'Turn these slides into a board-ready ERGO deck. Keep every figure unchanged.',
+            note: 'ERGO Deck builds real PowerPoint shapes in the ERGO layout: red message titles, the ERGO logo top right, KPI tiles, grey panels and a red takeaway band. It runs a small script, so give it a minute or two. Every text box stays editable. If Copilot says it can’t find the skill, open a new chat and start the prompt with <b>@ergo-deck</b>, picking it from the list.',
+            media: { type: 'compare', before: 'assets/media/messy-draft-s1.jpg', after: 'assets/media/ergo-deck-s1.jpg', caption: 'Drag to compare. Before: the messy draft. After: the same figures in the ERGO Deck layout.' },
+            alt: { fold: true, label: 'ERGO Deck doesn’t load', files: [['downloads/ergo-brand.zip', 'ergo-brand.zip']], text: 'Use <b>ERGO Brand</b> instead: a lighter skill with only rules, no script. It tidies the slides you have (message headlines, at most 3 bullets, one red accent) and never changes a figure. Switch ERGO Deck off in Custom skills first, so the two don’t compete.', prompt: 'Make these slides board-ready.' } },
           { title: 'ERGO Motion: slides that move', level: 'advanced',
             open: 'the deck from task B, or any deck',
             how: 'Attach <code>q3-figures.xlsx</code> with <b>+</b>, or type <b>/</b> and pick it. Then send:',
             prompt: 'Add an animated ERGO appendix slide with the Q3 KPIs from /q3-figures.xlsx: tiles that count up and a bar chart of the combined ratio that grows.',
-            prompt2: 'Start the Slide Show and watch it move. Then compare it with the slides ERGO Brand restyled: which would you show the board, and why?',
-            note: 'Motion slides are live HTML inside PowerPoint: the same mechanism as Interactive Slides in step 2. ERGO Motion writes and runs a small program, so building takes a few minutes: use the wait to look at the ERGO Brand result. Change motion slides by prompting, not by editing the slide. Exported to PDF they become a still picture. If ERGO Brand loads instead, start the prompt with <b>@ergo-motion-slides</b> or with “Use the ergo-motion-slides skill to…”. If the new slide stays blank in the editor, open <b>Slide Show › From Current Slide</b>: it plays there.' },
+            prompt2: 'Start the Slide Show and watch it move. Then compare it with the slides ERGO Deck built: which would you show the board, and why?',
+            note: 'Motion slides are live HTML inside PowerPoint: the same mechanism as Interactive Slides in step 2. ERGO Motion writes and runs a small program, so building takes a few minutes: use the wait to look at the ERGO Deck result. Change motion slides by prompting, not by editing the slide. Exported to PDF they become a still picture. If ERGO Deck loads instead, start the prompt with <b>@ergo-motion-slides</b> or with “Use the ergo-motion-slides skill to…”. If the new slide stays blank in the editor, open <b>Slide Show › From Current Slide</b>: it plays there.' },
         ],
-        wow: 'Same brand, two jobs: ERGO Brand tidies the deck you have in seconds, and ERGO Motion adds a slide that moves. You never named a skill: Copilot read their descriptions and picked one.',
+        wow: 'Same brand, two jobs: ERGO Deck turns a messy draft into the ERGO layout, and ERGO Motion adds a slide that moves. Both draw the same logo, colours and grid, so one deck can mix them.',
         explain: {
           q: 'What exactly does ERGO Motion do, and which one should I use?',
           lead: 'ERGO Motion builds the slide as a small web page (HTML) and places it inside your PowerPoint slide. That is why it can do things normal slides can’t: numbers that count up, bars that grow, elements you can click. Many people like HTML slides for storytelling, because the animation walks the audience through the message. It is the same mechanism PowerPoint itself now uses for Interactive Slides, which you tried in step 2.',
           cols: [
-            ['Standard slides (ERGO Brand)', ['Text boxes, shapes and charts you know', 'Click into any text and edit it yourself', 'Works everywhere: PDF, print, older PowerPoint', 'Restyles in about a minute']],
+            ['Standard slides (ERGO Deck)', ['Text boxes, shapes and charts you know', 'Click into any text and edit it yourself', 'Works everywhere: PDF, print, older PowerPoint', 'Colleagues can keep working on it without Copilot']],
             ['HTML slides (ERGO Motion)', ['Animations and interaction: count-ups, growing charts, clicks', 'Strong for a story you present live', 'To change it, you ask Copilot again: you can’t type into the slide', 'Takes a few minutes to build; in a PDF it becomes a still picture']],
           ],
           tip: 'Rule of thumb: standard slides for anything people will edit, print or forward. One HTML slide where you want a moment in the room, for example the key number at the end of the board story.',
         },
-        yours: { text: 'Open <b>Custom skills</b>, select <b>ergo-brand</b> and change “Maximum 3 bullets” to “Maximum 2 bullets”. Ask again and watch the slides follow your rule. This shows how you can change a custom skill’s rules to fit your own needs.', prompt: 'Make these slides board-ready.' },
-        check: ['Copilot’s reply names the ERGO rules it applied (headlines, bullets, notes) and every number is unchanged', 'Message headlines and one red accent per slide', 'Advanced: an ERGO Motion slide that moves in Slide Show'],
-        skills: ['ergo-brand', 'ergo-motion-slides'],
+        yours: { text: 'Open <b>Custom skills</b>, select <b>ergo-deck</b> and change “at most ~5 short bullets” to “at most 3 short bullets”. Ask again and watch the slides follow your rule. This shows how you can change a custom skill’s rules to fit your own needs.', prompt: 'Turn these slides into a board-ready ERGO deck. Keep every figure unchanged.' },
+        check: ['The ERGO logo top right and a red message title on every slide, every number unchanged', 'KPI tiles, grey panels or a red takeaway band instead of plain bullet lists', 'Advanced: an ERGO Motion slide that moves in Slide Show'],
+        skills: ['ergo-deck', 'ergo-motion-slides'],
       },
       {
         title: 'Turn it into skills', goal: 'You’ll do this before every board meeting. Turn it into a skill.', time: 12,
@@ -665,7 +667,7 @@ ADV.anatomy = {
 // Each skill or agent is a piece of gear in the backpack.
 ADV.gear = {
   'ergo-register-cleaner': ['🔦', 'Headlamp'],
-  'ergo-brand': ['🧭', 'Compass'], 'ergo-motion-slides': ['🎞️', 'Film camera'], 'ergo-board-sparring': ['🪢', 'Rope team'], 'interactive-slides-workaround': ['🗺️', 'Map'],
+  'ergo-brand': ['🧭', 'Compass'], 'ergo-deck': ['🚩', 'Summit flag'], 'ergo-motion-slides': ['🎞️', 'Film camera'], 'ergo-board-sparring': ['🪢', 'Rope team'], 'interactive-slides-workaround': ['🗺️', 'Map'],
   'chief-of-staff': ['📟', 'Radio'], 'my-voice': ['🚩', 'Your own flag'],
 };
 ADV.altitude = { base: 1200, perStep: 450, flag: 50 };

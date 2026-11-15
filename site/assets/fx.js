@@ -413,7 +413,7 @@ ${rules().map(([k, t]) => `<span class="pg-line" data-line="${k}">${esc(t)}</spa
       today: 'Good for the skill you write with Copilot in step 7: paste it straight in.' },
     { id: 'upload', label: 'Upload',
       what: 'Pick a skill file from your computer, or drag it in. A skill is a folder with a <code>SKILL.md</code> inside, zipped. Copilot stores it in your OneDrive Skills folder and it’s ready straight away.',
-      good: 'Skills someone prepared for you, like ERGO Brand on this site.',
+      good: 'Skills someone prepared for you, like ERGO Deck on this site.',
       today: 'This is the one you use today: one ZIP per skill.' },
     { id: 'record', label: 'Record a skill',
       what: 'Do the task once while Copilot watches: edit slides yourself, use the ribbon or give Copilot instructions, then select <b>Stop</b>. Copilot drafts the name, description and instructions from your changes. You review the draft and upload it.',
@@ -440,8 +440,8 @@ ${rules().map(([k, t]) => `<span class="pg-line" data-line="${k}">${esc(t)}</spa
       end: (st) => $$('.am-field', st).forEach((f) => { f.textContent = f.dataset.type; }),
     }),
     upload: () => ({
-      html: `<div class="am-drop"><span class="am-zip">🗜️ ergo-brand.zip</span><span class="am-drop-hint">Drop a skill here</span></div>
-        <div class="am-list"><div class="am-row"><span>🧭 ERGO Brand</span><span class="am-toggle on" aria-hidden="true"></span></div></div>`,
+      html: `<div class="am-drop"><span class="am-zip">🗜️ ergo-deck.zip</span><span class="am-drop-hint">Drop a skill here</span></div>
+        <div class="am-list"><div class="am-row"><span>🚩 ERGO Deck</span><span class="am-toggle on" aria-hidden="true"></span></div></div>`,
       tl: (st) => gsap.timeline()
         .fromTo($('.am-zip', st), { y: -70, opacity: 0, rotation: -8 }, { y: 0, opacity: 1, rotation: 0, duration: .7, ease: 'bounce.out' })
         .to($('.am-drop', st), { borderColor: '#bf1629', backgroundColor: 'rgba(191,22,41,.05)', duration: .25 }, '-=.2')
