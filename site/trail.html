@@ -70,6 +70,10 @@
   const peek = ([href, label]) => { const t = (window.TEXT_FILES || {})[href]; return t ? `<details class="peek"><summary>📖 Show the text: ${esc(label)}</summary><div class="peek-body"><button type="button" class="btn small ghost peek-copy" data-copy="${esc(t)}">Copy all</button><pre>${esc(t)}</pre></div></details>` : ''; };
   const filesRow = (list) => `<div class="files">${list.map(fileBtn).join('')}</div>${list.map(peek).join('')}`;
   const variant = ([label, p, x]) => `<p class="v-label">${esc(label)}</p>${x && x.files ? filesRow(x.files) : ''}${x && x.how ? `<p class="muted how">${x.how}</p>` : ''}${ADV.promptBox(p)}`;
+  // Case cards: each sets a fill-in field (e.g. {call}) and offers its own file pack; a case without a value points to the field.
+  const casesBox = (c) => `<div class="cases">${c.list.map((x) => `<article class="card case"><h3>${esc(x.title)}</h3><p class="muted">${x.what}</p>
+      ${x.zip ? `<p class="small muted">${x.contents}</p><p class="row"><a class="btn small red" href="${x.zip}" download>Download the pack ↓</a>` : '<p class="row">'}
+      ${x.value ? `<button type="button" class="idea fill-opt ${ADV.fieldVal(c.field) === x.value ? 'on' : ''}" data-field-set="${c.field}" data-value="${esc(x.value)}" aria-pressed="${ADV.fieldVal(c.field) === x.value}">Use this case</button>` : `<a class="idea" href="#f-${c.field}">Type it below ↓</a>`}</p></article>`).join('')}</div>`;
   const switchBox = (w) => `<div class="switch card"><span aria-hidden="true">↗️</span><div><b>${w.title}</b><p>${w.text}</p><a class="btn small red" href="${w.url}" target="_blank" rel="noopener">${w.cta} ↗</a></div></div>`;
   const testPill = '<span class="pill test" title="Still being tested in ERGO’s tenant">🧪 To be tested in ERGO’s tenant</span>';
   const trouble = () => `<details class="trouble"><summary>🛠️ Something not working? Troubleshooting</summary>
@@ -124,6 +128,7 @@
     x.upload ? uploadBlock(x.upload) : '',
     x.intro ? `<p>${x.intro}</p>` : '',
     x.how ? `<div class="muted how">${x.how}</div>` : '',
+    x.cases ? casesBox(x.cases) : '',
     x.fields ? ADV.fieldsBox(x.fields) : '',
     x.prompt ? `<p class="muted">Copy this into Copilot:</p>${ADV.promptBox(x.prompt)}` : '',
     x.prompt2 ? `<p class="v-label">Then</p>${ADV.promptBox(x.prompt2)}` : '',

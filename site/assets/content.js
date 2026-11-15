@@ -398,7 +398,7 @@ ADV.trails = {
   cos: {
     app: 'Copilot Chat & Outlook', tool: 'Outlook / Copilot Chat', logo: 'assets/img/brands/outlook.png', premium: true, name: 'The Chief of Staff', persona: 'Orchestrator', group: 3, useCase: 'Chief-of-Staff',
     web: ['Microsoft 365 Copilot', 'https://m365.cloud.microsoft/chat'],
-    mission: 'Make Copilot your own Chief of Staff, with no agent to build. One prompt sweeps your meetings, emails and chats. Copilot remembers how you work, runs the sweep every morning, and helps you prepare your next big call in a Workspace.',
+    mission: 'Make Copilot your own Chief of Staff, with no agent to build. One prompt sweeps your meetings, emails and chats. Copilot remembers how you work, runs the sweep every morning, and a Chief-of-Staff Workspace prepares you for your next big meeting.',
     kit: { file: 'downloads/chief-of-staff-kit.zip', size: 'about 10 KB', contents: ['demo-meeting-transcript.txt', 'sample-emails.md', 'my-priorities.md', 'sample-voice-texts.md'] },
     // The Workspace is step 4 here, so the Workspaces bonus track isn't repeated on the side-quest page.
     noBonus: true,
@@ -409,8 +409,8 @@ ADV.trails = {
       'You don’t need agents. Everything in the four steps comes with your Copilot licence. If you also have Agent Builder, the Planner agent or Cowork, the side quests show what they add.',
     ],
     levels: {
-      basic: 'Aim for the morning sweep in step 1, your rules and a memory test in step 2 and one scheduled prompt in step 3. In step 4, create the Workspace and try the study guide if there’s time.',
-      advanced: 'Run steps 1 to 3 quickly, then spend your time in the Workspace in step 4: study guide, a visual and the audio overview. Then pick side quests: Planner, Cowork or Agent Builder, if you have them.',
+      basic: 'Aim for the morning sweep in step 1, your rules and a memory test in step 2 and one scheduled prompt in step 3. In step 4, pick a case, create the Workspace with its instructions and try the Study guide if there’s time.',
+      advanced: 'Run steps 1 to 3 quickly, then spend your time in the Workspace in step 4: instructions, the Study guide, a visual and the audio overview. Then pick side quests: Planner, Cowork or Agent Builder, if you have them.',
     },
     trouble: [
       ['Copilot doesn’t find any emails or meetings', 'Your mailbox may be new or empty. Open the <b>Plan B</b> box under the prompt and use the sample emails and the demo transcript instead.'],
@@ -423,7 +423,7 @@ ADV.trails = {
     ],
     steps: [
       {
-        title: 'The morning sweep', goal: 'One prompt that goes through your meetings, emails and chats and hands you today’s to-do list.', time: 10,
+        title: 'The morning sweep', goal: 'One prompt that goes through your meetings, emails and chats and hands you today’s to-do list.', time: 9,
         open: 'Microsoft 365 Copilot Chat',
         tasks: [
           { title: 'Sweep everything at once',
@@ -444,9 +444,9 @@ ADV.trails = {
         open: 'Microsoft 365 Copilot Chat',
         tasks: [
           { title: 'Write your rules',
-            how: 'Fill in your own role and rules. The prompt below writes itself; then copy it.',
+            how: 'These instructions apply to <b>every</b> chat, so keep them general: who you are, what matters to you now, how you like your answers. The chief-of-staff role comes in step 4, in its own Workspace. Fill in the fields; the prompt writes itself.',
             fields: ['role', 'focus', 'rule'],
-            prompt: 'Help me write custom instructions that turn you into my Chief of Staff. My role: {role}. What I’m focused on right now: {focus}. My most important rule: {rule}. Ask me up to three questions first, then give me the instructions as one short block of text.' },
+            prompt: 'Help me write custom instructions for Copilot that apply to every chat: who I am, what matters to me right now and how I like my answers. My role: {role}. What I’m focused on right now: {focus}. My most important rule: {rule}. Ask me up to three questions first, then give me the instructions as one short block of text.' },
           { title: 'Add My Voice',
             how: 'Copy three short emails or messages you wrote (your <b>Sent items</b> are a good place to look) and paste them after this prompt:',
             prompt: 'Here are three messages I wrote. Describe my tone of voice as five short rules and add them to my instructions. Then show me the full instructions again:',
@@ -495,28 +495,36 @@ ADV.trails = {
         skills: ['chief-of-staff'],
       },
       {
-        title: 'Prepare your next big call', goal: 'A Workspace for one call or meeting next week: your files, a study guide, a visual and a briefing to listen to.', time: 17, test: true,
+        title: 'Your Chief-of-Staff Workspace', goal: 'A Workspace that acts as your chief of staff. Today it prepares you for one meeting: pick a case, set its instructions, then study, visualise and listen.', time: 18, test: true,
         open: 'Microsoft 365 Copilot → Workspaces',
         tasks: [
-          { title: 'Create the Workspace',
-            how: 'Think of a call or meeting next week you want to be really well prepared for.',
-            fields: ['call'],
-            use: { label: 'Set it up', steps: [
-              'Select <b>Workspaces</b> in the left pane (it used to be called Notebooks), then <b>New</b>. Name it after your call.',
-              'Under <b>Content</b>, select the paperclip and add what you have for it: email threads, meeting recaps, Excel figures, and <b>at least one Word, PowerPoint or PDF file</b>.',
-              'That last part matters: the Study guide builds flashcards, the quiz and the other activities only from Word, PowerPoint and PDF files. Emails, meetings and Excel alone only give you a summary. Encrypted (protected) files don’t work yet.',
+          { title: 'Pick a meeting to prepare',
+            how: 'Imagine it’s on your calendar next Tuesday. Pick one of our cases (all files are invented), or use a real meeting of your own.',
+            cases: { field: 'call', list: [
+              { title: 'AI pilot: steering committee', what: 'Approve, defer or reject EUR 420,000 for an AI claims-triage pilot. Operations and Finance disagree on the value, and some actions are overdue.', zip: 'downloads/ai-pilot-pack.zip', contents: 'Four Word files, a PDF, a PowerPoint deck and an Excel register.', value: 'the steering committee on the AI claims-triage pilot next Tuesday' },
+              { title: 'Q3 results: board review', what: 'Premiums are ahead of plan, but Property & Casualty holds the result back. Be ready for the board’s questions.', zip: 'downloads/q3-review-pack.zip', contents: 'A Word memo, a PowerPoint deck and the Excel figures.', value: 'the Q3 results review with the board next Tuesday' },
+              { title: 'Your own meeting', what: 'A real meeting next week. Bring its Word, PowerPoint or PDF files, plus emails. Files encrypted by a sensitivity label may not work in the Study guide yet.' },
             ] },
-            alt: { fold: true, label: 'No call to prepare? Use ours', files: [['downloads/board-memo.docx', 'board-memo.docx'], ['downloads/board-pack-ready.pptx', 'board-pack-ready.pptx'], ['downloads/q3-figures.xlsx', 'q3-figures.xlsx'], ['downloads/demo-meeting-transcript.txt', 'demo-meeting-transcript.txt']], text: 'Imagine next Tuesday is the quarterly review with the board office. Download these four files (a Word memo, a PowerPoint deck, the Excel figures and a meeting transcript) and add them to the Workspace with the paperclip. Write <b>the quarterly review with the board office next Tuesday</b> in the field above.' } },
-          { title: 'Choose what Copilot looks at',
-            how: 'Below the prompt box you choose the scope: <b>only this Workspace</b>, so Copilot answers from your files and nothing else, or <b>Work and web</b>, which adds your mailbox, your other files and the web. Ask this both ways and compare.',
-            prompt: 'What do I need to know before {call}? List the open decisions, the three numbers that matter and the questions I’m likely to get.' },
+            fields: ['call'] },
+          { title: 'Create it and make it your chief of staff',
+            use: { label: 'Set it up', steps: [
+              'Unzip the pack. Select <b>Workspaces</b> in the left pane (it used to be called Notebooks), then <b>New</b>. Name it <b>My Chief of Staff</b>.',
+              'Under <b>Content</b>, select the paperclip and add all the files. Your own meeting? Add its files and email threads, including <b>at least one Word, PowerPoint or PDF file</b>: the Study guide builds flashcards and the quiz only from those.',
+              'Select <b>…</b> in the top right → <b>Instructions</b>, paste the text below and select <b>Save</b>. These rules apply only inside this Workspace.',
+            ] },
+            prompt: 'You are my chief of staff. Prepare me for {call}. Be direct and brief, and lead with what I must decide or know. Flag where the sources disagree and say which one should count. Separate facts from estimates and proposals. Name the source file for every number.',
+            note: 'Your Personalization from step 2 still applies everywhere. The Workspace instructions add a role for this one job.' },
+          { title: 'Ask your chief of staff',
+            how: 'Below the prompt box you choose the scope: <b>only this Workspace</b>, so Copilot answers from these files and nothing else, or <b>Work and web</b>, which adds your mailbox, your other files and the web. Ask this both ways and compare.',
+            prompt: 'What do I need to know before {call}? List the decision in one sentence, the three numbers that matter, and the questions I’m likely to get.',
+            more: { label: 'Then dig in', prompt: 'Where do the files in this workspace disagree, and which source should count? What is still open, and who owns it?' } },
           { title: 'Study for the call',
             use: { label: 'Open the Study guide', steps: [
               'In the Workspace, select <b>New</b> and scroll down to <b>Study guide</b>.',
               'Copilot builds a summary and topic pages from your files, plus <b>flashcards</b>, a <b>quiz</b>, <b>fill in the blanks</b> and a <b>matching</b> game.',
               'Flip through the flashcards, then take the quiz. If you get a question wrong, the explanation points back to the source file.',
             ] },
-            alt: { fold: true, label: 'No Study guide, or no flashcards?', text: 'Check that the Workspace has a Word, PowerPoint or PDF file that isn’t protected (step A). Or ask in chat: Copilot builds flip cards and a quiz in a <b>Copilot Page</b>. Plain chat has no flashcard mode, so ask for the Page.', prompt: 'Create interactive flashcards in a Copilot Page to prepare me for {call}: a question on the front, the answer on the back, with the figures, names and decisions I must know. Then add a short quiz with five multiple-choice questions. Use only the files in this workspace.' } },
+            alt: { fold: true, label: 'No Study guide, or no flashcards?', text: 'Check that the Workspace has a Word, PowerPoint or PDF file that isn’t protected (step B). Or ask in chat: Copilot builds flip cards and a quiz in a <b>Copilot Page</b>. Plain chat has no flashcard mode, so ask for the Page.', prompt: 'Create interactive flashcards in a Copilot Page to prepare me for {call}: a question on the front, the answer on the back, with the figures, names and decisions I must know. Then add a short quiz with five multiple-choice questions. Use only the files in this workspace.' } },
           { title: 'Make it visual',
             variants: [
               ['Infographic', 'Create an infographic with the key figures and decisions for {call}, so I can share it with my team.', { how: 'Select <b>New</b> → <b>Infographic</b>, next to the Study guide. Or ask in chat:' }],
@@ -530,8 +538,8 @@ ADV.trails = {
             prompt: 'Create an audio overview of this workspace to prepare me for {call}: what matters, the open decisions and who will ask what.',
             note: 'Audio overviews take a few minutes. Start it, then go back to another task or a side quest.' },
         ],
-        wow: 'Everything for your call in one place: the files, a study guide with a quiz, a visual to share and a briefing you can listen to on the way.',
-        check: ['A Workspace with at least one Word, PowerPoint or PDF file in it', 'The same question answered from the Workspace only and from Work and web', 'A Study guide: flashcards flipped and the quiz taken', 'An infographic, a mind map, a Page or a deck', 'An audio overview, or one on its way'],
+        wow: 'A chief of staff for one meeting: it knows the files, follows your rules, tells you where the sources disagree, quizzes you, and briefs you on the way.',
+        check: ['A Workspace with the pack (or your own Word, PowerPoint or PDF files) in it', 'Workspace instructions saved', 'The same question answered from the Workspace only and from Work and web', 'A Study guide: flashcards flipped and the quiz taken', 'An infographic, a mind map, a Page or a deck', 'An audio overview, or one on its way'],
       },
     ],
     sideQuests: [
@@ -552,7 +560,7 @@ ADV.fields = {
   focus: { label: 'What you’re focused on right now', default: 'reducing the claims backlog before year-end' },
   rule: { label: 'Your most important rule', default: 'everything from my team is priority 1', options: ['everything from my team is priority 1', 'requests from the board office are answered the same day', 'for meetings without an agenda, suggest I ask for one', 'protect my Friday mornings for focus time'] },
   pref: { label: 'Something Copilot should remember', default: 'I prefer short bullet points over long paragraphs', options: ['I prefer short bullet points over long paragraphs', 'I like detailed answers that explain the reasoning', 'I want the answer first, then the details', 'I always want clear next steps at the end', 'I like my answers in German'] },
-  call: { label: 'The call or meeting you’re preparing for', default: 'the quarterly review with the board office next Tuesday' },
+  call: { label: 'The meeting you’re preparing for', default: 'the steering committee on the AI claims-triage pilot next Tuesday' },
 };
 
 // Bonus track for anyone who finishes early, on every trail.
@@ -595,7 +603,7 @@ ADV.openPoints = [
   'Excel step 5C: apply the “Make it yours” ideas one after another (cumulatively) and check the dashboard still renders after each one.',
   'Does ERGO Motion run and play in ERGO’s PowerPoint for the web? It worked in a Microsoft demo tenant on 15 Nov (slide built in about 3 minutes, plays in Slide Show), not yet tested in ERGO’s tenant. (Trail 2, step 3)',
   'Chief-of-Staff trail: Agent Builder is now only a side quest. Check in ERGO’s tenant: email actions from chat (flag, pin), Settings → Personalization (custom instructions, Memory), Schedule this prompt, and Workspaces with emails as content and audio overview. Planner agent and Cowork are optional side quests.',
-  'Workspace Study guide: flashcards, quiz, topics, fill in the blanks and matching need Word, PowerPoint or PDF files under 100k characters that aren’t protected. If ERGO’s sensitivity labels encrypt documents, attendees should use the Plan B sample files (unlabelled) or the Copilot Page prompt.',
+  'Workspace Study guide: flashcards, quiz, topics, fill in the blanks and matching need Word, PowerPoint or PDF files under 100k characters that aren’t protected. If ERGO’s sensitivity labels encrypt documents, attendees should use the case packs (AI pilot, Q3 review; unlabelled) or the Copilot Page prompt.',
   'Languages (Rebecca): “Auf Deutsch, bitte” works. Was the flow tested in other participants’ languages, and may people work in their preferred language? Not decided yet.',
 ];
 

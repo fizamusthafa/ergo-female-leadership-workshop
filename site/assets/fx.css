@@ -213,6 +213,12 @@ body::before {
 .fill-row input:focus { outline: 2px solid rgba(191, 22, 41, .35); background: #fff; }
 .fill-opts { margin-top: 8px; }
 .fill-opt.on { border-style: solid; border-color: var(--red-deep); background: rgba(191, 22, 41, .06); }
+.cases { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin: 14px 0 4px; }
+.case { padding: 16px 18px; box-shadow: none; display: flex; flex-direction: column; }
+.case h3 { margin: 0 0 6px; font-size: 19px; }
+.case p { margin: 0 0 8px; }
+.case .row { margin-top: auto; gap: 8px; align-items: center; }
+.case a.idea { text-decoration: none; }
 .waiting { display: flex; gap: 14px; align-items: flex-start; margin: 18px 0; padding: 16px 18px; background: #f2f7ff; border-color: #cfe0fb; box-shadow: none; }
 .waiting > span { font-size: 26px; }
 .waiting p { margin: 4px 0 10px; }

@@ -49,6 +49,7 @@
       ${x.open ? `<p><b>Open:</b> ${esc(x.open)}</p>` : ''}${x.switchTo ? `<p><b>${x.switchTo.title}.</b> ${x.switchTo.text}</p>` : ''}
       ${x.upload ? `<p><b>Add the skill</b> <code>${x.upload.skill}</code>: ${ADV.upload[x.upload.app].steps.map((s) => s.text).join(' ')}</p>` : ''}
       ${x.intro ? `<p>${x.intro}</p>` : ''}${x.how ? `<div>${x.how}</div>` : ''}
+      ${x.cases ? `<ul>${x.cases.list.map((c) => `<li><b>${esc(c.title)}:</b> ${c.what}${c.zip ? ` (<code>${c.zip.split('/').pop()}</code>)` : ''}</li>`).join('')}</ul>` : ''}
       ${x.prompt ? P(x.prompt) : ''}${x.prompt2 ? P(x.prompt2, 'Then') : ''}
       ${(x.variants || []).map(([l, p, e]) => (e && e.files ? `<p><b>File:</b> ${files(e.files)}</p>` : '') + (e && e.how ? `<p>${e.how}</p>` : '') + P(p, l)).join('')}
       ${x.build ? `<ul>${x.build.map(([h, t]) => `<li><b>${h}:</b> ${t}</li>`).join('')}</ul>` : ''}
