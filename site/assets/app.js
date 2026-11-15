@@ -6,7 +6,7 @@
   ADV.reduce = reduce;
 
   // ---------- state ----------
-  const blank = () => ({ trail: null, quiz: [], clippy: false, done: {}, quests: {}, skills: {}, badges: {}, seen: {}, radio: {}, name: '', souvenir: '' });
+  const blank = () => ({ trail: null, quiz: [], clippy: false, done: {}, quests: {}, skills: {}, badges: {}, seen: {}, radio: {}, fill: {}, name: '', souvenir: '' });
   ADV.load = () => { try { return Object.assign(blank(), JSON.parse(localStorage.getItem(KEY) || '{}')); } catch { return blank(); } };
   ADV.save = (s) => { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch { /* private mode: state lives for this page only */ } };
   ADV.state = ADV.load();
@@ -42,7 +42,30 @@
     const b = e.target.closest('[data-copy]');
     if (b) ADV.copy(b.getAttribute('data-copy'), b);
   });
-  ADV.promptBox = (text) => `<div class="prompt"><q>${ADV.esc(text)}</q><button type="button" data-copy="${ADV.esc(text)}" aria-label="Copy prompt: ${ADV.esc(text)}">Copy</button></div>`;
+  ADV.promptBox = (tpl) => { const text = ADV.fill(tpl); return `<div class="prompt"${ADV.isTpl(tpl) ? ` data-tpl="${ADV.esc(tpl)}"` : ''}><q>${ADV.esc(text)}</q><button type="button" data-copy="${ADV.esc(text)}" aria-label="Copy prompt: ${ADV.esc(text)}">Copy</button></div>`; };
+
+  // ---------- fill-in prompts: {field} placeholders (ADV.fields), values kept in state.fill ----------
+  ADV.fieldVal = (k) => { const v = String((ADV.state.fill || {})[k] || '').trim(); return v || ((ADV.fields || {})[k] || {}).default || ''; };
+  ADV.fill = (text) => String(text).replace(/\{(\w+)\}/g, (m, k) => (ADV.fields && ADV.fields[k] ? ADV.fieldVal(k) : m));
+  ADV.isTpl = (text) => [...String(text).matchAll(/\{(\w+)\}/g)].some(([, k]) => ADV.fields && ADV.fields[k]);
+  ADV.fieldsBox = (ids) => `<div class="fill card">${ids.map((k) => {
+    const f = ADV.fields[k], v = (ADV.state.fill || {})[k] || '', cur = ADV.fieldVal(k);
+    return `<div class="fill-row"><label for="f-${k}">${f.label}</label><input id="f-${k}" type="text" data-field="${k}" value="${ADV.esc(v)}" placeholder="${ADV.esc(f.default)}" autocomplete="off">
+      ${f.options ? `<div class="ideas fill-opts">${f.options.map((o) => `<button type="button" class="idea fill-opt ${o === cur ? 'on' : ''}" data-field-set="${k}" data-value="${ADV.esc(o)}" aria-pressed="${o === cur}">${ADV.esc(o)}</button>`).join('')}</div>` : ''}</div>`;
+  }).join('')}<p class="small muted" style="margin:4px 0 0">✏️ Type your own or pick one. The prompts on this page change as you go.</p></div>`;
+  ADV.refreshPrompts = () => document.querySelectorAll('[data-tpl]').forEach((box) => {
+    const t = ADV.fill(box.dataset.tpl), b = box.querySelector('[data-copy]');
+    box.querySelector('q').textContent = t; b.setAttribute('data-copy', t); b.setAttribute('aria-label', 'Copy prompt: ' + t);
+  });
+  const setField = (k, v) => {
+    ADV.state.fill = Object.assign({}, ADV.state.fill, { [k]: v }); ADV.save(ADV.state);
+    document.querySelectorAll(`[data-field="${k}"]`).forEach((i) => { if (i.value !== v) i.value = v; });
+    const cur = ADV.fieldVal(k);
+    document.querySelectorAll(`[data-field-set="${k}"]`).forEach((b) => { const on = b.dataset.value === cur; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
+    ADV.refreshPrompts();
+  };
+  document.addEventListener('input', (e) => { const i = e.target.closest('[data-field]'); if (i) setField(i.dataset.field, i.value); });
+  document.addEventListener('click', (e) => { const b = e.target.closest('[data-field-set]'); if (b) setField(b.dataset.fieldSet, b.dataset.value); });
 
   // ---------- confetti ----------
   ADV.confetti = () => {

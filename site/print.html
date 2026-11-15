@@ -42,7 +42,7 @@
   const key = ADV.trails[ADV.param('t')] ? ADV.param('t') : (ADV.state.trail || 'xls');
   const T = ADV.trails[key];
   document.title = `${T.name} · print view`;
-  const P = (p, label) => `<div class="p">${label ? `<small>${esc(label)}</small>` : ''}${esc(p)}</div>`;
+  const P = (p, label) => `<div class="p">${label ? `<small>${esc(label)}</small>` : ''}${esc(ADV.fill(p))}</div>`;
   const files = (list) => (list || []).map(([, l]) => `<code>${esc(l)}</code>`).join(', ');
   const PATH = { agent: 'With Agent Builder', prompts: 'Without Agent Builder' };
   const taskHtml = (x, i) => `<h3>${'ABCDEF'[i]} · ${esc(x.title)}${x.level === 'advanced' ? ' (Advanced)' : ''}${x.path ? ` · ${PATH[x.path]}` : ''}</h3>

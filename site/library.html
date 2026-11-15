@@ -30,7 +30,7 @@
 (function () {
   ADV.shell({ active: 'library' });
   const esc = ADV.esc;
-  const card = (p, label) => `<article class="lib-card"><q>${esc(p)}</q>${label ? `<p class="preview"><span class="small">${esc(label)}</span></p>` : ''}<button class="btn small ghost" type="button" data-copy="${esc(p)}">Copy</button></article>`;
+  const card = (tpl, label) => { const p = ADV.fill(tpl); return `<article class="lib-card"><q>${esc(p)}</q>${label ? `<p class="preview"><span class="small">${esc(label)}</span></p>` : ''}<button class="btn small ghost" type="button" data-copy="${esc(p)}">Copy</button></article>`; };
   const taskPrompts = (x, tag) => [].concat(
     x.prompt ? [[x.prompt, tag]] : [], x.prompt2 ? [[x.prompt2, tag + ' · then']] : [],
     (x.variants || []).map(([l, p]) => [p, tag + ' · ' + l]), x.more ? [[x.more.prompt, tag + ' · ' + x.more.label]] : [],

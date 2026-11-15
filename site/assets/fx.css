@@ -201,6 +201,18 @@ body::before {
 .alt { margin: 18px 0 6px; padding: 16px 18px; background: #fbfaf7; box-shadow: none; }
 .alt .eyebrow { margin-bottom: 6px; }
 .alt p { margin: 0 0 8px; }
+.alt.fold { padding: 0; }
+.alt.fold > summary { cursor: pointer; margin: 0; padding: 14px 18px; list-style-position: inside; }
+.alt.fold[open] > summary { border-bottom: 1px solid var(--line); margin-bottom: 12px; }
+.alt.fold > :not(summary) { margin-left: 18px; margin-right: 18px; }
+.alt.fold > :last-child { margin-bottom: 16px; }
+.fill { margin: 14px 0 6px; padding: 16px 18px; background: #fff; border: 1px dashed rgba(191, 22, 41, .45); box-shadow: none; }
+.fill-row { margin-bottom: 12px; }
+.fill-row label { display: block; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: 6px; }
+.fill-row input { width: 100%; box-sizing: border-box; font: inherit; font-size: 16px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: #fbfaf7; }
+.fill-row input:focus { outline: 2px solid rgba(191, 22, 41, .35); background: #fff; }
+.fill-opts { margin-top: 8px; }
+.fill-opt.on { border-style: solid; border-color: var(--red-deep); background: rgba(191, 22, 41, .06); }
 .waiting { display: flex; gap: 14px; align-items: flex-start; margin: 18px 0; padding: 16px 18px; background: #f2f7ff; border-color: #cfe0fb; box-shadow: none; }
 .waiting > span { font-size: 26px; }
 .waiting p { margin: 4px 0 10px; }
