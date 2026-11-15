@@ -142,7 +142,7 @@
       ${x.waiting.ideas ? `<p class="v-label">Ask Copilot in another tab: copy one</p><div class="ideas">${x.waiting.ideas.map(([l, q]) => `<button type="button" class="idea" data-copy="${esc(q)}" title="${esc(q)}">${esc(l)} <span aria-hidden="true">⧉</span></button>`).join('')}</div>` : ''}
       ${x.waiting.tips ? `<p class="v-label">Or try PowerPoint itself</p><ul class="wait-tips">${x.waiting.tips.map(([h, t]) => `<li><b>${h}</b> ${t}</li>`).join('')}</ul>` : ''}</div></div>` : '',
     x.alt ? (x.alt.fold
-      ? `<details class="alt card fold"><summary class="eyebrow">Plan B · ${esc(x.alt.label)}</summary>${x.alt.files ? filesRow(x.alt.files) : ''}<p>${x.alt.text}</p>${x.alt.prompt ? ADV.promptBox(x.alt.prompt) : ''}</details>`
+      ? `<details class="alt card fold"><summary class="eyebrow">Plan B · ${esc(x.alt.label)}</summary>${x.alt.files ? filesRow(x.alt.files) : ''}<p>${x.alt.text}</p>${x.alt.cases ? casesBox(x.alt.cases) : ''}${x.alt.prompt ? ADV.promptBox(x.alt.prompt) : ''}</details>`
       : `<div class="alt card"><p class="eyebrow">Plan B · ${esc(x.alt.label)}</p>${x.alt.files ? filesRow(x.alt.files) : ''}<p>${x.alt.text}</p>${x.alt.prompt ? ADV.promptBox(x.alt.prompt) : ''}</div>`) : '',
     x.skillFiles ? `<p class="v-label">Skill files</p>${skillDownloads(x.skillFiles)}` : '',
     x.note ? `<p class="note-line">ℹ️ ${x.note}</p>` : '',
