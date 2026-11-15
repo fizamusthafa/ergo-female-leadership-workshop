@@ -418,8 +418,8 @@ ADV.trails = {
       ['I can’t find Personalization or Memory', 'Open <b>Settings</b> (your profile picture or <b>…</b>) → <b>Personalization</b>. Not there yet? Keep your rules in your Workspace or a Word file and paste them at the start of a chat.'],
       ['There’s no Schedule option on my prompt', 'Hover over the prompt you sent, not Copilot’s answer, and look for the clock icon or <b>…</b> → <b>Schedule</b>. If it isn’t there, it isn’t switched on for you yet: save the prompt instead and run it each morning.'],
       ['I can’t find Workspaces', 'Look in the left pane of Microsoft 365 Copilot. Workspaces used to be called <b>Notebooks</b>, so you may still see that name.'],
-      ['The study guide has no quiz', 'Quizzes and matching in the Study guide are built from Word, PowerPoint and PDF files. Add one of those, or ask for the quiz in a Copilot Page instead.'],
-      ['Copilot says it can’t make flashcards', 'Ask for them <b>in a Copilot Page</b>: “Create interactive flashcards in a Copilot Page…”. In plain chat there’s no flashcard mode.'],
+      ['The Study guide shows no flashcards or quiz', 'Flashcards, the quiz, topics, fill in the blanks and matching are built only from Word, PowerPoint and PDF files, each under about 100,000 characters and not protected. Emails, meetings and Excel only give you the summary. Add a Word, PowerPoint or PDF file, or use the Plan B prompt for flashcards in a Copilot Page.'],
+      ['Copilot says it can’t make flashcards', 'Ask for them <b>in a Copilot Page</b>: “Create interactive flashcards in a Copilot Page…”. Plain chat has no flashcard mode.'],
     ],
     steps: [
       {
@@ -503,21 +503,23 @@ ADV.trails = {
             fields: ['call'],
             use: { label: 'Set it up', steps: [
               'Select <b>Workspaces</b> in the left pane (it used to be called Notebooks), then <b>New</b>. Name it after your call.',
-              'Under <b>Content</b>, select the paperclip and add what you have for it: the <b>Word</b> memo, the <b>PowerPoint</b> deck, the <b>Excel</b> figures, plus email threads and meeting recaps.',
-              'Add at least one Word or PowerPoint file: the quiz in the study guide is built from those.',
+              'Under <b>Content</b>, select the paperclip and add what you have for it: email threads, meeting recaps, Excel figures, and <b>at least one Word, PowerPoint or PDF file</b>.',
+              'That last part matters: the Study guide builds flashcards, the quiz and the other activities only from Word, PowerPoint and PDF files. Emails, meetings and Excel alone only give you a summary. Encrypted (protected) files don’t work yet.',
             ] },
-            alt: { fold: true, label: 'No call to prepare? Use ours', files: [['downloads/board-memo.docx', 'board-memo.docx'], ['downloads/board-pack-ready.pptx', 'board-pack-ready.pptx'], ['downloads/q3-figures.xlsx', 'q3-figures.xlsx'], ['downloads/demo-meeting-transcript.txt', 'demo-meeting-transcript.txt']], text: 'Imagine next Tuesday is the quarterly review with the board office. Download these four files (a memo, a deck, the figures and a meeting transcript) and add them to the Workspace with the paperclip. Write <b>the quarterly review with the board office next Tuesday</b> in the field above.' } },
+            alt: { fold: true, label: 'No call to prepare? Use ours', files: [['downloads/board-memo.docx', 'board-memo.docx'], ['downloads/board-pack-ready.pptx', 'board-pack-ready.pptx'], ['downloads/q3-figures.xlsx', 'q3-figures.xlsx'], ['downloads/demo-meeting-transcript.txt', 'demo-meeting-transcript.txt']], text: 'Imagine next Tuesday is the quarterly review with the board office. Download these four files (a Word memo, a PowerPoint deck, the Excel figures and a meeting transcript) and add them to the Workspace with the paperclip. Write <b>the quarterly review with the board office next Tuesday</b> in the field above.' } },
           { title: 'Choose what Copilot looks at',
             how: 'Below the prompt box you choose the scope: <b>only this Workspace</b>, so Copilot answers from your files and nothing else, or <b>Work and web</b>, which adds your mailbox, your other files and the web. Ask this both ways and compare.',
             prompt: 'What do I need to know before {call}? List the open decisions, the three numbers that matter and the questions I’m likely to get.' },
           { title: 'Study for the call',
-            how: 'Ask for flashcards <b>in a Copilot Page</b>: in chat, Copilot has no flashcard mode, but in a Page it builds cards you can flip. Each card comes from your own files.',
-            prompt: 'Create interactive flashcards in a Copilot Page to prepare me for {call}: a question on the front, the answer on the back, with the figures, names and decisions I must know. Use only the files in this workspace.',
-            more: { label: 'Then test yourself', prompt: 'Add a short quiz to the Page: five multiple-choice questions, and after each answer show the right one with the source file.' },
-            note: 'Do you see a <b>Study guide</b> button in your Workspace? It makes a summary, topic pages, flashcards, a quiz and a matching game in one go. Quiz and matching need Word, PowerPoint or PDF files.' },
+            use: { label: 'Open the Study guide', steps: [
+              'In the Workspace, select <b>New</b> and scroll down to <b>Study guide</b>.',
+              'Copilot builds a summary and topic pages from your files, plus <b>flashcards</b>, a <b>quiz</b>, <b>fill in the blanks</b> and a <b>matching</b> game.',
+              'Flip through the flashcards, then take the quiz. If you get a question wrong, the explanation points back to the source file.',
+            ] },
+            alt: { fold: true, label: 'No Study guide, or no flashcards?', text: 'Check that the Workspace has a Word, PowerPoint or PDF file that isn’t protected (step A). Or ask in chat: Copilot builds flip cards and a quiz in a <b>Copilot Page</b>. Plain chat has no flashcard mode, so ask for the Page.', prompt: 'Create interactive flashcards in a Copilot Page to prepare me for {call}: a question on the front, the answer on the back, with the figures, names and decisions I must know. Then add a short quiz with five multiple-choice questions. Use only the files in this workspace.' } },
           { title: 'Make it visual',
             variants: [
-              ['Infographic', 'Create a one-page infographic in a Copilot Page with the key figures and decisions for {call}, so I can share it with my team.'],
+              ['Infographic', 'Create an infographic with the key figures and decisions for {call}, so I can share it with my team.', { how: 'Select <b>New</b> → <b>Infographic</b>, next to the Study guide. Or ask in chat:' }],
               ['Mind map', 'Show everything in this workspace as a mind map.'],
               ['A Page with your to-dos', 'Create a Page for {call}: what I want to achieve, my key messages, the questions I expect, and a to-do list I can tick off.'],
               ['A briefing deck', 'Create a five-slide PowerPoint briefing for {call} from this workspace.'],
@@ -529,7 +531,7 @@ ADV.trails = {
             note: 'Audio overviews take a few minutes. Start it, then go back to another task or a side quest.' },
         ],
         wow: 'Everything for your call in one place: the files, a study guide with a quiz, a visual to share and a briefing you can listen to on the way.',
-        check: ['A Workspace with your Word, PowerPoint or Excel files in it', 'The same question answered from the Workspace only and from Work and web', 'Flashcards you can flip in a Copilot Page, and the quiz taken', 'A visual, a Page or a deck', 'An audio overview, or one on its way'],
+        check: ['A Workspace with at least one Word, PowerPoint or PDF file in it', 'The same question answered from the Workspace only and from Work and web', 'A Study guide: flashcards flipped and the quiz taken', 'An infographic, a mind map, a Page or a deck', 'An audio overview, or one on its way'],
       },
     ],
     sideQuests: [
@@ -593,6 +595,7 @@ ADV.openPoints = [
   'Excel step 5C: apply the “Make it yours” ideas one after another (cumulatively) and check the dashboard still renders after each one.',
   'Does ERGO Motion run and play in ERGO’s PowerPoint for the web? It writes and runs a small program; tested locally, not yet in ERGO’s tenant. (Trail 2, step 3)',
   'Chief-of-Staff trail: Agent Builder is now only a side quest. Check in ERGO’s tenant: email actions from chat (flag, pin), Settings → Personalization (custom instructions, Memory), Schedule this prompt, and Workspaces with emails as content and audio overview. Planner agent and Cowork are optional side quests.',
+  'Workspace Study guide: flashcards, quiz, topics, fill in the blanks and matching need Word, PowerPoint or PDF files under 100k characters that aren’t protected. If ERGO’s sensitivity labels encrypt documents, attendees should use the Plan B sample files (unlabelled) or the Copilot Page prompt.',
   'Languages (Rebecca): “Auf Deutsch, bitte” works. Was the flow tested in other participants’ languages, and may people work in their preferred language? Not decided yet.',
 ];
 
