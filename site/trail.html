@@ -56,6 +56,7 @@
   // ---------- building blocks ----------
   const media = (m) => {
     if (!m) return '';
+    if (Array.isArray(m)) return `<div class="shots">${m.map((x) => `<figure class="shot"><a href="${x.image}" target="_blank" rel="noopener"><img src="${x.image}" alt="${esc(x.caption.replace(/<[^>]+>/g, ''))}" loading="lazy"></a><figcaption>${x.caption}</figcaption></figure>`).join('')}</div>`;
     if (m.type === 'compare') return `<figure><div class="device"><div class="bar"><i></i><i></i><i></i></div>
       <div class="compare" style="--pos:50%"><img src="${m.before}" alt="Before: the slide without the skill"><img class="after" src="${m.after}" alt="After: the same slide with the skill">
       <span class="tag l">Before</span><span class="tag r">With skill</span><span class="handle" aria-hidden="true"></span>
