@@ -47,7 +47,7 @@
     return `<div class="lib-group" id="t-${k}"><p class="eyebrow">Trail ${T.group} · ${T.app}</p><h2 style="font-size:36px">${T.name}</h2>${steps}
       ${quests ? `<div class="lib-step"><h3><a href="trail.html?t=${k}&s=quests">Side quests</a></h3><div class="grid three">${quests}</div></div>` : ''}</div>`;
   }).join('') + `<div class="lib-group" id="more"><p class="eyebrow">Works on anything</p><h2 style="font-size:36px">More ideas</h2>${ADV.library.map((g) => `<div class="lib-step"><h3>${g.mood}</h3><div class="grid three">${g.items.map(([p, out]) => card(p, 'You’ll get: ' + out)).join('')}</div></div>`).join('')}
-    <div class="lib-step"><h3>Copilot Notebooks (Advanced focus)</h3><div class="grid three">${ADV.bonus.prompts.map((x) => card(x, 'In a notebook')).join('')}</div></div>
+    <div class="lib-step"><h3>Copilot Workspaces (Advanced focus)</h3><div class="grid three">${ADV.bonus.prompts.map((x) => card(x, 'In a Workspace')).join('')}</div></div>
     <div class="lib-step"><h3>Your share-out</h3><div class="grid three">${card(ADV.shareOut.prompt, 'Prepare your 2-minute share-out')}</div></div></div>`;
 })();
 </script>

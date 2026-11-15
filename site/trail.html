@@ -109,7 +109,7 @@
         <ol class="muted">${T.setup.map((x) => `<li>${x}</li>`).join('')}</ol>
         <p class="small muted">${T.workbook ? 'Prepared <b>_Ready</b> sheets in the same workbook let you skip ahead without the earlier results.' : 'You can skip ahead at any time: every step works with the files in the kit.'}</p></div></div>
       <div class="beat"><h3><b>3</b>The route</h3><div>
-        <p class="muted">Prompts first, skills later. You try each task by hand; when it’s something you’d do again and again, you turn it into a skill${key === 'cos' ? ' or an agent' : ''}.</p>
+        <p class="muted">Prompts first, skills later. You try each task by hand; when it’s something you’d do again and again, you turn it into a skill${key === 'cos' ? ' or a scheduled prompt' : ''}.</p>
         <div class="path-line">${T.steps.map((x, i) => `<a class="node" href="${url(i + 1)}"><b>${i + 1}. ${x.title}</b><span>${x.time} min · ${ADV.taskCount(x)} task${ADV.taskCount(x) > 1 ? 's' : ''}${x.test || x.tasks.some((t) => t.test) ? ' · 🧪' : ''}</span></a>`).join('')}</div>
         ${levelNote()}
         <p class="small muted">Basic and Advanced follow the same steps. Advanced groups move faster and skip ahead. 🧪 marks a step we’re still testing in ERGO’s tenant.</p></div></div>
@@ -212,10 +212,10 @@
           <h3 style="margin-top:12px">${q.title}</h3><p class="muted">${q.what}</p>${ADV.promptBox(q.prompt)}
           <button class="btn small ${done ? 'is-done done-btn' : 'ghost'}" type="button" data-quest="${q.id}" aria-pressed="${done}">${done ? '✓ Completed' : 'Mark as completed'}</button></article>`;
       }).join('')}
-      <article class="card bonus ${level === 'advanced' ? 'mine' : ''}" style="grid-column:1/-1"><p class="eyebrow">Bonus track · any trail · <span class="pill red">Advanced focus</span></p><h3>📓 ${ADV.bonus.title.replace('Bonus: ', '')}</h3>
+      ${T.noBonus ? '' : `<article class="card bonus ${level === 'advanced' ? 'mine' : ''}" style="grid-column:1/-1"><p class="eyebrow">Bonus track · any trail · <span class="pill red">Advanced focus</span></p><h3>📓 ${ADV.bonus.title.replace('Bonus: ', '')}</h3>
         <p class="muted">${ADV.bonus.advanced} ${ADV.bonus.text}</p>
         <ol class="use-steps">${ADV.bonus.steps.map((x) => `<li>${x}</li>`).join('')}</ol>
-        ${ADV.bonus.prompts.map((x) => ADV.promptBox(x)).join('')}</article></div>
+        ${ADV.bonus.prompts.map((x) => ADV.promptBox(x)).join('')}</article>`}</div>
       ${nav([url(T.steps.length), `Step ${T.steps.length}`], [url('share'), 'Prepare your share-out'])}`;
 
   const share = () => {
