@@ -222,6 +222,8 @@ body::before {
 .waiting { display: flex; gap: 14px; align-items: flex-start; margin: 18px 0; padding: 16px 18px; background: #f2f7ff; border-color: #cfe0fb; box-shadow: none; }
 .waiting > span { font-size: 26px; }
 .waiting p { margin: 4px 0 10px; }
+.waiting .v-label { margin: 12px 0 6px; }
+.wait-tips { margin: 0; padding-left: 18px; display: grid; gap: 6px; font-size: 15px; }
 .ideas { display: flex; flex-wrap: wrap; gap: 8px; }
 .idea { font: inherit; font-size: 14px; padding: 8px 12px; border-radius: 999px; border: 1px dashed rgba(191, 22, 41, .45); background: #fff; color: var(--text); cursor: pointer; }
 .idea:hover { background: rgba(191, 22, 41, .05); }

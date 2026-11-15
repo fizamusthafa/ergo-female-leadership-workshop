@@ -137,7 +137,9 @@
     x.use ? `<p class="v-label">${esc(x.use.label)}</p><ol class="use-steps">${x.use.steps.map((s) => `<li>${s}</li>`).join('')}</ol>` : '',
     x.more ? variant([x.more.label, x.more.prompt]) : '',
     x.ideas ? `<p class="v-label">Make it yours: add one idea at a time</p><div class="ideas">${x.ideas.map((s) => { const [l, q] = Array.isArray(s) ? s : [s, s]; return `<button type="button" class="idea" data-copy="${esc(q)}" title="${esc(q)}">${esc(l)} <span aria-hidden="true">⧉</span></button>`; }).join('')}${x.ideas.some(Array.isArray) ? '<p class="small muted" style="margin:6px 0 0">Each button copies the full prompt: it asks Copilot to update the existing dashboard and show it rendered, not only as code.</p>' : ''}</div>` : '',
-    x.waiting ? `<div class="waiting card"><span aria-hidden="true">⏳</span><div><b>While you wait</b><p>${x.waiting.text}</p></div></div>` : '',
+    x.waiting ? `<div class="waiting card"><span aria-hidden="true">⏳</span><div><b>While you wait</b><p>${x.waiting.text}</p>
+      ${x.waiting.ideas ? `<p class="v-label">Ask Copilot in another tab: copy one</p><div class="ideas">${x.waiting.ideas.map(([l, q]) => `<button type="button" class="idea" data-copy="${esc(q)}" title="${esc(q)}">${esc(l)} <span aria-hidden="true">⧉</span></button>`).join('')}</div>` : ''}
+      ${x.waiting.tips ? `<p class="v-label">Or try PowerPoint itself</p><ul class="wait-tips">${x.waiting.tips.map(([h, t]) => `<li><b>${h}</b> ${t}</li>`).join('')}</ul>` : ''}</div></div>` : '',
     x.alt ? (x.alt.fold
       ? `<details class="alt card fold"><summary class="eyebrow">Plan B · ${esc(x.alt.label)}</summary>${x.alt.files ? filesRow(x.alt.files) : ''}<p>${x.alt.text}</p>${x.alt.prompt ? ADV.promptBox(x.alt.prompt) : ''}</details>`
       : `<div class="alt card"><p class="eyebrow">Plan B · ${esc(x.alt.label)}</p>${x.alt.files ? filesRow(x.alt.files) : ''}<p>${x.alt.text}</p>${x.alt.prompt ? ADV.promptBox(x.alt.prompt) : ''}</div>`) : '',

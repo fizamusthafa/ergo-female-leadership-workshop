@@ -34,7 +34,8 @@
   const taskPrompts = (x, tag) => [].concat(
     x.prompt ? [[x.prompt, tag]] : [], x.prompt2 ? [[x.prompt2, tag + ' · then']] : [],
     (x.variants || []).map(([l, p]) => [p, tag + ' · ' + l]), x.more ? [[x.more.prompt, tag + ' · ' + x.more.label]] : [],
-    x.alt && x.alt.prompt ? [[x.alt.prompt, tag + ' · Plan B']] : [], (x.ideas || []).map((s) => [Array.isArray(s) ? s[1] : s, tag + ' · idea']));
+    x.alt && x.alt.prompt ? [[x.alt.prompt, tag + ' · Plan B']] : [], (x.ideas || []).map((s) => [Array.isArray(s) ? s[1] : s, tag + ' · idea']),
+    ((x.waiting && x.waiting.ideas) || []).map(([l, q]) => [q, tag + ' · while you wait: ' + l]));
   const PATH = { agent: ' · with Agent Builder', prompts: ' · without Agent Builder' };
   const stepPrompts = (st) => st.tasks.flatMap((x, i) => taskPrompts(x, 'ABCDEFGH'[i] + ' · ' + x.title + (x.path ? PATH[x.path] : ''))).concat(st.yours && st.yours.prompt ? [[st.yours.prompt, 'Make it yours']] : []);
   const order = ['xls', 'ppt', 'cos'];

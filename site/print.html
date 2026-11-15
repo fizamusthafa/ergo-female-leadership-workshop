@@ -54,7 +54,7 @@
       ${(x.variants || []).map(([l, p, e]) => (e && e.files ? `<p><b>File:</b> ${files(e.files)}</p>` : '') + (e && e.how ? `<p>${e.how}</p>` : '') + P(p, l)).join('')}
       ${x.build ? `<ul>${x.build.map(([h, t]) => `<li><b>${h}:</b> ${t}</li>`).join('')}</ul>` : ''}
       ${x.use ? `<ol>${x.use.steps.map((s) => `<li>${s}</li>`).join('')}</ol>` : ''}${x.more ? P(x.more.prompt, x.more.label) : ''}
-      ${x.ideas ? `<p><b>Ideas, one at a time:</b></p>${x.ideas.map((s) => P(Array.isArray(s) ? s[1] : s, 'Idea')).join('')}` : ''}${x.waiting ? `<p><b>While you wait:</b> ${x.waiting.text}</p>` : ''}
+      ${x.ideas ? `<p><b>Ideas, one at a time:</b></p>${x.ideas.map((s) => P(Array.isArray(s) ? s[1] : s, 'Idea')).join('')}` : ''}${x.waiting ? `<p><b>While you wait:</b> ${x.waiting.text}</p>${(x.waiting.ideas || []).map(([l, q]) => P(q, 'While you wait · ' + l)).join('')}${x.waiting.tips ? `<ul>${x.waiting.tips.map(([h, t]) => `<li><b>${h}</b> ${t}</li>`).join('')}</ul>` : ''}` : ''}
       ${x.alt ? `<p><b>Plan B (${esc(x.alt.label)}):</b> ${x.alt.text}</p>${x.alt.prompt ? P(x.alt.prompt, 'Plan B') : ''}` : ''}
       ${x.note ? `<p class="meta">${x.note}</p>` : ''}`;
   const steps = T.steps.map((st, i) => `<section class="step"><h2>Step ${i + 1} · ${esc(st.title)}</h2>
