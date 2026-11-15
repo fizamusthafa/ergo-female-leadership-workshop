@@ -63,6 +63,7 @@
       ${st.files ? `<p><b>Files:</b> ${files(st.files)}</p>` : ''}${st.open ? `<p><b>Open:</b> ${esc(st.open)}</p>` : ''}${st.intro ? `<p>${st.intro}</p>` : ''}
       ${st.toggle ? `<p><b>Two paths:</b> with Agent Builder, or with prompts if you don’t see Agents. Do one of them.</p>` : ''}${st.tasks.map(taskHtml).join('')}
       ${st.yours && st.yours.prompt ? P(st.yours.prompt, 'Make it yours') : ''}
+      ${st.explain ? `<h3>${esc(st.explain.q)}</h3><p>${st.explain.lead}</p>${st.explain.cols.map(([h, items]) => `<p><b>${h}:</b> ${items.join('; ')}.</p>`).join('')}<p>${st.explain.tip}</p>` : ''}
       <h3>Done when</h3><ul>${st.check.map((c) => `<li>${esc(c)}</li>`).join('')}</ul></section>`).join('');
   const byo = T.byo ? `<section class="step"><h2>Side quest · Bring your own skill</h2><p>${T.byo.why}</p>
       <ul>${T.byo.parts.map(([h, t]) => `<li><b>${h}:</b> ${t}</li>`).join('')}</ul><ol>${T.byo.steps.map((x) => `<li>${x}</li>`).join('')}</ol>

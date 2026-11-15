@@ -355,6 +355,15 @@ ADV.trails = {
             note: 'Motion slides are live HTML inside PowerPoint: the same mechanism as Interactive Slides in step 2. ERGO Motion writes and runs a small program, so building takes a few minutes: use the wait to look at the ERGO Brand result. Change motion slides by prompting, not by editing the slide. Exported to PDF they become a still picture. If ERGO Brand loads instead, start the prompt with <b>@ergo-motion-slides</b> or with “Use the ergo-motion-slides skill to…”. If the new slide stays blank in the editor, open <b>Slide Show › From Current Slide</b>: it plays there.' },
         ],
         wow: 'Same brand, two jobs: ERGO Brand tidies the deck you have in seconds, and ERGO Motion adds a slide that moves. You never named a skill: Copilot read their descriptions and picked one.',
+        explain: {
+          q: 'What exactly does ERGO Motion do, and which one should I use?',
+          lead: 'ERGO Motion builds the slide as a small web page (HTML) and places it inside your PowerPoint slide. That is why it can do things normal slides can’t: numbers that count up, bars that grow, elements you can click. Many people like HTML slides for storytelling, because the animation walks the audience through the message. It is the same mechanism PowerPoint itself now uses for Interactive Slides, which you tried in step 2.',
+          cols: [
+            ['Standard slides (ERGO Brand)', ['Text boxes, shapes and charts you know', 'Click into any text and edit it yourself', 'Works everywhere: PDF, print, older PowerPoint', 'Restyles in about a minute']],
+            ['HTML slides (ERGO Motion)', ['Animations and interaction: count-ups, growing charts, clicks', 'Strong for a story you present live', 'To change it, you ask Copilot again: you can’t type into the slide', 'Takes a few minutes to build; in a PDF it becomes a still picture']],
+          ],
+          tip: 'Rule of thumb: standard slides for anything people will edit, print or forward. One HTML slide where you want a moment in the room, for example the key number at the end of the board story.',
+        },
         yours: { text: 'Open <b>Custom skills</b>, select <b>ergo-brand</b> and change “Maximum 3 bullets” to “Maximum 2 bullets”. Ask again and watch the slides follow your rule. This shows how you can change a custom skill’s rules to fit your own needs.', prompt: 'Make these slides board-ready.' },
         check: ['Copilot’s reply names the ERGO rules it applied (headlines, bullets, notes) and every number is unchanged', 'Message headlines and one red accent per slide', 'Advanced: an ERGO Motion slide that moves in Slide Show'],
         skills: ['ergo-brand', 'ergo-motion-slides'],
@@ -503,7 +512,7 @@ ADV.trails = {
             cases: { field: 'call', list: [
               { title: 'AI pilot: steering committee', what: 'Approve, defer or reject EUR 420,000 for an AI claims-triage pilot. Operations and Finance disagree on the value, and some actions are overdue.', zip: 'downloads/ai-pilot-pack.zip', contents: 'Four Word files, a PDF, a PowerPoint deck and an Excel register.', value: 'the steering committee on the AI claims-triage pilot next Tuesday' },
               { title: 'Q3 results: board review', what: 'Premiums are ahead of plan, but Property & Casualty holds the result back. Be ready for the board’s questions.', zip: 'downloads/q3-review-pack.zip', contents: 'A Word memo, a PowerPoint deck and the Excel figures.', value: 'the Q3 results review with the board next Tuesday' },
-              { title: 'Your own meeting', what: 'A real meeting next week. Bring its Word, PowerPoint or PDF files, plus emails. Files encrypted by a sensitivity label may not work in the Study guide yet.' },
+              { title: 'Your own meeting', what: 'A real meeting next week. Bring its Word, PowerPoint or PDF files, plus emails. Not sure which one? Task D finds it for you. Files encrypted by a sensitivity label may not work in the Study guide yet.' },
             ] },
             fields: ['call'] },
           { title: 'Create it and make it your chief of staff',
@@ -518,6 +527,10 @@ ADV.trails = {
             how: 'Below the prompt box you choose the scope: <b>only this Workspace</b>, so Copilot answers from these files and nothing else, or <b>Work and web</b>, which adds your mailbox, your other files and the web. Ask this both ways and compare.',
             prompt: 'What do I need to know before {call}? List the decision in one sentence, the three numbers that matter, and the questions I’m likely to get.',
             more: { label: 'Then dig in', prompt: 'Where do the files in this workspace disagree, and which source should count? What is still open, and who owns it?' } },
+          { title: 'What should I prepare next week?',
+            how: 'Now use your chief of staff on your real week. Switch the scope to <b>Work and web</b> and send this multi-step prompt. It looks back first, then ahead, then starts the work.',
+            prompt: 'Go through my last week: my meetings, emails and Teams chats. Then look at my calendar for next week. Tell me 1) which meetings next week need preparation, most important first, 2) for the top one, what I should have ready (a short brief, talking points, a deck, the figures or flashcards), and 3) which emails, chats and files matter for it. Then create the first of those assets for me.',
+            note: 'Add the files it names to the Workspace with the paperclip and type that meeting into the field in task A: every prompt on this page then prepares you for it.' },
           { title: 'Study for the call',
             use: { label: 'Open the Study guide', steps: [
               'In the Workspace, select <b>New</b> and scroll down to <b>Study guide</b>.',

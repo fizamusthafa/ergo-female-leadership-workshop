@@ -148,7 +148,7 @@
 
   const stepPage = (n) => {
     const st = T.steps[n - 1];
-    const letters = 'ABCDEF';
+    const letters = 'ABCDEFGH';
     const files = st.files || [];
     const wb = T.workbook;
     const openBits = [
@@ -177,6 +177,9 @@
         ${tasks}</div>
         ${st.skills && st.skills.length ? `<div class="uses"><span class="small muted">Look for:</span>${st.skills.map((s) => `<span class="pill red">${ADV.skills[s].kind === 'agent' ? '' : 'Loaded '}${ADV.skills[s].title}</span>`).join('')}</div>` : ''}
         <p class="wow">${st.wow}</p>
+        ${st.explain ? `<details class="explain card"><summary>${esc(st.explain.q)}</summary><div class="explain-body"><p>${st.explain.lead}</p>
+          <div class="explain-cols">${st.explain.cols.map(([h, items]) => `<div><b>${h}</b><ul>${items.map((s) => `<li>${s}</li>`).join('')}</ul></div>`).join('')}</div>
+          <p>${st.explain.tip}</p></div></details>` : ''}
       </div></div>
       ${st.yours ? `<div class="beat"><h3><b>★</b>Make it yours</h3><div><p>${st.yours.text}</p>${st.yours.prompt ? ADV.promptBox(st.yours.prompt) : ''}</div></div>` : ''}
       <div class="beat"><h3><b>✓</b>Done?</h3><div>

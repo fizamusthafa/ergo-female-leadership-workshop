@@ -434,6 +434,13 @@ html.reduce .duo-hero *, html.reduce .hi5 * { animation: none !important; }
 .open-how summary { cursor: pointer; padding: 10px 14px; font-weight: 600; font-size: 15px; }
 .open-how ol { margin: 0 14px 12px 4px; display: grid; gap: 6px; font-size: 15px; }
 .card.bonus.mine { box-shadow: inset 3px 0 0 var(--red), var(--shadow); }
+.explain { margin-top: 18px; padding: 0; }
+.explain summary { cursor: pointer; padding: 14px 18px; font-weight: 700; font-size: 17px; }
+.explain-body { padding: 0 18px 16px; }
+.explain-body p { margin: 0 0 12px; }
+.explain-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin: 0 0 12px; }
+.explain-cols > div { border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; background: #fff; }
+.explain-cols ul { margin: 8px 0 0; padding-left: 18px; display: grid; gap: 4px; font-size: 15px; }
 
 /* ---------- text files you can open on the page ---------- */
 .peek { margin: 4px 0 10px; border: 1px solid var(--line); border-radius: 12px; background: #fff; }

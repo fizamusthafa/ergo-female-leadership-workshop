@@ -36,7 +36,7 @@
     (x.variants || []).map(([l, p]) => [p, tag + ' · ' + l]), x.more ? [[x.more.prompt, tag + ' · ' + x.more.label]] : [],
     x.alt && x.alt.prompt ? [[x.alt.prompt, tag + ' · Plan B']] : [], (x.ideas || []).map((s) => [Array.isArray(s) ? s[1] : s, tag + ' · idea']));
   const PATH = { agent: ' · with Agent Builder', prompts: ' · without Agent Builder' };
-  const stepPrompts = (st) => st.tasks.flatMap((x, i) => taskPrompts(x, 'ABCDEF'[i] + ' · ' + x.title + (x.path ? PATH[x.path] : ''))).concat(st.yours && st.yours.prompt ? [[st.yours.prompt, 'Make it yours']] : []);
+  const stepPrompts = (st) => st.tasks.flatMap((x, i) => taskPrompts(x, 'ABCDEFGH'[i] + ' · ' + x.title + (x.path ? PATH[x.path] : ''))).concat(st.yours && st.yours.prompt ? [[st.yours.prompt, 'Make it yours']] : []);
   const order = ['xls', 'ppt', 'cos'];
   ADV.$('#jump').innerHTML = order.map((k) => `<a class="btn small ghost" href="#t-${k}">${ADV.trails[k].group} · ${ADV.trails[k].app}</a>`).join('') + '<a class="btn small ghost" href="#more">More ideas</a>';
   ADV.$('#lib').innerHTML = order.map((k) => {
