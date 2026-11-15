@@ -14,6 +14,7 @@
 
 <script src="assets/content.js"></script>
 <script src="assets/skills-data.js"></script>
+<script src="assets/texts-data.js"></script>
 <script src="assets/facts-data.js"></script>
 <script src="assets/vendor/gsap.min.js"></script>
 <script src="assets/app.js"></script>
@@ -65,11 +66,14 @@
   };
   const nav = (prev, next) => `<div class="next-nav">${prev ? `<a class="btn ghost" href="${prev[0]}">← ${esc(prev[1])}</a>` : '<span></span>'}${next ? `<a class="btn red" href="${next[0]}">${esc(next[1])} →</a>` : ''}</div>`;
   const fileBtn = ([href, label]) => `<a class="file-chip" href="${href}" download><span aria-hidden="true">${/\.xlsx$/.test(href) ? '📗' : /\.pptx$/.test(href) ? '📙' : /\.docx$/.test(href) ? '📘' : '📄'}</span>${esc(label)}<span class="dl" aria-hidden="true">↓</span></a>`;
-  const variant = ([label, p, x]) => `<p class="v-label">${esc(label)}</p>${x && x.files ? `<div class="files">${x.files.map(fileBtn).join('')}</div>` : ''}${x && x.how ? `<p class="muted how">${x.how}</p>` : ''}${ADV.promptBox(p)}`;
+  // Text files (transcript, sample emails, notes) can also be read and copied right on the page.
+  const peek = ([href, label]) => { const t = (window.TEXT_FILES || {})[href]; return t ? `<details class="peek"><summary>📖 Show the text: ${esc(label)}</summary><div class="peek-body"><button type="button" class="btn small ghost peek-copy" data-copy="${esc(t)}">Copy all</button><pre>${esc(t)}</pre></div></details>` : ''; };
+  const filesRow = (list) => `<div class="files">${list.map(fileBtn).join('')}</div>${list.map(peek).join('')}`;
+  const variant = ([label, p, x]) => `<p class="v-label">${esc(label)}</p>${x && x.files ? filesRow(x.files) : ''}${x && x.how ? `<p class="muted how">${x.how}</p>` : ''}${ADV.promptBox(p)}`;
   const switchBox = (w) => `<div class="switch card"><span aria-hidden="true">↗️</span><div><b>${w.title}</b><p>${w.text}</p><a class="btn small red" href="${w.url}" target="_blank" rel="noopener">${w.cta} ↗</a></div></div>`;
   const testPill = '<span class="pill test" title="Still being tested in ERGO’s tenant">🧪 To be tested in ERGO’s tenant</span>';
   const trouble = () => `<details class="trouble"><summary>🛠️ Something not working? Troubleshooting</summary>
-      <dl>${ADV.trouble.concat(T.trouble || []).map(([q, a]) => `<dt>${q}</dt><dd>${a}</dd>`).join('')}</dl></details>`;
+      <dl>${ADV.trouble.filter(([, , id]) => !(id === 'licence' && T.premium)).concat(T.trouble || []).map(([q, a]) => `<dt>${q}</dt><dd>${a}</dd>`).join('')}</dl></details>`;
   const skillDownloads = (keys) => `<div class="pack-files">${keys.map((k) => { const sk = ADV.skills[k]; return `<div class="pack-file"><span class="pf-ic" aria-hidden="true">${(ADV.gear[k] || ['🎒'])[0]}</span><span><b>${sk.title}</b><code>${k}</code></span>
       <span class="pf-links">${sk.zip ? `<a href="${sk.zip}" download>ZIP ↓</a>` : ''}${sk.md ? `<a href="${sk.md}" download>SKILL.md ↓</a>` : ''}</span></div>`; }).join('')}</div>`;
   const uploadBlock = (u) => {
@@ -97,7 +101,7 @@
       <h1 class="display" style="font-size:clamp(44px,8vw,96px)">${T.name}</h1><p class="lede">${T.mission}</p></div><div data-fx="duo"></div></header>
       <div data-fx="profile"></div>
       <div class="beat"><h3><b>1</b>Before you start</h3><div>
-        <div class="basics">${ADV.basics.map(([ic, h, t]) => `<div class="basic"><span aria-hidden="true">${ic}</span><div><b>${h}</b><p>${t}</p></div></div>`).join('')}</div>
+        <div class="basics">${ADV.basics.filter(([, , , id]) => !(id === 'licence' && T.premium)).map(([ic, h, t]) => `<div class="basic"><span aria-hidden="true">${ic}</span><div><b>${h}</b><p>${t}</p></div></div>`).join('')}</div>
         <p class="row" style="margin-top:18px"><a class="btn red" href="${T.web[1]}" target="_blank" rel="noopener">Open ${T.web[0]} ↗</a></p></div></div>
       <div class="beat"><h3><b>2</b>Get the files</h3><div>
         <p>Everything for this trail in one download (${T.kit.size}): ${T.kit.contents.map((c) => `<code>${c}</code>`).join(', ')}.</p>
@@ -128,7 +132,7 @@
     x.more ? variant([x.more.label, x.more.prompt]) : '',
     x.ideas ? `<p class="v-label">Make it yours: add one idea at a time</p><div class="ideas">${x.ideas.map((s) => { const [l, q] = Array.isArray(s) ? s : [s, s]; return `<button type="button" class="idea" data-copy="${esc(q)}" title="${esc(q)}">${esc(l)} <span aria-hidden="true">⧉</span></button>`; }).join('')}${x.ideas.some(Array.isArray) ? '<p class="small muted" style="margin:6px 0 0">Each button copies the full prompt: it asks Copilot to update the existing dashboard and show it rendered, not only as code.</p>' : ''}</div>` : '',
     x.waiting ? `<div class="waiting card"><span aria-hidden="true">⏳</span><div><b>While you wait</b><p>${x.waiting.text}</p></div></div>` : '',
-    x.alt ? `<div class="alt card"><p class="eyebrow">Plan B · ${esc(x.alt.label)}</p>${x.alt.files ? `<div class="files">${x.alt.files.map(fileBtn).join('')}</div>` : ''}<p>${x.alt.text}</p>${x.alt.prompt ? ADV.promptBox(x.alt.prompt) : ''}</div>` : '',
+    x.alt ? `<div class="alt card"><p class="eyebrow">Plan B · ${esc(x.alt.label)}</p>${x.alt.files ? filesRow(x.alt.files) : ''}<p>${x.alt.text}</p>${x.alt.prompt ? ADV.promptBox(x.alt.prompt) : ''}</div>` : '',
     x.skillFiles ? `<p class="v-label">Skill files</p>${skillDownloads(x.skillFiles)}` : '',
     x.note ? `<p class="note-line">ℹ️ ${x.note}</p>` : '',
     media(x.media),
@@ -140,8 +144,8 @@
     const files = st.files || [];
     const wb = T.workbook;
     const openBits = [
-      wb ? `<div class="files">${fileBtn([wb.file, wb.name])}${files.map(fileBtn).join('')}</div><p class="small muted">The same workbook all session. Already have it open? Just switch to the sheet below.</p>` : '',
-      !wb && files.length ? `<div class="files">${files.map(fileBtn).join('')}</div><p class="small muted">Already downloaded with the kit. Upload to OneDrive if you haven’t yet.</p>` : '',
+      wb ? `<div class="files">${fileBtn([wb.file, wb.name])}${files.map(fileBtn).join('')}</div>${files.map(peek).join('')}<p class="small muted">The same workbook all session. Already have it open? Just switch to the sheet below.</p>` : '',
+      !wb && files.length ? `${filesRow(files)}<p class="small muted">${files.some(([h]) => /\.(txt|md)$/.test(h)) ? 'Already in the kit. Text files also open right here: select <b>Show the text</b>.' : 'Already downloaded with the kit. Upload to OneDrive if you haven’t yet.'}</p>` : '',
       T.openHow ? `<details class="open-how"><summary>First time? How to open the workbook in Excel for the web</summary><ol>${T.setup.map((x) => `<li>${x}</li>`).join('')}</ol></details>` : '',
       st.sheet ? `<p class="sheet-line">📄 Sheet: <b>${esc(st.sheet)}</b></p>` : '',
       st.open ? `<p style="font-size:19px">Open <b>${esc(st.open)}</b>.</p>` : '',

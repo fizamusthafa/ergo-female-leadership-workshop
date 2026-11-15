@@ -33,7 +33,7 @@ ADV.levels = { basic: 'Basic', advanced: 'Advanced' };
 ADV.basics = [
   ['🌐', 'Use the web apps', 'Open Excel, PowerPoint and Outlook in the browser, not the desktop apps. Some features, such as Interactive Slides and the <b>Add skill</b> button, only appear on the web.'],
   ['⚙️', 'Leave the model on Auto', 'If Copilot offers a model choice, keep <b>Auto</b>. Today is about what you ask, not which model answers.'],
-  ['👥', 'No premium licence?', 'Pair up with a neighbour and work on one screen. You can still follow every step.'],
+  ['👥', 'No premium licence?', 'Pair up with a neighbour and work on one screen. You can still follow every step.', 'licence'],
   ['⏭️', 'Skip whenever you like', 'Every step has its own start file, so you never need the result of an earlier step.'],
 ];
 
@@ -43,14 +43,13 @@ ADV.trouble = [
   ['The Add skill button is missing', 'You’re probably in the desktop app. Open the same file in the browser (<b>File</b> → <b>Open in browser</b>, or via office.com) and look again.'],
   ['My skill isn’t showing up yet', 'It can take a few minutes after the upload. Select <b>Refresh</b> under <b>Custom skills</b>, wait a moment and ask again. The folder name must match the <code>name:</code> line in SKILL.md.'],
   ['How do I know a skill was used?', 'Look for a line like <b>“Loaded … skill”</b> in the Copilot chat, just above the answer.'],
-  ['I don’t have a premium Copilot licence', 'Work with a partner on one screen. Copy the prompts into their Copilot and take turns.'],
+  ['I don’t have a premium Copilot licence', 'Work with a partner on one screen. Copy the prompts into their Copilot and take turns.', 'licence'],
 ];
 
 ADV.skills = {
   'ergo-register-cleaner': { app: 'Excel', title: 'Register Cleaner', what: 'Your own skill, from our template: standardises a KPI register on any sheet, applies colour rules, adds a summary row and logs every change.', trigger: '"clean my register", "prepare the monthly KPI file"', zip: 'downloads/ergo-register-cleaner.zip', md: 'downloads/ergo-register-cleaner-SKILL.md' },
   'ergo-brand': { app: 'PowerPoint', title: 'ERGO Brand', what: 'Restyles any deck in ERGO board style: message headlines, one red accent, flat charts. Never changes a figure.', trigger: '"make these slides board-ready"', zip: 'downloads/ergo-brand.zip', md: 'downloads/ergo-brand-SKILL.md' },
   'ergo-board-sparring': { app: 'PowerPoint', title: 'Board Rehearsal', what: 'Our version of the skill you build in step 4: the Chair, the CFO, a supervisor and the works council each ask their hardest question, answered from your deck.', trigger: '"rehearse", "what will they ask"', zip: 'downloads/ergo-board-sparring.zip', md: 'downloads/ergo-board-sparring-SKILL.md' },
-  'ergo-deck': { app: 'PowerPoint', title: 'ERGO Deck', what: 'Builds new slides the ERGO way: logo top right, red KPI tiles, shape-built charts and a takeaway band. It writes and runs a small program to draw every shape, so each slide stays editable.', trigger: '"build … slides in ERGO style"', zip: 'downloads/ergo-deck.zip', md: 'downloads/ergo-deck-SKILL.md' },
   'ergo-motion-slides': { app: 'PowerPoint', title: 'ERGO Motion', what: 'Animated, clickable ERGO slides: tiles that count up, charts that grow. Live HTML inside the slide, the same mechanism as Interactive Slides, with a still picture for PDF.', trigger: '"animated ERGO slides", "ERGO motion slides"', zip: 'downloads/ergo-motion-slides.zip', md: 'downloads/ergo-motion-slides-SKILL.md' },
   'interactive-slides-workaround': { app: 'PowerPoint', title: 'Interactive Slides (workaround)', what: 'Only if the Interactive Slide button is missing: turns one slide into a clickable overview that links to detail slides.', trigger: '"make this slide interactive"', zip: 'downloads/interactive-slides-workaround.zip', md: 'downloads/interactive-slides-workaround-SKILL.md' },
   'chief-of-staff': { app: 'Copilot Chat', title: 'Your Chief of Staff', kind: 'agent', what: 'The agent you build in Agent Builder, or your reusable Chief-of-Staff brief if you work without agents: knows your priorities, organises your day and week, and drafts replies in your voice.', trigger: '@mention the agent, or paste your brief' },
@@ -268,7 +267,7 @@ ADV.trails = {
     app: 'PowerPoint', tool: 'PowerPoint', logo: 'assets/img/brands/powerpoint.png', name: 'The Board Meeting', persona: 'Storyteller', group: 2, useCase: 'Executive Presentation',
     web: ['PowerPoint for the web', 'https://powerpoint.cloud.microsoft'],
     mission: 'The board meets next week. Build the deck from a memo and the numbers, rehearse the questions, then make it ERGO.',
-    kit: { file: 'downloads/powerpoint-kit.zip', size: 'about 300 KB', contents: ['board-memo.docx', 'q3-figures.xlsx', 'board-pack-ready.pptx', 'messy-draft.pptx', 'skills-upload-as-zip/ (5 skill ZIPs)', 'START-HERE.txt'] },
+    kit: { file: 'downloads/powerpoint-kit.zip', size: 'about 300 KB', contents: ['board-memo.docx', 'q3-figures.xlsx', 'board-pack-ready.pptx', 'messy-draft.pptx', 'skills-upload-as-zip/ (4 skill ZIPs)', 'START-HERE.txt'] },
     setup: [
       'Download the kit, <code>powerpoint-kit.zip</code>, with the red button above. It lands in your Downloads folder.',
       'Unzip it on your laptop first: right-click the ZIP → <b>Extract all</b>. OneDrive can’t open a ZIP, so don’t upload the ZIP itself.',
@@ -278,7 +277,7 @@ ADV.trails = {
     ],
     levels: {
       basic: 'Aim for steps 1 and 2, then step 3 (at least tasks A and B) if you have time.',
-      advanced: 'Run steps 1 and 2 quickly, then go for 3 and 4: compare the ERGO skills, make slides move, record a skill. Finish with the Advanced focus: <b>Copilot Notebooks</b> on the side-quest page.',
+      advanced: 'Run steps 1 and 2 quickly, then go for 3 and 4: make slides move with ERGO Motion, record a skill. Finish with the Advanced focus: <b>Copilot Notebooks</b> on the side-quest page.',
     },
     trouble: [
       ['Creating the deck takes ages', 'That’s normal: a few minutes. Don’t wait. Open <code>board-pack-ready.pptx</code> in a new tab and do task B.'],
@@ -338,32 +337,27 @@ ADV.trails = {
         check: ['Two versions of the priorities slide, and you know which you’d keep', 'Every slide in German, figures unchanged', 'An interactive slide you can click through in Slide Show'],
       },
       {
-        title: 'Make it ERGO', goal: 'Three custom skills, three jobs: restyle with ERGO Brand, build with ERGO Deck, animate with ERGO Motion.', time: 16,
+        title: 'Make it ERGO', goal: 'Two custom skills, two jobs: restyle with ERGO Brand, animate with ERGO Motion.', time: 14,
         files: [['downloads/messy-draft.pptx', 'messy-draft.pptx'], ['downloads/q3-figures.xlsx', 'q3-figures.xlsx']],
-        intro: 'Add all three skills first. Then try them one by one: each task says which skill should load.',
+        intro: 'Add both skills first. Then try them one by one: each task says which skill should load.',
         tasks: [
-          { title: 'Add the skills', upload: { skills: ['ergo-brand', 'ergo-deck', 'ergo-motion-slides'], app: 'ppt', explore: true } },
+          { title: 'Add the skills', upload: { skills: ['ergo-brand', 'ergo-motion-slides'], app: 'ppt', explore: true } },
           { title: 'ERGO Brand: restyle what’s there',
             open: 'messy-draft.pptx',
             prompt: 'Make these slides board-ready.',
             note: 'ERGO Brand is rules only: it restyles your existing slides and never changes a figure.',
             media: { type: 'compare', before: 'assets/media/messy-draft-s2.jpg', after: 'assets/media/ppt-step1-s2.jpg', caption: 'Drag to compare. Before: the messy draft. After: with the ERGO Brand skill.' } },
-          { title: 'ERGO Deck: build new slides the ERGO way',
-            open: 'a new blank presentation',
+          { title: 'ERGO Motion: slides that move', level: 'advanced',
+            open: 'the deck from task B, or any deck',
             how: 'Attach <code>q3-figures.xlsx</code> with <b>+</b>, or type <b>/</b> and pick it. Then send:',
-            prompt: 'Build three slides in ERGO style from /q3-figures.xlsx: a cover, a KPI slide with tiles for the business units, and a chart slide on the combined ratio with a one-line takeaway.',
-            prompt2: 'Compare this with the deck ERGO Brand restyled. Which would you show the board, and why?',
-            note: 'ERGO Deck writes and runs a small program that draws every shape, so it takes a minute or two. Use the wait to look at the ERGO Brand result. If ERGO Brand loads instead, start the prompt with <b>@ergo-deck</b>.' },
-          { title: 'ERGO Motion: slides that move',
-            open: 'the deck from task C, or any deck',
-            prompt: 'Add an animated ERGO appendix slide with our Q3 KPIs: tiles that count up and a bar chart of the combined ratio that grows.',
-            how: 'Then start the <b>Slide Show</b> to see it move.',
-            note: 'Motion slides are live HTML inside PowerPoint: the same mechanism as Interactive Slides in step 2. Change them by prompting, not by editing the slide. Exported to PDF they become a still picture. Building takes a few minutes. If ERGO Deck loads instead, start the prompt with <b>@ergo-motion-slides</b>.' },
+            prompt: 'Add an animated ERGO appendix slide with the Q3 KPIs from /q3-figures.xlsx: tiles that count up and a bar chart of the combined ratio that grows.',
+            prompt2: 'Start the Slide Show and watch it move. Then compare it with the slides ERGO Brand restyled: which would you show the board, and why?',
+            note: 'Motion slides are live HTML inside PowerPoint: the same mechanism as Interactive Slides in step 2. ERGO Motion writes and runs a small program, so building takes a few minutes: use the wait to look at the ERGO Brand result. Change motion slides by prompting, not by editing the slide. Exported to PDF they become a still picture. If ERGO Brand loads instead, start the prompt with <b>@ergo-motion-slides</b>.' },
         ],
-        wow: 'Same brand, three jobs: ERGO Brand tidies the deck you have, ERGO Deck builds new slides with the logo, tiles and charts, and ERGO Motion makes them move. You never named a skill: Copilot read their descriptions and picked one.',
+        wow: 'Same brand, two jobs: ERGO Brand tidies the deck you have in seconds, and ERGO Motion adds a slide that moves. You never named a skill: Copilot read their descriptions and picked one.',
         yours: { text: 'Open <b>Custom skills</b>, select <b>ergo-brand</b> and change “Maximum 3 bullets” to “Maximum 2 bullets”. Ask again and watch the slides follow your rule. This shows how you can change a custom skill’s rules to fit your own needs.', prompt: 'Make these slides board-ready.' },
-        check: ['“Loaded ergo-brand skill” (or similar) in the chat, every number unchanged', 'Three new slides with the ERGO logo, KPI tiles and a chart from ERGO Deck', 'Advanced: an ERGO Motion slide that moves in Slide Show'],
-        skills: ['ergo-brand', 'ergo-deck', 'ergo-motion-slides'],
+        check: ['“Loaded ergo-brand skill” (or similar) in the chat, every number unchanged', 'Message headlines and one red accent per slide', 'Advanced: an ERGO Motion slide that moves in Slide Show'],
+        skills: ['ergo-brand', 'ergo-motion-slides'],
       },
       {
         title: 'Turn it into skills', goal: 'You’ll do this before every board meeting. Turn it into a skill.', time: 12,
@@ -402,15 +396,16 @@ ADV.trails = {
   // Trail 3 · Chief of Staff · Outlook / Copilot Chat
   // ======================================================================
   cos: {
-    app: 'Copilot Chat & Outlook', tool: 'Outlook / Copilot Chat', logo: 'assets/img/brands/outlook.png', name: 'The Chief of Staff', persona: 'Orchestrator', group: 3, useCase: 'Chief-of-Staff',
+    app: 'Copilot Chat & Outlook', tool: 'Outlook / Copilot Chat', logo: 'assets/img/brands/outlook.png', premium: true, name: 'The Chief of Staff', persona: 'Orchestrator', group: 3, useCase: 'Chief-of-Staff',
     web: ['Microsoft 365 Copilot', 'https://m365.cloud.microsoft/chat'],
     mission: 'Make Copilot your own Chief of Staff. Start with prompts, notice what you do every day, then build an agent that does it your way.',
     kit: { file: 'downloads/chief-of-staff-kit.zip', size: 'about 10 KB', contents: ['demo-meeting-transcript.txt', 'sample-emails.md', 'my-priorities.md', 'sample-voice-texts.md'] },
     setup: [
       'Download the kit and unzip it. Nothing needs uploading yet.',
       'Open Microsoft 365 Copilot in the browser (<b>m365.cloud.microsoft</b>) and keep Outlook for the web open in a second tab.',
-      'Your mailbox doesn’t have workshop content, so the kit has a demo meeting transcript and sample emails. Imagine they are yours.',
-      'Check now: do you see <b>Agents</b> (or a <b>New agent</b> button) in the left pane of Microsoft 365 Copilot? If not, no problem: from step 2 on, choose <b>No Agent Builder</b> and you’ll build the same Chief of Staff with prompts.',
+      'Everyone on this trail has a Microsoft 365 Copilot licence, so the prompts work on your own calendar, emails and chats.',
+      'Your mailbox doesn’t have workshop content, so we also give you a demo meeting transcript and sample emails. Imagine they are yours. Each one opens right on the page: select <b>Show the text</b> under the file.',
+      'Check now: do you see <b>Agents</b> (or a <b>New agent</b> button) in the left pane of Microsoft 365 Copilot? Your licence includes agents, but IT may not have switched Agent Builder on for everyone yet. If you don’t see it, no problem: from step 2 on, choose <b>No Agent Builder</b> and you’ll build the same Chief of Staff with prompts.',
     ],
     levels: {
       basic: 'Aim for step 1 and an agent (or a saved brief) with starter prompts in step 2.',
@@ -442,7 +437,7 @@ ADV.trails = {
       {
         title: 'Build your Chief of Staff', goal: 'You do this every day. Build an agent, or a reusable brief, that does it your way.', time: 18, test: true,
         files: [['downloads/my-priorities.md', 'my-priorities.md'], ['downloads/sample-voice-texts.md', 'sample-voice-texts.md']],
-        toggle: { question: 'Do you see <b>Agents</b> (or a <b>New agent</b> button) in the left pane of Microsoft 365 Copilot?', options: [['agent', 'Yes, I have Agent Builder'], ['prompts', 'No Agent Builder: show me the prompt way']], help: 'Not sure? Open <a href="https://m365.cloud.microsoft/chat" target="_blank" rel="noopener">m365.cloud.microsoft/chat</a> and look at the left pane. Without Agent Builder you build the same Chief of Staff with prompts: a short brief you reuse, plus your own meetings, emails and chats added with <b>/</b>.' },
+        toggle: { question: 'Do you see <b>Agents</b> (or a <b>New agent</b> button) in the left pane of Microsoft 365 Copilot?', options: [['agent', 'Yes, I have Agent Builder'], ['prompts', 'No Agent Builder: show me the prompt way']], help: 'Your licence includes agents, but IT may not have switched Agent Builder on for everyone yet. Not sure? Open <a href="https://m365.cloud.microsoft/chat" target="_blank" rel="noopener">m365.cloud.microsoft/chat</a> and look at the left pane. Without Agent Builder you build the same Chief of Staff with prompts: a short brief you reuse, plus your own meetings, emails and chats added with <b>/</b>.' },
         tasks: [
           { title: 'Describe it', path: 'agent',
             open: 'Microsoft 365 Copilot → Agents → New agent',
@@ -488,7 +483,7 @@ ADV.trails = {
       },
       {
         title: 'Use it everywhere', goal: 'In Copilot Chat, in Outlook, and as a weekly briefing.', time: 15,
-        toggle: { question: 'Do you see <b>Agents</b> (or a <b>New agent</b> button) in the left pane of Microsoft 365 Copilot?', options: [['agent', 'Yes, I have Agent Builder'], ['prompts', 'No Agent Builder: show me the prompt way']], help: 'Not sure? Open <a href="https://m365.cloud.microsoft/chat" target="_blank" rel="noopener">m365.cloud.microsoft/chat</a> and look at the left pane. Without Agent Builder you build the same Chief of Staff with prompts: a short brief you reuse, plus your own meetings, emails and chats added with <b>/</b>.' },
+        toggle: { question: 'Do you see <b>Agents</b> (or a <b>New agent</b> button) in the left pane of Microsoft 365 Copilot?', options: [['agent', 'Yes, I have Agent Builder'], ['prompts', 'No Agent Builder: show me the prompt way']], help: 'Your licence includes agents, but IT may not have switched Agent Builder on for everyone yet. Not sure? Open <a href="https://m365.cloud.microsoft/chat" target="_blank" rel="noopener">m365.cloud.microsoft/chat</a> and look at the left pane. Without Agent Builder you build the same Chief of Staff with prompts: a short brief you reuse, plus your own meetings, emails and chats added with <b>/</b>.' },
         tasks: [
           { title: 'The agent reads, Copilot writes', path: 'agent',
             switchTo: { pill: 'New Copilot Chat', title: 'Start a new Copilot Chat window', text: 'Leave Agent Builder. Open Copilot Chat in a new tab (or select <b>New chat</b>), so you’re in normal Copilot Chat, not in the agent you just built.', url: 'https://m365.cloud.microsoft/chat', cta: 'Open Copilot Chat' },
@@ -562,7 +557,7 @@ ADV.openPoints = [
   'Do web data and work data (emails) work in Excel in ERGO’s tenant? (Trail 1, step 3)',
   'Which built-in Excel skills are live in ERGO’s tenant? @theme-design, @chart-design, @clean-data and @interactive-canvas are still rolling out. (Trail 1, steps 4 and 5; @interactive-canvas is now the main HTML route, Copilot Chat is Plan B)',
   'Excel step 5C: apply the “Make it yours” ideas one after another (cumulatively) and check the dashboard still renders after each one.',
-  'Do ERGO Deck and ERGO Motion run in ERGO’s PowerPoint for the web? Both write and run a small program; tested locally, not yet in ERGO’s tenant. (Trail 2, step 3)',
+  'Does ERGO Motion run and play in ERGO’s PowerPoint for the web? It writes and runs a small program; tested locally, not yet in ERGO’s tenant. (Trail 2, step 3)',
   'Agent fallback: decided. Without Agent Builder, steps 2 and 3 of the Chief-of-Staff trail switch to a prompt path. Check that / for meetings, emails and chats works in ERGO’s tenant.',
   'Languages (Rebecca): “Auf Deutsch, bitte” works. Was the flow tested in other participants’ languages, and may people work in their preferred language? Not decided yet.',
 ];
@@ -612,7 +607,7 @@ ADV.anatomy = {
 // Each skill or agent is a piece of gear in the backpack.
 ADV.gear = {
   'ergo-register-cleaner': ['🔦', 'Headlamp'],
-  'ergo-brand': ['🧭', 'Compass'], 'ergo-deck': ['🏕️', 'Tent'], 'ergo-motion-slides': ['🎞️', 'Film camera'], 'ergo-board-sparring': ['🪢', 'Rope team'], 'interactive-slides-workaround': ['🗺️', 'Map'],
+  'ergo-brand': ['🧭', 'Compass'], 'ergo-motion-slides': ['🎞️', 'Film camera'], 'ergo-board-sparring': ['🪢', 'Rope team'], 'interactive-slides-workaround': ['🗺️', 'Map'],
   'chief-of-staff': ['📟', 'Radio'], 'my-voice': ['🚩', 'Your own flag'],
 };
 ADV.altitude = { base: 1200, perStep: 450, flag: 50 };

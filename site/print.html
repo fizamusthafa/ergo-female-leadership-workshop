@@ -71,13 +71,13 @@
       ${Object.keys(ADV.trails).map((k) => `<a class="btn small ghost" href="print.html?t=${k}">${ADV.trails[k].app}</a>`).join('')}<a class="btn small ghost" href="trail.html?t=${key}">Back to the trail</a></div>
     <p class="eyebrow">${ADV.event.name} · Trail ${T.group} · ${T.app} · ${esc(T.useCase)}</p>
     <h1>${T.name}</h1><p>${T.mission}</p>
-    <h2>Before you start</h2><ul>${ADV.basics.map(([, h, t]) => `<li><b>${h}:</b> ${t}</li>`).join('')}</ul>
+    <h2>Before you start</h2><ul>${ADV.basics.filter(([, , , id]) => !(id === 'licence' && T.premium)).map(([, h, t]) => `<li><b>${h}:</b> ${t}</li>`).join('')}</ul>
     <p><b>Files:</b> ${T.kit.contents.map((c) => `<code>${c}</code>`).join(', ')} (kit on the workshop site).</p>
     <ul>${Object.entries(T.levels).map(([k, v]) => `<li><b>${ADV.levels[k]}:</b> ${v}</li>`).join('')}</ul>
     ${steps}${byo}${quests ? `<section class="step"><h2>Side quests</h2>${quests}</section>` : ''}
     <section class="step"><h2>Bonus · Copilot Notebooks (Advanced focus)</h2><p>${ADV.bonus.advanced} ${ADV.bonus.text}</p><ol>${ADV.bonus.steps.map((x) => `<li>${x}</li>`).join('')}</ol>${ADV.bonus.prompts.map((x) => P(x)).join('')}</section>
     <section class="step"><h2>Your 2-minute share-out</h2><p>${ADV.shareOut.intro}</p><ol>${ADV.shareOut.parts.map(([h, t]) => `<li><b>${h}:</b> ${t}</li>`).join('')}</ol></section>
-    <section class="step"><h2>Troubleshooting</h2><ul>${ADV.trouble.concat(T.trouble || []).map(([q, a]) => `<li><b>${q}:</b> ${a}</li>`).join('')}</ul></section>
+    <section class="step"><h2>Troubleshooting</h2><ul>${ADV.trouble.filter(([, , id]) => !(id === 'licence' && T.premium)).concat(T.trouble || []).map(([q, a]) => `<li><b>${q}:</b> ${a}</li>`).join('')}</ul></section>
     <p class="meta" style="margin-top:24px">${ADV.label}. ${ADV.shareOut.stayLive}</p>`;
 })();
 </script>
