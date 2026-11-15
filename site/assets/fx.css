@@ -405,3 +405,14 @@ a.node:hover b { color: var(--red); }
 @keyframes h5Burst { 0%, 30% { opacity: 0; transform: scale(.3); } 38% { opacity: 1; transform: scale(1); } 60%, 100% { opacity: 0; transform: scale(1.5); } }
 @media (prefers-reduced-motion: reduce) { .duo-hero *, .hi5 *, .duo-mini img { animation: none !important; } .dh-ol .dh-env, .dh-ol .dh-tick { opacity: 1; } .dh-xl .dh-grid i:nth-child(-n+8) { background: #7ddc6c; } .hi5-pop { transition: none; } }
 html.reduce .duo-hero *, html.reduce .hi5 * { animation: none !important; }
+
+/* ---------- path toggle (Agent Builder yes/no), how-to-open, bonus ---------- */
+.path-toggle { margin: 0 0 16px; padding: 16px 18px; background: #fff6e8; border-color: #f3d7a6; box-shadow: none; }
+.pt-opts { display: flex; flex-wrap: wrap; gap: 8px; }
+.pt-btn { font: inherit; font-size: 15px; font-weight: 600; padding: 9px 16px; border-radius: 999px; border: 1px solid var(--line); background: #fff; color: var(--text); cursor: pointer; }
+.pt-btn.on { background: var(--red-deep); border-color: var(--red-deep); color: #fff; }
+.tasks-wrap[data-active="agent"] [data-path="prompts"], .tasks-wrap[data-active="prompts"] [data-path="agent"] { display: none; }
+.open-how { margin: 4px 0 10px; border: 1px solid var(--line); border-radius: 12px; background: #fff; }
+.open-how summary { cursor: pointer; padding: 10px 14px; font-weight: 600; font-size: 15px; }
+.open-how ol { margin: 0 14px 12px 4px; display: grid; gap: 6px; font-size: 15px; }
+.card.bonus.mine { box-shadow: inset 3px 0 0 var(--red), var(--shadow); }

@@ -61,8 +61,10 @@
   ADV.clippyImg = '<img src="assets/img/brands/clippy.png" alt="Clippy, the Office assistant" width="150" height="150">';
 
   // ---------- skills and progress ----------
+  // Tasks someone actually does in a step: shared tasks plus one path (steps with a path toggle list both paths).
+  ADV.taskCount = (st) => (st.toggle ? st.tasks.filter((x) => !x.path || x.path === st.toggle.options[0][0]).length : st.tasks.length);
   // Skills a step adds: its own list plus any uploaded or downloadable skill in its tasks.
-  ADV.stepSkills = (st) => [...new Set((st.skills || []).concat(...(st.tasks || [st]).map((x) => (x.upload ? [x.upload.skill] : []).concat(x.skillFiles || []))))];
+  ADV.stepSkills = (st) => [...new Set((st.skills || []).concat(...(st.tasks || [st]).map((x) => (x.upload ? (x.upload.skills || [x.upload.skill]) : []).concat(x.skillFiles || []))))];
   // opts.quiet: no toast (the caller shows the message itself, e.g. in the high five). Returns the toast text.
   ADV.collectSkills = (names, opts = {}) => {
     const fresh = names.filter((n) => !ADV.state.skills[n]);

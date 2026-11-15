@@ -44,7 +44,8 @@
   document.title = `${T.name} · print view`;
   const P = (p, label) => `<div class="p">${label ? `<small>${esc(label)}</small>` : ''}${esc(p)}</div>`;
   const files = (list) => (list || []).map(([, l]) => `<code>${esc(l)}</code>`).join(', ');
-  const taskHtml = (x, i) => `<h3>${'ABCDEF'[i]} · ${esc(x.title)}${x.level === 'advanced' ? ' (Advanced)' : ''}</h3>
+  const PATH = { agent: 'With Agent Builder', prompts: 'Without Agent Builder' };
+  const taskHtml = (x, i) => `<h3>${'ABCDEF'[i]} · ${esc(x.title)}${x.level === 'advanced' ? ' (Advanced)' : ''}${x.path ? ` · ${PATH[x.path]}` : ''}</h3>
       ${x.open ? `<p><b>Open:</b> ${esc(x.open)}</p>` : ''}${x.switchTo ? `<p><b>${x.switchTo.title}.</b> ${x.switchTo.text}</p>` : ''}
       ${x.upload ? `<p><b>Add the skill</b> <code>${x.upload.skill}</code>: ${ADV.upload[x.upload.app].steps.map((s) => s.text).join(' ')}</p>` : ''}
       ${x.intro ? `<p>${x.intro}</p>` : ''}${x.how ? `<div>${x.how}</div>` : ''}
@@ -52,14 +53,14 @@
       ${(x.variants || []).map(([l, p, e]) => (e && e.files ? `<p><b>File:</b> ${files(e.files)}</p>` : '') + (e && e.how ? `<p>${e.how}</p>` : '') + P(p, l)).join('')}
       ${x.build ? `<ul>${x.build.map(([h, t]) => `<li><b>${h}:</b> ${t}</li>`).join('')}</ul>` : ''}
       ${x.use ? `<ol>${x.use.steps.map((s) => `<li>${s}</li>`).join('')}</ol>` : ''}${x.more ? P(x.more.prompt, x.more.label) : ''}
-      ${x.ideas ? `<p><b>Ideas:</b> ${x.ideas.map(esc).join(' · ')}</p>` : ''}${x.waiting ? `<p><b>While you wait:</b> ${x.waiting.text}</p>` : ''}
+      ${x.ideas ? `<p><b>Ideas, one at a time:</b></p>${x.ideas.map((s) => P(Array.isArray(s) ? s[1] : s, 'Idea')).join('')}` : ''}${x.waiting ? `<p><b>While you wait:</b> ${x.waiting.text}</p>` : ''}
       ${x.alt ? `<p><b>Plan B (${esc(x.alt.label)}):</b> ${x.alt.text}</p>${x.alt.prompt ? P(x.alt.prompt, 'Plan B') : ''}` : ''}
       ${x.note ? `<p class="meta">${x.note}</p>` : ''}`;
   const steps = T.steps.map((st, i) => `<section class="step"><h2>Step ${i + 1} · ${esc(st.title)}</h2>
       <p class="meta">${esc(st.goal)} · ${st.time} min${st.test ? ' · to be tested in ERGO’s tenant' : ''}</p>
       ${T.workbook ? `<p><b>Workbook:</b> <code>${T.workbook.name}</code>${st.sheet ? `, sheet <b>${esc(st.sheet)}</b>` : ''}</p>` : ''}
       ${st.files ? `<p><b>Files:</b> ${files(st.files)}</p>` : ''}${st.open ? `<p><b>Open:</b> ${esc(st.open)}</p>` : ''}${st.intro ? `<p>${st.intro}</p>` : ''}
-      ${st.tasks.map(taskHtml).join('')}
+      ${st.toggle ? `<p><b>Two paths:</b> with Agent Builder, or with prompts if you don’t see Agents. Do one of them.</p>` : ''}${st.tasks.map(taskHtml).join('')}
       ${st.yours && st.yours.prompt ? P(st.yours.prompt, 'Make it yours') : ''}
       <h3>Done when</h3><ul>${st.check.map((c) => `<li>${esc(c)}</li>`).join('')}</ul></section>`).join('');
   const byo = T.byo ? `<section class="step"><h2>Side quest · Bring your own skill</h2><p>${T.byo.why}</p>
@@ -74,7 +75,7 @@
     <p><b>Files:</b> ${T.kit.contents.map((c) => `<code>${c}</code>`).join(', ')} (kit on the workshop site).</p>
     <ul>${Object.entries(T.levels).map(([k, v]) => `<li><b>${ADV.levels[k]}:</b> ${v}</li>`).join('')}</ul>
     ${steps}${byo}${quests ? `<section class="step"><h2>Side quests</h2>${quests}</section>` : ''}
-    <section class="step"><h2>Bonus · Copilot Notebooks</h2><p>${ADV.bonus.text}</p></section>
+    <section class="step"><h2>Bonus · Copilot Notebooks (Advanced focus)</h2><p>${ADV.bonus.advanced} ${ADV.bonus.text}</p><ol>${ADV.bonus.steps.map((x) => `<li>${x}</li>`).join('')}</ol>${ADV.bonus.prompts.map((x) => P(x)).join('')}</section>
     <section class="step"><h2>Your 2-minute share-out</h2><p>${ADV.shareOut.intro}</p><ol>${ADV.shareOut.parts.map(([h, t]) => `<li><b>${h}:</b> ${t}</li>`).join('')}</ol></section>
     <section class="step"><h2>Troubleshooting</h2><ul>${ADV.trouble.concat(T.trouble || []).map(([q, a]) => `<li><b>${q}:</b> ${a}</li>`).join('')}</ul></section>
     <p class="meta" style="margin-top:24px">${ADV.label}. ${ADV.shareOut.stayLive}</p>`;
