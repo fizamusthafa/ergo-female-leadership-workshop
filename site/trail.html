@@ -223,7 +223,7 @@
         if (q.type === 'link') return `<article class="card glass"><h3>${q.title}</h3><p class="muted">${q.what}</p><a class="btn small red" href="${q.href}">${q.cta}</a></article>`;
         const done = !!ADV.state.quests[q.id];
         return `<article class="card"><div class="row" style="justify-content:space-between"><span class="pill">${q.time} min</span>${done ? '<span class="pill red">✓ Completed</span>' : ''}</div>
-          <h3 style="margin-top:12px">${q.title}</h3><p class="muted">${q.what}</p>${ADV.promptBox(q.prompt)}
+          <h3 style="margin-top:12px">${q.title}</h3><p class="muted">${q.what}</p>${ADV.promptBox(q.prompt)}${media(q.media)}
           <button class="btn small ${done ? 'is-done done-btn' : 'ghost'}" type="button" data-quest="${q.id}" aria-pressed="${done}">${done ? '✓ Completed' : 'Mark as completed'}</button></article>`;
       }).join('')}
       ${T.noBonus ? '' : `<article class="card bonus ${level === 'advanced' ? 'mine' : ''}" style="grid-column:1/-1"><p class="eyebrow">Bonus track · any trail · <span class="pill red">Advanced focus</span></p><h3>📓 ${ADV.bonus.title.replace('Bonus: ', '')}</h3>
