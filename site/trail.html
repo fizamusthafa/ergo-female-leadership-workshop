@@ -184,6 +184,7 @@
       <div data-fx="profile"></div>
       ${openBits ? `<div class="beat"><h3><b>①</b>Open</h3><div>${openBits}</div></div>` : ''}
       <div class="beat"><h3><b>${openBits ? '②' : '①'}</b>Ask Copilot</h3><div>
+        ${st.viz ? `<figure class="viz-fig"><div data-viz="${st.viz}"></div></figure>` : ''}
         <div class="tasks-wrap" ${st.toggle ? `data-active="${active}"` : ''}>${toggleBox}
         ${st.tasks.length > 1 ? `<nav class="task-nav" aria-label="Tasks in this step">${st.tasks.map((x, i) => `<a href="#task-${i + 1}" ${x.path ? `data-path="${x.path}"` : ''}><b>${letterOf(i)}</b> ${esc(x.title)}</a>`).join('')}</nav>` : ''}
         ${tasks}</div>

@@ -139,7 +139,7 @@ ADV.trails = {
     ],
     steps: [
       {
-        title: 'Understand and clean', goal: 'Let Copilot explain a table you’ve never seen, then fix the mess.', time: 10,
+        title: 'Understand and clean', viz: 'xlclean', goal: 'Let Copilot explain a table you’ve never seen, then fix the mess.', time: 10,
         sheet: 'Register',
         tasks: [
           { title: 'What am I looking at?',
@@ -156,11 +156,11 @@ ADV.trails = {
         check: ['A plain-language summary of the columns and the period', 'Only ISO codes in Currency, one date format in Reported_On', 'Dates that don’t exist, such as 31 June, are flagged, not guessed'],
       },
       {
-        title: 'Formulas that think', goal: 'XLOOKUP, LET and a formula you didn’t have to write. On every row, for 1 or 10,000 rows.', time: 12,
+        title: 'Formulas that think', viz: 'xlformula', goal: 'XLOOKUP, LET and a formula you didn’t have to write. On every row, for 1 or 10,000 rows.', time: 12,
         sheet: 'Register_Ready',
         intro: 'From here on, work on <b>Register_Ready</b>: the cleaned register as a table. It doesn’t matter how far you got with the clean-up.',
         tasks: [
-          { title: 'Look things up', media: { type: 'viz', viz: 'xlookup', caption: 'Step through it before you prompt, or come back after task B to check your formula.' },
+          { title: 'Look things up',
             prompt: 'On Register_Ready, add two columns, Region and Country_Manager, using XLOOKUP on the tblCountries table on the Lookups sheet.',
             prompt2: 'Explain the formula in plain words. What happens if this table grows to 10,000 rows?' },
           { title: 'Let the numbers judge',
@@ -176,7 +176,7 @@ ADV.trails = {
         check: ['Region and Country_Manager filled on every row by XLOOKUP', 'A Performance column that treats “lower is better” KPIs correctly', 'A plain-language explanation of Summary!H5'],
       },
       {
-        title: 'Bring in outside data', goal: 'Add information that isn’t in the workbook yet.', time: 8, test: true,
+        title: 'Bring in outside data', viz: 'xlfetch', goal: 'Add information that isn’t in the workbook yet.', time: 8, test: true,
         sheet: 'FX_Rates and Initiatives',
         files: [['downloads/project-updates.txt', 'project-updates.txt']],
         intro: 'Pick one. The first two use the web, the third uses your work data. For the third, imagine the notes in <code>project-updates.txt</code> are in your mailbox.',
@@ -194,7 +194,7 @@ ADV.trails = {
         check: ['New rates, a benchmark column or filled Latest_Status cells', 'Copilot says where the information came from', 'Nothing in the existing columns broke'],
       },
       {
-        title: 'Make it readable', goal: 'Colour and a built-in skill: see what matters without reading every number.', time: 8,
+        title: 'Make it readable', viz: 'xlcolour', goal: 'Colour and a built-in skill: see what matters without reading every number.', time: 8,
         sheet: 'Register_Ready',
         tasks: [
           { title: 'Colour tells the story',
@@ -213,7 +213,7 @@ ADV.trails = {
         check: ['Three colours in Performance and off-track rows shaded', 'The chat shows that a built-in skill was loaded'],
       },
       {
-        title: 'Dashboards', goal: 'From PivotTables to slicers to an interactive HTML dashboard, rendered right in Excel.', time: 15,
+        title: 'Dashboards', viz: 'xldash', goal: 'From PivotTables to slicers to an interactive HTML dashboard, rendered right in Excel.', time: 15,
         sheet: 'Register_Ready (or Dashboard_Ready)',
         tasks: [
           { title: 'Level 1: PivotTables and charts',
@@ -327,7 +327,7 @@ ADV.trails = {
         check: ['A new deck with the memo’s main points and speaker notes', 'Five or more questions a board would ask', 'Questions and answers in the speaker notes'],
       },
       {
-        title: 'Shape the deck', goal: 'Add, translate and make it interactive.', time: 14,
+        title: 'Shape the deck', viz: 'pptshape', goal: 'Add, translate and make it interactive.', time: 14,
         files: [['downloads/board-pack-ready.pptx', 'board-pack-ready.pptx']],
         intro: 'From here on you work in one deck: <code>board-pack-ready.pptx</code>. Your own deck from step 1 works for this step too.',
         tasks: [
@@ -360,7 +360,7 @@ ADV.trails = {
         check: ['Two versions of the priorities slide, and you know which you’d keep', 'A translated copy of the deck, figures unchanged', 'An interactive slide you can click through in Slide Show'],
       },
       {
-        title: 'Make it ERGO', goal: 'PowerPoint’s own skills first, then two of yours: ERGO Deck for the layout, ERGO Motion for a slide that moves. All in one deck.', time: 14,
+        title: 'Make it ERGO', viz: 'skillflow', goal: 'PowerPoint’s own skills first, then two of yours: ERGO Deck for the layout, ERGO Motion for a slide that moves. All in one deck.', time: 14,
         files: [['downloads/board-pack-ready.pptx', 'board-pack-ready.pptx']],
         intro: 'Stay in <code>board-pack-ready.pptx</code>. The CFO office left three rough draft slides at the end, in the section <b>Drafts from the CFO office</b>. You restyle them with your skills and compare the results side by side, in the same deck. The prompts name the section, not slide numbers, because the numbers shift with every slide you added in step 2.',
         tasks: [
@@ -373,8 +373,7 @@ ADV.trails = {
               ['Speaker notes', 'Write speaker notes for every slide in the section “Board pack”: what I say in under a minute each, in plain words, key number first.'],
             ],
             note: 'Built-in skills work for everyone, in any deck. Custom skills, next, add what only your company knows: its layout, its words, its rules.' },
-          { title: 'Add your skills', upload: { skills: ['ergo-deck', 'ergo-motion-slides'], app: 'ppt', explore: true },
-            media: { type: 'viz', viz: 'skillflow', caption: 'Step through it, or press play. This is what happens in the next task.' } },
+          { title: 'Add your skills', upload: { skills: ['ergo-deck', 'ergo-motion-slides'], app: 'ppt', explore: true } },
           { title: 'ERGO Deck: restyle the drafts',
             open: 'board-pack-ready.pptx and scroll to the section Drafts from the CFO office',
             prompt: 'Rebuild only the slides in the section “Drafts from the CFO office” (the three slides titled Q3 Results, P&C update and Investment) as board-ready ERGO slides. Leave every other slide as it is and keep every figure unchanged.',
@@ -411,7 +410,7 @@ ADV.trails = {
         skills: ['ergo-deck', 'ergo-motion-slides'],
       },
       {
-        title: 'Turn it into skills', goal: 'You’ll do this before every board meeting. Turn it into a skill.', time: 12,
+        title: 'Turn it into skills', viz: 'pptrecord', goal: 'You’ll do this before every board meeting. Turn it into a skill.', time: 12,
         files: [['downloads/board-pack-ready.pptx', 'board-pack-ready.pptx']],
         tasks: [
           { title: 'Write a skill by prompting',
@@ -476,7 +475,7 @@ ADV.trails = {
     ],
     steps: [
       {
-        title: 'The morning sweep', goal: 'One prompt that goes through your meetings, emails and chats, then Copilot acts on it: emails, meetings, your inbox.', time: 12,
+        title: 'The morning sweep', viz: 'cossweep', goal: 'One prompt that goes through your meetings, emails and chats, then Copilot acts on it: emails, meetings, your inbox.', time: 12,
         open: 'Microsoft 365 Copilot Chat',
         tasks: [
           { title: 'Sweep everything at once',
@@ -510,10 +509,10 @@ ADV.trails = {
         check: ['A list of what you promised and who is waiting for you', 'A prioritised to-do list for today', 'A time found with a colleague, or an email sent from a Copilot card'],
       },
       {
-        title: 'Make it remember you', goal: 'Your role, your rules and your voice in every chat. No brief to paste, no agent to build.', time: 12, test: true,
+        title: 'Make it remember you', viz: 'memory', goal: 'Your role, your rules and your voice in every chat. No brief to paste, no agent to build.', time: 12, test: true,
         open: 'Microsoft 365 Copilot Chat',
         tasks: [
-          { title: 'Write your rules', media: { type: 'viz', viz: 'memory', caption: 'The four places Copilot looks. Tasks A to D fill the first three.' },
+          { title: 'Write your rules',
             how: 'These instructions apply to <b>every</b> chat, so keep them general: who you are, what matters to you now, how you like your answers. The chief-of-staff role comes in step 4, in its own Workspace. Fill in the fields; the prompt writes itself.',
             fields: ['role', 'focus', 'rule'],
             prompt: 'Help me write custom instructions for Copilot that apply to every chat: who I am, what matters to me right now and how I like my answers. My role: {role}. What I’m focused on right now: {focus}. My most important rule: {rule}. Ask me up to three questions first, then give me the instructions as one short block of text.' },
@@ -553,7 +552,7 @@ ADV.trails = {
         skills: ['my-voice'],
       },
       {
-        title: 'Schedule it', goal: 'Your morning sweep runs before you reach your desk, every working day.', time: 5, test: true,
+        title: 'Schedule it', viz: 'cosschedule', goal: 'Your morning sweep runs before you reach your desk, every working day.', time: 5, test: true,
         open: 'Microsoft 365 Copilot Chat',
         tasks: [
           { title: 'Schedule the morning sweep',
@@ -580,7 +579,7 @@ ADV.trails = {
         skills: ['chief-of-staff'],
       },
       {
-        title: 'Your briefing podcast',
+        title: 'Your briefing podcast', viz: 'cospodcast',
         poll: { id: 'cos-pick', q: 'Monday, 8:00. What would you hand over first?', help: 'Not which feature you liked: what you would actually let a chief of staff take off your plate. Your answer unlocks a badge.',
           options: [['cos-pick-catchup', 'Catching up: what happened, who’s waiting'], ['cos-pick-prep', 'Getting ready for the meetings that count'], ['cos-pick-follow', 'Following through on promises and replies'], ['cos-pick-think', 'Thinking a big decision through'], ['cos-pick-time', 'Protecting my time'], ['cos-pick-wait', 'Nothing yet: I’ll keep watching']] }, goal: 'One real topic, one Workspace, one podcast: your chief of staff briefs you on the way home.', time: 16, test: true,
         open: 'Microsoft 365 Copilot → Workspaces (or Notebooks)',
