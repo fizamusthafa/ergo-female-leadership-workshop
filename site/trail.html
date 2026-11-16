@@ -77,7 +77,6 @@
       ${x.zip ? `<p class="small muted">${x.contents}</p><p class="row"><a class="btn small red" href="${x.zip}" download>Download the pack ↓</a>` : '<p class="row">'}
       ${x.value ? `<button type="button" class="idea fill-opt ${ADV.fieldVal(c.field) === x.value ? 'on' : ''}" data-field-set="${c.field}" data-value="${esc(x.value)}" aria-pressed="${ADV.fieldVal(c.field) === x.value}">Use this case</button>` : `<a class="idea" href="#f-${c.field}">Type it below ↓</a>`}</p></article>`).join('')}</div>`;
   const switchBox = (w) => `<div class="switch card"><span aria-hidden="true">↗️</span><div><b>${w.title}</b><p>${w.text}</p><a class="btn small red" href="${w.url}" target="_blank" rel="noopener">${w.cta} ↗</a></div></div>`;
-  const testPill = '<span class="pill test" title="Still being tested in ERGO’s tenant">🧪 To be tested in ERGO’s tenant</span>';
   const trouble = () => `<details class="trouble"><summary>🛠️ Something not working? Troubleshooting</summary>
       <dl>${ADV.trouble.filter(([, , id]) => !(id === 'licence' && T.premium)).concat(T.trouble || []).map(([q, a]) => `<dt>${q}</dt><dd>${a}</dd>`).join('')}</dl></details>`;
   const skillDownloads = (keys) => `<div class="pack-files">${keys.map((k) => { const sk = ADV.skills[k]; return `<div class="pack-file"><span class="pf-ic" aria-hidden="true">${(ADV.gear[k] || ['🎒'])[0]}</span><span><b>${sk.title}</b><code>${k}</code></span>
@@ -116,9 +115,9 @@
         <p class="small muted">${T.workbook ? 'Prepared <b>_Ready</b> sheets in the same workbook let you skip ahead without the earlier results.' : 'You can skip ahead at any time: every step works with the files in the kit.'}</p></div></div>
       <div class="beat"><h3><b>3</b>The route</h3><div>
         <p class="muted">Prompts first, skills later. You try each task by hand; when it’s something you’d do again and again, you turn it into a skill${key === 'cos' ? ' or a scheduled prompt' : ''}.</p>
-        <div class="path-line">${T.steps.map((x, i) => `<a class="node" href="${url(i + 1)}"><b>${i + 1}. ${x.title}</b><span>${x.time} min · ${ADV.taskCount(x)} task${ADV.taskCount(x) > 1 ? 's' : ''}${x.test || x.tasks.some((t) => t.test) ? ' · 🧪' : ''}</span></a>`).join('')}</div>
+        <div class="path-line">${T.steps.map((x, i) => `<a class="node" href="${url(i + 1)}"><b>${i + 1}. ${x.title}</b><span>${x.time} min · ${ADV.taskCount(x)} task${ADV.taskCount(x) > 1 ? 's' : ''}</span></a>`).join('')}</div>
         ${levelNote()}
-        <p class="small muted">Basic and Advanced follow the same steps. Advanced groups move faster and skip ahead. 🧪 marks a step we’re still testing in ERGO’s tenant.</p></div></div>
+        <p class="small muted">Basic and Advanced follow the same steps. Advanced groups move faster and skip ahead.</p></div></div>
       ${trouble()}
       <p class="small muted" style="margin-top:18px"><a href="print.html?t=${key}">Print view or PDF of this trail</a> · <a href="anatomy.html?next=${key}">What is a skill? (3 min)</a></p>
       ${nav(['index.html', 'Start'], [url(1), 'Step 1: ' + T.steps[0].title])}`;
@@ -142,9 +141,7 @@
     x.waiting ? `<div class="waiting card"><span aria-hidden="true">⏳</span><div><b>While you wait</b><p>${x.waiting.text}</p>
       ${x.waiting.ideas ? `<p class="v-label">Ask Copilot in another tab: copy one</p><div class="ideas">${x.waiting.ideas.map(([l, q]) => `<button type="button" class="idea" data-copy="${esc(q)}" title="${esc(q)}">${esc(l)} <span aria-hidden="true">⧉</span></button>`).join('')}</div>` : ''}
       ${x.waiting.tips ? `<p class="v-label">Or try PowerPoint itself</p><ul class="wait-tips">${x.waiting.tips.map(([h, t]) => `<li><b>${h}</b> ${t}</li>`).join('')}</ul>` : ''}</div></div>` : '',
-    x.alt ? (x.alt.fold
-      ? `<details class="alt card fold"><summary class="eyebrow">Plan B · ${esc(x.alt.label)}</summary>${x.alt.files ? filesRow(x.alt.files) : ''}<p>${x.alt.text}</p>${x.alt.cases ? casesBox(x.alt.cases) : ''}${x.alt.prompt ? ADV.promptBox(x.alt.prompt) : ''}</details>`
-      : `<div class="alt card"><p class="eyebrow">Plan B · ${esc(x.alt.label)}</p>${x.alt.files ? filesRow(x.alt.files) : ''}<p>${x.alt.text}</p>${x.alt.prompt ? ADV.promptBox(x.alt.prompt) : ''}</div>`) : '',
+    [].concat(x.alt || []).map((a) => `<details class="alt card fold"><summary class="eyebrow">Plan B · ${esc(a.label)}</summary>${a.switchTo ? switchBox(a.switchTo) : ''}${a.files ? filesRow(a.files) : ''}<p>${a.text}</p>${a.cases ? casesBox(a.cases) : ''}${a.prompt ? ADV.promptBox(a.prompt) : ''}${a.then ? `<p class="v-label">${esc(a.then.label)}</p><p class="muted">${a.then.text}</p>${a.then.prompt ? ADV.promptBox(a.then.prompt) : ''}` : ''}</details>`).join(''),
     x.skillFiles ? `<p class="v-label">Skill files</p>${skillDownloads(x.skillFiles)}` : '',
     x.note ? `<div class="note-line"><span aria-hidden="true">👉</span><p>${x.note}</p></div>` : '',
     media(x.media),
@@ -177,17 +174,17 @@
     const toggleBox = st.toggle ? `<div class="path-toggle card" role="group" aria-label="Choose your path"><p style="margin:0 0 10px">${st.toggle.question}</p>
         <div class="pt-opts">${st.toggle.options.map(([k, l]) => `<button type="button" class="pt-btn ${k === active ? 'on' : ''}" data-path-pick="${k}" aria-pressed="${k === active}">${esc(l)}</button>`).join('')}</div>
         <p class="small muted" style="margin:10px 0 0">${st.toggle.help}</p></div>` : '';
-    const tasks = st.tasks.map((x, i) => `<section class="task ${x.level === 'advanced' ? 'adv' : ''}" id="task-${i + 1}" ${x.path ? `data-path="${x.path}"` : ''}><h2 class="task-h"><span class="t-letter">${letterOf(i)}</span>${esc(x.title)}${x.level === 'advanced' ? ' <span class="pill">Advanced</span>' : ''}${x.test ? ` ${testPill}` : ''}${x.switchTo ? ` <span class="pill red">↗ ${esc(x.switchTo.pill)}</span>` : ''}</h2>${taskBits(x)}</section>`).join('');
-    return `<header class="step-head"><div class="meta"><span class="pill app-pill"><img src="${T.logo}" alt="">Step ${n} of ${T.steps.length}</span><span class="pill">${st.time} min</span><span class="pill">${ADV.taskCount(st)} task${ADV.taskCount(st) > 1 ? 's' : ''}</span>${st.test ? testPill : ''}</div>
+    const tasks = st.tasks.map((x, i) => `<section class="task ${x.level === 'advanced' ? 'adv' : ''}" id="task-${i + 1}" ${x.path ? `data-path="${x.path}"` : ''}><h2 class="task-h"><span class="t-letter">${letterOf(i)}</span>${esc(x.title)}${x.level === 'advanced' ? ' <span class="pill">Advanced</span>' : ''}${x.switchTo ? ` <span class="pill red">↗ ${esc(x.switchTo.pill)}</span>` : ''}</h2>${taskBits(x)}</section>`).join('');
+    return `<header class="step-head"><div class="meta"><span class="pill app-pill"><img src="${T.logo}" alt="">Step ${n} of ${T.steps.length}</span><span class="pill">${st.time} min</span><span class="pill">${ADV.taskCount(st)} task${ADV.taskCount(st) > 1 ? 's' : ''}</span></div>
         <h1 class="display" style="font-size:clamp(40px,7vw,84px)">${st.title}</h1><p class="lede">${st.goal}</p></header>
       ${skipBar(n)}
       <div data-fx="profile"></div>
       ${openBits ? `<div class="beat"><h3><b>①</b>Open</h3><div>${openBits}</div></div>` : ''}
       <div class="beat"><h3><b>${openBits ? '②' : '①'}</b>Ask Copilot</h3><div>
-        ${st.viz ? `<figure class="viz-fig"><div data-viz="${st.viz}"></div></figure>` : ''}
         <div class="tasks-wrap" ${st.toggle ? `data-active="${active}"` : ''}>${toggleBox}
         ${st.tasks.length > 1 ? `<nav class="task-nav" aria-label="Tasks in this step">${st.tasks.map((x, i) => `<a href="#task-${i + 1}" ${x.path ? `data-path="${x.path}"` : ''}><b>${letterOf(i)}</b> ${esc(x.title)}</a>`).join('')}</nav>` : ''}
         ${tasks}</div>
+        ${st.viz ? `<div class="viz-after"><p class="v-label">What just happened</p><figure class="viz-fig"><div data-viz="${st.viz}"></div></figure></div>` : ''}
         ${st.skills && st.skills.length ? `<div class="uses"><span class="small muted">Look for:</span>${st.skills.map((s) => `<span class="pill red">${ADV.skills[s].kind === 'agent' ? '' : 'Loaded '}${ADV.skills[s].title}</span>`).join('')}</div>` : ''}
         <p class="wow">${st.wow}</p>
         ${st.explain ? `<details class="explain card"><summary>${esc(st.explain.q)}</summary><div class="explain-body"><p>${st.explain.lead}</p>${st.explain.viz ? `<div data-viz="${st.explain.viz}"></div>` : ''}

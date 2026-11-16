@@ -196,7 +196,6 @@ body::before {
 .how { margin: 6px 0 0; }
 .how ol { padding-left: 20px; margin: 6px 0; }
 .v-label { margin: 18px 0 6px; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
-.pill.test { background: #fff3d6; color: #8a5a00; }
 .note-line { display: flex; gap: 10px; align-items: flex-start; margin: 14px 0 0; padding: 12px 14px; border-radius: 12px; background: #fff8e8; border-left: 4px solid #f0b429; font-size: 16px; color: var(--text); }
 .note-line > span { font-size: 18px; line-height: 1.4; }
 .note-line p { margin: 0; }
@@ -749,3 +748,6 @@ html.reduce .vz-race2 i.go::after { width: 100%; }
 .gf-body .files { margin-top: 0; }
 .intro-line { font-size: 17px; margin: 6px 0 10px; }
 .how { font-size: 16px; }
+
+.viz-after { margin-top: 26px; padding-top: 18px; border-top: 1px dashed var(--line); }
+.viz-after > .v-label { margin: 0 0 4px; }
