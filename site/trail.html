@@ -149,6 +149,14 @@
     media(x.media),
   ].join('');
 
+  const pollMsg = (k) => `Badge unlocked: <b>${ADV.badges[k].icon} ${esc(ADV.badges[k].title)}</b>. ${ADV.badges[k].what}`;
+  const pollBox = (p) => {
+    const cur = (ADV.state.polls || {})[p.id];
+    return `<div class="beat poll" data-poll="${p.id}"><h3><b>♥</b>Your pick</h3><div><p class="poll-q">${esc(p.q)}</p><p class="small muted" style="margin:0 0 12px">${p.help}</p>
+      <div class="pt-opts">${p.options.map(([k, l]) => `<button type="button" class="pt-btn ${k === cur ? 'on' : ''}" data-poll-pick="${k}" aria-pressed="${k === cur}">${ADV.badges[k].icon} ${esc(l)}</button>`).join('')}</div>
+      <p class="poll-out" aria-live="polite">${cur ? pollMsg(cur) : ''}</p></div></div>`;
+  };
+
   const stepPage = (n) => {
     const st = T.steps[n - 1];
     const letters = 'ABCDEFGH';
@@ -184,6 +192,7 @@
           <div class="explain-cols">${st.explain.cols.map(([h, items]) => `<div><b>${h}</b><ul>${items.map((s) => `<li>${s}</li>`).join('')}</ul></div>`).join('')}</div>
           <p>${st.explain.tip}</p></div></details>` : ''}
       </div></div>
+      ${st.poll ? pollBox(st.poll) : ''}
       ${st.yours ? `<div class="beat"><h3><b>★</b>Make it yours</h3><div><p>${st.yours.text}</p>${st.yours.prompt ? ADV.promptBox(st.yours.prompt) : ''}</div></div>` : ''}
       <div class="beat"><h3><b>✓</b>Done?</h3><div>
         <p class="muted">You’re there when you see:</p><ul class="checks">${st.check.map((s) => `<li>${esc(s)}</li>`).join('')}</ul>
@@ -268,6 +277,16 @@
     document.querySelectorAll('.tasks-wrap[data-active]').forEach((w) => { w.dataset.active = k; });
     document.querySelectorAll('[data-path-pick]').forEach((x) => { const on = x.dataset.pathPick === k; x.classList.toggle('on', on); x.setAttribute('aria-pressed', on); });
     ADV.toast(k === 'agent' ? 'Showing the Agent Builder path.' : 'Showing the prompt path: no Agent Builder needed.');
+  });
+
+  $('#page').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-poll-pick]'); if (!b) return;
+    const box = b.closest('[data-poll]'), id = box.dataset.poll, k = b.dataset.pollPick, prev = (ADV.state.polls || {})[id];
+    if (prev === k) return;
+    ADV.update((st) => { st.polls = Object.assign({}, st.polls, { [id]: k }); if (prev && st.badges) delete st.badges[prev]; });
+    ADV.award(k);
+    box.querySelectorAll('[data-poll-pick]').forEach((x) => { const on = x.dataset.pollPick === k; x.classList.toggle('on', on); x.setAttribute('aria-pressed', on); });
+    box.querySelector('.poll-out').innerHTML = pollMsg(k);
   });
 
   const doneBtn = $('.done-btn:not([data-quest])');

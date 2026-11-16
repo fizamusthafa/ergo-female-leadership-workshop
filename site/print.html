@@ -62,6 +62,7 @@
       ${T.workbook ? `<p><b>Workbook:</b> <code>${T.workbook.name}</code>${st.sheet ? `, sheet <b>${esc(st.sheet)}</b>` : ''}</p>` : ''}
       ${st.files ? `<p><b>Files:</b> ${files(st.files)}</p>` : ''}${st.open ? `<p><b>Open:</b> ${esc(st.open)}</p>` : ''}${st.intro ? `<p>${st.intro}</p>` : ''}
       ${st.toggle ? `<p><b>Two paths:</b> with Agent Builder, or with prompts if you don’t see Agents. Do one of them.</p>` : ''}${st.tasks.map(taskHtml).join('')}
+      ${st.poll ? `<h3>${esc(st.poll.q)}</h3><p>${st.poll.options.map(([, l]) => esc(l)).join(' · ')}</p>` : ''}
       ${st.yours && st.yours.prompt ? P(st.yours.prompt, 'Make it yours') : ''}
       ${st.explain ? `<h3>${esc(st.explain.q)}</h3><p>${st.explain.lead}</p>${st.explain.cols.map(([h, items]) => `<p><b>${h}:</b> ${items.join('; ')}.</p>`).join('')}<p>${st.explain.tip}</p>` : ''}
       <h3>Done when</h3><ul>${st.check.map((c) => `<li>${esc(c)}</li>`).join('')}</ul></section>`).join('');

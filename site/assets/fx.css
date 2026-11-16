@@ -228,6 +228,9 @@ body::before {
 .waiting > span { font-size: 26px; }
 .waiting p { margin: 4px 0 10px; }
 .waiting .v-label { margin: 12px 0 6px; }
+.poll-q { font-size: 19px; margin: 0 0 6px; }
+.poll-out { margin: 14px 0 0; font-size: 15px; }
+.poll-out:empty { display: none; }
 .wait-tips { margin: 0; padding-left: 18px; display: grid; gap: 6px; font-size: 15px; }
 .ideas { display: flex; flex-wrap: wrap; gap: 8px; }
 .idea { font: inherit; font-size: 14px; padding: 8px 12px; border-radius: 999px; border: 1px dashed rgba(191, 22, 41, .45); background: #fff; color: var(--text); cursor: pointer; }
