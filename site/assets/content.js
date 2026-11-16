@@ -7,6 +7,10 @@ ADV.config = {
   wallUrl: '',
   // Floating Copilot companion. Parked; set to true to bring it back.
   buddy: false,
+  // Presenter countdown. Off by default. Set countdown to true to show it on every room laptop,
+  // or turn it on for one laptop with index.html?presenter&countdown (or &countdown=75, &countdown=off).
+  countdown: false,
+  // Session length in minutes; the countdown starts here and the chapters below assume it.
   totalMinutes: 60,
   chapters: [
     { from: 0, to: 5, title: 'Get started', note: 'Everyone opens the site and picks their room. Open the web apps, not the desktop apps. Model on Auto. No premium licence? Pair up.' },

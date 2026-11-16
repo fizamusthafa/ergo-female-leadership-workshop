@@ -179,18 +179,31 @@
   };
 
   // ---------- presenter mode ----------
+  // Countdown: off unless ADV.config.countdown is true, or the room laptop opens
+  // ?presenter&countdown (session length from config) / &countdown=75 / &countdown=off. Remembered per tab.
+  const countdownMinutes = () => {
+    const p = ADV.param('countdown'), cfg = ADV.config;
+    if (p !== null) sessionStorage.setItem('ergo-presenter-countdown', /^(off|0|false|no)$/i.test(p) ? 'off' : String(parseInt(p, 10) || cfg.totalMinutes));
+    const s = sessionStorage.getItem('ergo-presenter-countdown');
+    if (s) return s === 'off' ? 0 : Number(s);
+    return cfg.countdown ? cfg.totalMinutes : 0;
+  };
   ADV.presenter = () => {
     if (ADV.param('presenter') !== null) sessionStorage.setItem('ergo-presenter', '1');
     if (ADV.param('presenter') === 'off') sessionStorage.removeItem('ergo-presenter');
     if (!sessionStorage.getItem('ergo-presenter')) return;
     const cfg = ADV.config;
+    const minutes = countdownMinutes();
+    // A longer or shorter session stretches the middle: the first chapter keeps its start, the rest keep their distance to the end.
+    const shift = minutes ? minutes - cfg.totalMinutes : 0, edge = cfg.chapters[0].to;
+    const chapters = cfg.chapters.map((c) => ({ ...c, from: c.from > edge ? c.from + shift : c.from, to: c.to > edge ? c.to + shift : c.to }));
     const btn = document.createElement('button'); btn.className = 'drawer-btn'; btn.type = 'button'; btn.textContent = 'Presenter';
     $('.topbar').appendChild(btn);
     const el = document.createElement('div'); el.className = 'presenter'; el.hidden = true; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Presenter mode');
-    el.innerHTML = `<div class="row" style="justify-content:space-between"><div class="chapters"></div><div class="row"><button class="btn small ghost" data-act="start">Start</button><button class="btn small ghost" data-act="reset">Reset</button><button class="btn small ghost" data-act="close">Close</button></div></div>
-      <div style="align-self:center"><p class="eyebrow">Now</p><div class="chapter"></div><p class="lede note" style="max-width:60ch"></p><div class="clock" aria-live="off">60:00</div></div>
+    el.innerHTML = `<div class="row" style="justify-content:space-between"><div class="chapters"></div><div class="row">${minutes ? '<button class="btn small ghost" data-act="start">Start</button><button class="btn small ghost" data-act="reset">Reset</button>' : ''}<button class="btn small ghost" data-act="close">Close</button></div></div>
+      <div style="align-self:center"><p class="eyebrow">Now</p><div class="chapter"></div><p class="lede note" style="max-width:60ch"></p>${minutes ? '<div class="clock" aria-live="off"></div>' : ''}</div>
       <div class="row" style="justify-content:space-between"><button class="btn red" data-act="cue">Call the share-out</button>
-      <span class="muted">${cfg.wallUrl ? `Live wall: <a href="${cfg.wallUrl}" target="_blank" rel="noopener">${cfg.wallUrl}</a>` : 'Live wall: set <code>wallUrl</code> in assets/content.js'}</span></div>
+      ${cfg.wallUrl ? `<span class="muted">Live wall: <a href="${cfg.wallUrl}" target="_blank" rel="noopener">${cfg.wallUrl}</a></span>` : ''}</div>
       <details class="p-notes"><summary>Rooms and open points</summary>
         <table class="p-rooms"><tr><th>Group</th><th>Room</th><th>Trail</th><th>Assigned / capacity</th></tr>${(ADV.rooms || []).map((r) => `<tr><td>${r.group}</td><td>${r.room}</td><td>${ADV.trails[r.trail].app}</td><td>${r.assigned} / ${r.capacity}</td></tr>`).join('')}</table>
         <p class="eyebrow" style="margin-top:16px">Open points (TODO)</p><ul>${(ADV.openPoints || []).map((p) => `<li>☐ ${p}</li>`).join('')}</ul></details>
@@ -199,17 +212,20 @@
     const st = JSON.parse(sessionStorage.getItem('ergo-presenter-clock') || '{"start":null,"paused":0}');
     const saveSt = () => sessionStorage.setItem('ergo-presenter-clock', JSON.stringify(st));
     const elapsed = () => (st.start ? (Date.now() - st.start) / 1000 : st.paused);
-    let manual = null;
+    let manual = minutes ? null : (Number(sessionStorage.getItem('ergo-presenter-chapter')) || 0);
     const chs = $('.chapters', el);
-    cfg.chapters.forEach((c, i) => { const b = document.createElement('button'); b.textContent = `${c.from}′ ${c.title}`; b.addEventListener('click', () => { manual = i; tick(); }); chs.appendChild(b); });
+    chapters.forEach((c, i) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = `${c.from}′ ${c.title}`; b.addEventListener('click', () => { manual = i; if (!minutes) sessionStorage.setItem('ergo-presenter-chapter', String(i)); tick(); }); chs.appendChild(b); });
     const tick = () => {
-      const e = elapsed(); const left = Math.max(0, cfg.totalMinutes * 60 - e);
-      $('.clock', el).textContent = `${String(Math.floor(left / 60)).padStart(2, '0')}:${String(Math.floor(left % 60)).padStart(2, '0')}`;
-      const auto = cfg.chapters.findIndex((c) => e / 60 >= c.from && e / 60 < c.to);
-      const i = manual ?? (auto < 0 ? cfg.chapters.length - 1 : auto);
-      $('.chapter', el).textContent = cfg.chapters[i].title; $('.note', el).textContent = cfg.chapters[i].note;
-      [...chs.children].forEach((b, k) => b.classList.toggle('on', k === i));
-      $('[data-act="start"]', el).textContent = st.start ? 'Pause' : 'Start';
+      let i = manual ?? 0;
+      if (minutes) {
+        const e = elapsed(), left = Math.max(0, minutes * 60 - e);
+        $('.clock', el).textContent = `${String(Math.floor(left / 60)).padStart(2, '0')}:${String(Math.floor(left % 60)).padStart(2, '0')}`;
+        const auto = chapters.findIndex((c) => e / 60 >= c.from && e / 60 < c.to);
+        i = manual ?? (auto < 0 ? chapters.length - 1 : auto);
+        $('[data-act="start"]', el).textContent = st.start ? 'Pause' : 'Start';
+      }
+      $('.chapter', el).textContent = chapters[i].title; $('.note', el).textContent = chapters[i].note;
+      [...chs.children].forEach((b, k) => { b.classList.toggle('on', k === i); b.setAttribute('aria-pressed', String(k === i)); });
     };
     el.addEventListener('click', (e) => {
       const a = e.target.closest('[data-act]')?.dataset.act; if (!a) return;
@@ -220,8 +236,9 @@
       if (a === 'uncue') $('.cue', el).hidden = true;
       tick();
     });
-    btn.addEventListener('click', () => { el.hidden = false; tick(); $('[data-act="start"]', el).focus(); });
-    setInterval(tick, 500); tick();
+    btn.addEventListener('click', () => { el.hidden = false; tick(); ($('[data-act="start"]', el) || chs.children[0]).focus(); });
+    if (minutes) setInterval(tick, 500);
+    tick();
     if (ADV.param('presenter') !== null) { el.hidden = false; }
   };
 })();
