@@ -58,7 +58,7 @@
       ${x.alt ? `<p><b>Plan B (${esc(x.alt.label)}):</b> ${x.alt.text}</p>${x.alt.cases ? `<ul>${x.alt.cases.list.map((c) => `<li><b>${esc(c.title)}:</b> ${c.what}${c.zip ? ` (<code>${c.zip.split('/').pop()}</code>)` : ''}</li>`).join('')}</ul>` : ''}${x.alt.prompt ? P(x.alt.prompt, 'Plan B') : ''}` : ''}
       ${x.note ? `<p class="meta">${x.note}</p>` : ''}`;
   const steps = T.steps.map((st, i) => `<section class="step"><h2>Step ${i + 1} · ${esc(st.title)}</h2>
-      <p class="meta">${esc(st.goal)} · ${st.time} min${st.test ? ' · to be tested in ERGO’s tenant' : ''}</p>
+      <p class="meta">${esc(st.goal)} · ${st.time} min</p>
       ${T.workbook ? `<p><b>Workbook:</b> <code>${T.workbook.name}</code>${st.sheet ? `, sheet <b>${esc(st.sheet)}</b>` : ''}</p>` : ''}
       ${st.files ? `<p><b>Files:</b> ${files(st.files)}</p>` : ''}${st.open ? `<p><b>Open:</b> ${esc(st.open)}</p>` : ''}${st.intro ? `<p>${st.intro}</p>` : ''}
       ${st.toggle ? `<p><b>Two paths:</b> with Agent Builder, or with prompts if you don’t see Agents. Do one of them.</p>` : ''}${st.tasks.map(taskHtml).join('')}
