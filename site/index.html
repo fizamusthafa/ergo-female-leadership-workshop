@@ -18,7 +18,7 @@
       <div class="cobrand reveal-up"><img src="assets/img/ergo-logo.png" alt="ERGO" width="74" height="22"><span aria-hidden="true">×</span><img src="assets/img/microsoft-logo.png" alt="Microsoft" width="89" height="22"></div>
       <p class="eyebrow reveal-up d1" style="margin-bottom:18px">ERGO Female Leadership Summit · Berlin · 17 November 2026</p>
       <h1 class="display reveal-up d1">Make Copilot <em>yours.</em></h1>
-      <p class="lede reveal-up d2">Sixty minutes, three use cases: a performance review in Excel, an executive presentation in PowerPoint, and Copilot as your own Chief of Staff. Prompts first, then the skills and agents that make Copilot work your way.</p>
+      <p class="lede reveal-up d2">Sixty minutes, three use cases: a performance review in Excel, an executive presentation in PowerPoint, and Copilot as your own Chief of Staff. Prompts first, then the skills that make Copilot work your way.</p>
       <p class="rooms-title reveal-up d3">Pick your room</p>
       <div class="rooms reveal-up d3" id="rooms"></div>
       <div class="row reveal-up d4" style="justify-content:center;margin-top:22px">
@@ -213,9 +213,14 @@
   };
 
   // ---------- choose yourself ----------
+  const roomCard = (k, r) => {
+    const lead = r.lead || [], names = lead.map((l) => ADV.leads[l]);
+    const who = names.length ? `<span class="r-lead"><span class="r-faces">${lead.map((l) => `<img src="assets/img/leads/${l}.jpg" alt="" width="40" height="40">`).join('')}</span><span class="r-who"><small>Your Microsoft lead${names.length > 1 ? 's' : ''}</small><b>${names.join(' & ')}</b></span></span>` : '';
+    return `<a class="room-btn ${r.level}" href="trail.html?t=${k}&level=${r.level}&room=${r.id}"><span class="r-top"><span class="r-name">Room ${r.room}</span><span class="r-lvl">${ADV.levels[r.level]}</span></span>${r.desc ? `<span class="r-desc">${r.desc}</span>` : ''}${who}</a>`;
+  };
   $('#rooms').innerHTML = ['xls', 'ppt', 'cos'].map((k) => {
-    const t = ADV.trails[k];
-    return `<div class="room-col"><span class="duo-mini" aria-hidden="true"><img src="assets/img/brands/microsoft-copilot.png" alt=""><img src="${t.logo}" alt=""></span><p class="room-trail"><b>${t.group} · ${t.useCase}</b><span>${t.app}</span></p>${ADV.rooms.filter((r) => r.trail === k).map((r) => `<a class="room-btn ${r.level}" href="trail.html?t=${k}&level=${r.level}&room=${r.id}"><span class="r-name">Room ${r.room}</span><span class="r-meta">${t.tool} · ${ADV.levels[r.level]}</span></a>`).join('')}</div>`;
+    const t = ADV.trails[k], app = t.tool.split(' / ')[0];
+    return `<div class="room-col"><span class="duo-mini" aria-hidden="true"><img src="assets/img/brands/microsoft-copilot.png" alt=""><img src="${t.logo}" alt=""></span><p class="room-trail"><b>Group ${t.group} · ${t.useCase}</b><span>Copilot in ${app}</span></p>${ADV.roomIntro?.[k] ? `<p class="room-what">${ADV.roomIntro[k]}</p>` : ''}${ADV.rooms.filter((r) => r.trail === k).map((r) => roomCard(k, r)).join('')}</div>`;
   }).join('');
   $('#trail-cards').innerHTML = ['xls', 'ppt', 'cos'].map((k) => {
     const t = ADV.trails[k], p = ADV.personas[k];
