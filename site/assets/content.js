@@ -70,6 +70,12 @@ ADV.badges = {
   'ppt-pick-both': { icon: '🎼', title: 'Director', what: 'ERGO Deck for the pack, ERGO Motion for the key moment.' },
   'ppt-pick-brand': { icon: '🧭', title: 'Minimalist', what: 'You’d take ERGO Brand: rules only, nothing to run, slides stay as they are.' },
   'ppt-pick-builtin': { icon: '🧰', title: 'Pragmatist', what: 'PowerPoint’s built-in skills are enough for you, for now.' },
+  'cos-pick-catchup': { icon: '🌅', title: 'Early riser', what: 'You want to walk in already knowing what matters and who is waiting.' },
+  'cos-pick-prep': { icon: '🎯', title: 'Well briefed', what: 'No meeting that counts without a short brief beforehand.' },
+  'cos-pick-follow': { icon: '🤝', title: 'Closer', what: 'Promises, replies and decisions: nothing you agreed to slips.' },
+  'cos-pick-think': { icon: '♟️', title: 'Strategist', what: 'You want a sparring partner for the hard calls, not a secretary.' },
+  'cos-pick-time': { icon: '🛡️', title: 'Guardian of time', what: 'Fewer meetings, protected focus time, and a calendar that works for you.' },
+  'cos-pick-wait': { icon: '🔭', title: 'Observer', what: 'You’ll watch it work for a while before you hand anything over. Fair.' },
   'souvenir': { icon: '🎁', title: 'Souvenir', what: 'You brought back a sentence from Copilot.' },
 };
 
@@ -154,7 +160,7 @@ ADV.trails = {
         sheet: 'Register_Ready',
         intro: 'From here on, work on <b>Register_Ready</b>: the cleaned register as a table. It doesn’t matter how far you got with the clean-up.',
         tasks: [
-          { title: 'Look things up',
+          { title: 'Look things up', media: { type: 'viz', viz: 'xlookup', caption: 'Step through it before you prompt, or come back after task B to check your formula.' },
             prompt: 'On Register_Ready, add two columns, Region and Country_Manager, using XLOOKUP on the tblCountries table on the Lookups sheet.',
             prompt2: 'Explain the formula in plain words. What happens if this table grows to 10,000 rows?' },
           { title: 'Let the numbers judge',
@@ -367,7 +373,8 @@ ADV.trails = {
               ['Speaker notes', 'Write speaker notes for every slide in the section “Board pack”: what I say in under a minute each, in plain words, key number first.'],
             ],
             note: 'Built-in skills work for everyone, in any deck. Custom skills, next, add what only your company knows: its layout, its words, its rules.' },
-          { title: 'Add your skills', upload: { skills: ['ergo-deck', 'ergo-motion-slides'], app: 'ppt', explore: true } },
+          { title: 'Add your skills', upload: { skills: ['ergo-deck', 'ergo-motion-slides'], app: 'ppt', explore: true },
+            media: { type: 'viz', viz: 'skillflow', caption: 'Step through it, or press play. This is what happens in the next task.' } },
           { title: 'ERGO Deck: restyle the drafts',
             open: 'board-pack-ready.pptx and scroll to the section Drafts from the CFO office',
             prompt: 'Rebuild only the slides in the section “Drafts from the CFO office” (the three slides titled Q3 Results, P&C update and Investment) as board-ready ERGO slides. Leave every other slide as it is and keep every figure unchanged.',
@@ -391,7 +398,7 @@ ADV.trails = {
         poll: { id: 'ppt-skill', q: 'Which skill would you take back to your desk?', help: 'Look at the drafts and your new slides side by side, then pick one. Your answer unlocks a badge.',
           options: [['ppt-pick-deck', 'ERGO Deck'], ['ppt-pick-motion', 'ERGO Motion'], ['ppt-pick-both', 'Both, for different jobs'], ['ppt-pick-brand', 'ERGO Brand (Plan B)'], ['ppt-pick-builtin', 'The built-in skills are enough']] },
         explain: {
-          q: 'What exactly does ERGO Motion do, and which one should I use?',
+          q: 'What exactly does ERGO Motion do, and which one should I use?', viz: 'slidekinds',
           lead: 'ERGO Motion builds the slide as a small web page (HTML) and places it inside your PowerPoint slide. That is why it can do things normal slides can’t: numbers that count up, bars that grow, elements you can click. Many people like HTML slides for storytelling, because the animation walks the audience through the message. It is the same mechanism PowerPoint itself now uses for Interactive Slides, which you tried in step 2.',
           cols: [
             ['Standard slides (ERGO Deck)', ['Text boxes, shapes and charts you know', 'Click into any text and edit it yourself', 'Works everywhere: PDF, print, older PowerPoint', 'Colleagues can keep working on it without Copilot']],
@@ -506,7 +513,7 @@ ADV.trails = {
         title: 'Make it remember you', goal: 'Your role, your rules and your voice in every chat. No brief to paste, no agent to build.', time: 12, test: true,
         open: 'Microsoft 365 Copilot Chat',
         tasks: [
-          { title: 'Write your rules',
+          { title: 'Write your rules', media: { type: 'viz', viz: 'memory', caption: 'The four places Copilot looks. Tasks A to D fill the first three.' },
             how: 'These instructions apply to <b>every</b> chat, so keep them general: who you are, what matters to you now, how you like your answers. The chief-of-staff role comes in step 4, in its own Workspace. Fill in the fields; the prompt writes itself.',
             fields: ['role', 'focus', 'rule'],
             prompt: 'Help me write custom instructions for Copilot that apply to every chat: who I am, what matters to me right now and how I like my answers. My role: {role}. What I’m focused on right now: {focus}. My most important rule: {rule}. Ask me up to three questions first, then give me the instructions as one short block of text.' },
@@ -573,7 +580,9 @@ ADV.trails = {
         skills: ['chief-of-staff'],
       },
       {
-        title: 'Your briefing podcast', goal: 'One real topic, one Workspace, one podcast: your chief of staff briefs you on the way home.', time: 16, test: true,
+        title: 'Your briefing podcast',
+        poll: { id: 'cos-pick', q: 'Monday, 8:00. What would you hand over first?', help: 'Not which feature you liked: what you would actually let a chief of staff take off your plate. Your answer unlocks a badge.',
+          options: [['cos-pick-catchup', 'Catching up: what happened, who’s waiting'], ['cos-pick-prep', 'Getting ready for the meetings that count'], ['cos-pick-follow', 'Following through on promises and replies'], ['cos-pick-think', 'Thinking a big decision through'], ['cos-pick-time', 'Protecting my time'], ['cos-pick-wait', 'Nothing yet: I’ll keep watching']] }, goal: 'One real topic, one Workspace, one podcast: your chief of staff briefs you on the way home.', time: 16, test: true,
         open: 'Microsoft 365 Copilot → Workspaces (or Notebooks)',
         tasks: [
           { title: 'Let Copilot find your topic',
@@ -648,7 +657,7 @@ ADV.fields = {
   role: { label: 'Your role', default: 'Head of Customer Service' },
   focus: { label: 'What you’re focused on right now', default: 'reducing the claims backlog before year-end' },
   rule: { label: 'Your most important rule', default: 'everything from my team is priority 1', options: ['everything from my team is priority 1', 'requests from the board office are answered the same day', 'for meetings without an agenda, suggest I ask for one', 'protect my Friday mornings for focus time'] },
-  pref: { label: 'Something Copilot should remember', default: 'I prefer short bullet points over long paragraphs', options: ['I prefer short bullet points over long paragraphs', 'I like detailed answers that explain the reasoning', 'I want the answer first, then the details', 'I always want clear next steps at the end', 'I like my answers in German'] },
+  pref: { label: 'Something Copilot should remember', default: 'I prefer short bullet points over long paragraphs', options: ['I prefer short bullet points over long paragraphs', 'I like detailed answers that explain the reasoning', 'I want the answer first, then the details', 'I always want clear next steps at the end', 'I want deadlines and owners called out first'] },
   call: { label: 'Your topic and its next meeting', default: 'the steering committee on the AI claims-triage pilot next Tuesday' },
   who: { label: 'A colleague: someone in your group, or type your own name', default: '[colleague’s name]' },
 };

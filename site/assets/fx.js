@@ -662,6 +662,184 @@ ${rules().map(([k, t]) => `<span class="pg-line" data-line="${k}">${esc(t)}</spa
     img.onerror = () => ADV.toast('Could not create the image. Try a screenshot instead.');
     img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(xml);
   };
+  // ======================================================================
+  // Concept visuals (data-viz): small step-through diagrams for the idea behind a task.
+  // Elements with data-k light up per stage; captions explain the stage.
+  // ======================================================================
+  const vizCtl = '<div class="vz-ctl"><button type="button" class="vz-btn vz-prev" aria-label="Previous step">←</button><div class="vz-dots"></div><button type="button" class="vz-btn vz-next">Next →</button><button type="button" class="vz-btn vz-play" aria-label="Play">▶</button></div><p class="vz-cap" aria-live="polite"></p>';
+  const stepper = (el, stages) => {
+    const cap = $('.vz-cap', el), dots = $('.vz-dots', el), playBtn = $('.vz-play', el), next = $('.vz-next', el);
+    dots.innerHTML = stages.map((_, j) => `<button type="button" aria-label="Step ${j + 1}"></button>`).join('');
+    let i = 0, timer = null;
+    const show = (n) => {
+      i = Math.max(0, Math.min(stages.length - 1, n));
+      const s = stages[i], seen = new Set(stages.slice(0, i).flatMap((t) => t.on));
+      $$('[data-k]', el).forEach((x) => { const on = s.on.includes(x.dataset.k); x.classList.toggle('on', on); x.classList.toggle('seen', !on && seen.has(x.dataset.k)); });
+      cap.innerHTML = `<b>${i + 1}/${stages.length}</b> ${s.text}`;
+      $$('button', dots).forEach((d, j) => { d.classList.toggle('on', j === i); d.setAttribute('aria-current', j === i ? 'step' : 'false'); });
+      next.textContent = i === stages.length - 1 ? 'Start over' : 'Next →';
+    };
+    const stop = () => { clearInterval(timer); timer = null; playBtn.textContent = '▶'; playBtn.setAttribute('aria-label', 'Play'); };
+    const play = () => {
+      if (i === stages.length - 1) show(0);
+      timer = setInterval(() => { if (i >= stages.length - 1) stop(); else show(i + 1); }, 3200);
+      playBtn.textContent = '❚❚'; playBtn.setAttribute('aria-label', 'Pause');
+    };
+    $('.vz-prev', el).addEventListener('click', () => { stop(); show(i - 1); });
+    next.addEventListener('click', () => { stop(); show(i === stages.length - 1 ? 0 : i + 1); });
+    playBtn.addEventListener('click', () => (timer ? stop() : play()));
+    dots.addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) { stop(); show($$('button', dots).indexOf(b)); } });
+    show(0);
+    onView(el, () => { if (!reduce()) play(); }, 0.5);
+  };
+  const viz = (fx.viz = {});
+
+  // PowerPoint step 3: from prompt to skill to slides.
+  viz.skillflow = (el) => {
+    el.classList.add('vz');
+    el.innerHTML = `<p class="vz-title">What happens when you send the prompt</p>
+      <div class="vz-flow">
+        <div class="vz-node" data-k="ask"><span class="vz-ic" aria-hidden="true">💬</span><b>You ask</b><q>Rebuild the drafts as board-ready <mark>ERGO slides</mark>.</q></div>
+        <div class="vz-node" data-k="read"><span class="vz-ic" aria-hidden="true">🔎</span><b>Copilot reads the descriptions</b>
+          <ul class="vz-skills">
+            <li data-k="b1">Explain this presentation <i>built in</i></li>
+            <li data-k="b2">Create interactive slide <i>built in</i></li>
+            <li data-k="deck">ERGO Deck <i>“ERGO deck, ERGO slides, ERGO style”</i></li>
+            <li data-k="motion">ERGO Motion <i>“animated ERGO slides”</i></li>
+          </ul></div>
+        <div class="vz-node" data-k="load"><span class="vz-ic" aria-hidden="true">⚡</span><b>The skill loads</b><span class="vz-chip">Using skills from ergo-deck</span><span class="small muted">Its rules and a small script</span></div>
+        <div class="vz-node" data-k="out"><span class="vz-ic" aria-hidden="true">🖼️</span><b>New slides</b>
+          <div class="vz-mini"><span class="vz-m-title" data-k="t1">Q3: premiums beat plan</span><span class="vz-m-logo" data-k="t2">ERGO</span><span class="vz-m-tiles" data-k="t3"><i></i><i></i><i></i></span><span class="vz-m-band" data-k="t4"></span></div></div>
+      </div>
+      <div class="vz-side" data-k="at"><b aria-hidden="true">@</b><span>Wrong skill, or none? Type <b>@</b>, pick <b>ergo-deck</b> from the list and send the prompt again. Picking it yourself always works.</span></div>
+      ${vizCtl}`;
+    stepper(el, [
+      { on: ['ask'], text: 'You ask the way you’d ask a colleague. The words you use decide which skill fits.' },
+      { on: ['read', 'b1', 'b2', 'deck', 'motion'], text: 'Copilot compares your request with the <b>description</b> of every skill that’s switched on: the built-in ones and yours.' },
+      { on: ['read', 'deck'], text: '“ERGO slides” matches ERGO Deck’s description best. ERGO Motion is for animated slides, so it stays out.' },
+      { on: ['load'], text: 'The skill loads, and the chat says so: look for <b>Using skills from …</b> or <b>Loaded … skill</b>.' },
+      { on: ['out', 't1', 't2', 't3', 't4'], text: 'The rules shape the result: red message title, logo, KPI tiles, takeaway band. Every figure is copied, never changed.' },
+      { on: ['at'], text: 'If Copilot picks the wrong skill, or none, type <b>@</b> and choose it yourself.' },
+    ]);
+  };
+
+  // PowerPoint step 3 explainer: a standard slide you edit vs an HTML slide you prompt.
+  viz.slidekinds = (el) => {
+    el.classList.add('vz', 'vz-kinds');
+    const tiles = [['GWP', 4125.0, 'm'], ['Operating result', 294.9, 'm'], ['Combined ratio', 96.4, '%']];
+    const fmt = (v, u) => v.toLocaleString('en-GB', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + u;
+    el.innerHTML = `<div class="vz-tabs" role="tablist" aria-label="Two kinds of slide">
+        <button type="button" role="tab" class="vz-tab on" aria-selected="true" data-tab="std">Standard slide · ERGO Deck</button>
+        <button type="button" role="tab" class="vz-tab" aria-selected="false" data-tab="html">HTML slide · ERGO Motion</button></div>
+      <div class="vz-panel" data-panel="std" role="tabpanel">
+        <div class="vz-slide"><span class="vz-s-logo">ERGO</span>
+          <p class="vz-s-h" contenteditable="true" spellcheck="false" aria-label="Slide title, editable">Q3: premiums beat plan</p>
+          <div class="vz-tiles">${tiles.map(([l, v, u]) => `<div><small>${l}</small><b>${fmt(v, u)}</b></div>`).join('')}</div></div>
+        <p class="vz-hint">✏️ Click the red title and type. It’s an ordinary text box: you change it yourself, and it prints and exports like any slide.</p></div>
+      <div class="vz-panel" data-panel="html" role="tabpanel" hidden>
+        <div class="vz-slide live"><span class="vz-s-logo">ERGO</span>
+          <p class="vz-s-h vz-locked" tabindex="0" role="button" aria-label="Slide title: try to edit it">Q3: premiums beat plan</p>
+          <div class="vz-tiles">${tiles.map(([l, v, u]) => `<div><small>${l}</small><b data-to="${v}" data-u="${u}">${fmt(v, u)}</b></div>`).join('')}</div>
+          <div class="vz-bars" aria-hidden="true"><i style="--h:94%"></i><i style="--h:97%"></i><i style="--h:100%" class="hi"></i></div>
+          <div class="vz-bubble" hidden>This slide is a small web page, so you can’t type into it. Ask Copilot instead: <q>Make the title shorter.</q></div>
+          <span class="vz-stamp">PDF: a still picture</span></div>
+        <div class="vz-row"><button type="button" class="vz-btn vz-replay">↻ Replay</button><label class="vz-pdf"><input type="checkbox"> Show it as a PDF</label></div>
+        <p class="vz-hint">🎬 Numbers count up and bars grow when the slide appears. Click the title to try to edit it.</p></div>`;
+    const panel = (k) => $(`[data-panel="${k}"]`, el), live = $('.live', el);
+    const animate = () => {
+      const still = $('.vz-pdf input', el).checked || reduce();
+      $$('[data-to]', live).forEach((b) => {
+        const to = +b.dataset.to, u = b.dataset.u;
+        if (still) { b.textContent = fmt(to, u); return; }
+        const o = { v: 0 }; gsap.to(o, { v: to, duration: 1.4, ease: 'power2.out', onUpdate: () => { b.textContent = fmt(o.v, u); } });
+      });
+      const bars = $('.vz-bars', live); bars.classList.remove('grow'); void bars.offsetWidth; if (!still) bars.classList.add('grow');
+    };
+    $('.vz-tabs', el).addEventListener('click', (e) => {
+      const t = e.target.closest('[data-tab]'); if (!t) return;
+      $$('[data-tab]', el).forEach((x) => { const on = x === t; x.classList.toggle('on', on); x.setAttribute('aria-selected', on); });
+      ['std', 'html'].forEach((k) => { panel(k).hidden = k !== t.dataset.tab; });
+      if (t.dataset.tab === 'html') animate();
+    });
+    const title = $('[contenteditable]', el);
+    title.addEventListener('input', () => { $('.vz-hint', panel('std')).textContent = '✓ You just changed the slide yourself. No prompt needed.'; });
+    const bubble = () => { $('.vz-bubble', live).hidden = false; };
+    $('.vz-locked', el).addEventListener('click', bubble);
+    $('.vz-locked', el).addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); bubble(); } });
+    $('.vz-replay', el).addEventListener('click', () => { $('.vz-bubble', live).hidden = true; animate(); });
+    $('.vz-pdf input', el).addEventListener('change', (e) => { live.classList.toggle('pdf', e.target.checked); animate(); });
+  };
+
+  // Chief of Staff step 2: where Copilot's knowledge about you lives.
+  viz.memory = (el) => {
+    el.classList.add('vz');
+    el.innerHTML = `<p class="vz-title">Where your chief of staff keeps what it knows</p>
+      <div class="vz-mem">
+        <div class="vz-node" data-k="ask"><span class="vz-ic" aria-hidden="true">💬</span><b>You ask</b><q>Draft a reply to the board office <mark>in my voice</mark>: we need two more weeks.</q></div>
+        <div class="vz-layers">
+          <div class="vz-layer" data-k="ci"><b>① Custom instructions</b><span>Always on, in every chat: who you are, what matters now, how you like answers. <i>Tasks A and B</i></span></div>
+          <div class="vz-layer" data-k="mem"><b>② Saved memories</b><span>What you asked it to remember, for example “short bullet points”. You can see and delete each one. <i>Task D</i></span></div>
+          <div class="vz-layer" data-k="skill"><b>③ Skills</b><span>Used only when the request matches: “in my voice” brings in my-voice. <i>Task C</i></span></div>
+          <div class="vz-layer work" data-k="work"><b>④ Your work right now</b><span>The emails, meetings and chats this request is about, read fresh for this answer. <i>Step 1</i></span></div>
+        </div>
+        <div class="vz-node" data-k="out"><span class="vz-ic" aria-hidden="true">✉️</span><b>The answer</b><span class="small muted">Your tone, your sign-off, the facts from the thread, the deadline first.</span></div>
+      </div>
+      <p class="small muted vz-manage">Manage ① and ② under Copilot <b>Settings</b> → <b>Personalization</b>. Skills: <b>…</b> → <b>Manage plugins</b>.</p>
+      ${vizCtl}`;
+    stepper(el, [
+      { on: ['ask'], text: 'One request. Four places shape the answer.' },
+      { on: ['ci'], text: 'Your custom instructions come along in every chat, whatever you ask.' },
+      { on: ['mem'], text: 'Saved memories add what you asked Copilot to remember. They build up over time, and you stay in control of them.' },
+      { on: ['skill'], text: '“in my voice” matches the description of your my-voice skill, so its rules come in. Without those words, they stay out.' },
+      { on: ['work'], text: 'Then the work itself: the thread you’re replying to and your calendar, read for this one answer.' },
+      { on: ['out', 'ci', 'mem', 'skill', 'work'], text: 'The answer uses all four. If something is off, fix it in the right place: your rules, a memory or the skill.' },
+    ]);
+  };
+
+  // Excel step 2: one register row through XLOOKUP and LET, with a live Actual slider.
+  viz.xlookup = (el) => {
+    el.classList.add('vz', 'vz-xl');
+    const T = 24110, num = (v, d = 1) => v.toLocaleString('en-GB', { minimumFractionDigits: d, maximumFractionDigits: d });
+    el.innerHTML = `<p class="vz-title">One row, followed through tasks A and B</p>
+      <div class="vz-xgrid">
+        <div class="vz-tbl wide" data-k="row"><p class="vz-cap2">Register_Ready</p><div class="vz-scroll"><table>
+          <tr><th>Country</th><th>KPI</th><th>Target</th><th>Actual</th><th data-k="newA">Region</th><th data-k="newA2">Country_Manager</th><th data-k="newB">Performance</th></tr>
+          <tr><td data-k="c">Germany</td><td data-k="kpi">Claims paid</td><td>24,110</td><td class="vz-act">25,527.9</td><td data-k="r1">DACH</td><td data-k="r2">Sabine Hartmann</td><td data-k="verdict"><span class="vz-verdict amber">At risk</span></td></tr></table></div></div>
+        <div class="vz-tbl" data-k="tc"><p class="vz-cap2">Lookups · tblCountries</p><div class="vz-scroll"><table>
+          <tr><th>Country</th><th>Region</th><th>Country_Manager</th></tr>
+          <tr data-k="ge"><td>Germany</td><td>DACH</td><td>Sabine Hartmann</td></tr><tr><td>Austria</td><td>DACH</td><td>Florian Gruber</td></tr><tr><td>Poland</td><td>CEE</td><td>Marta Kowalczyk</td></tr></table></div></div>
+        <div class="vz-tbl" data-k="tk"><p class="vz-cap2">Lookups · tblKPIs</p><div class="vz-scroll"><table>
+          <tr><th>KPI</th><th>Better_When</th><th>Amber</th><th>Red</th></tr>
+          <tr><td>Gross written premium</td><td>Higher</td><td>3%</td><td>8%</td></tr><tr data-k="cp"><td>Claims paid</td><td>Lower</td><td>3%</td><td>8%</td></tr><tr><td>Operating costs</td><td>Lower</td><td>3%</td><td>8%</td></tr></table></div></div>
+        <div class="vz-let wide" data-k="let"><p class="vz-cap2">LET: name the parts, then decide</p>
+          <code><span data-k="l1">gap = Actual / Target − 1</span> <span class="vz-arrow">→</span> <b class="vz-gap">+5.9%</b><br>
+          <span data-k="l2">worse = IF(Better_When = "Lower", gap, −gap)</span> <span class="vz-arrow">→</span> <b class="vz-worse">5.9%</b><br>
+          <span data-k="l3">IFS(worse ≥ Red, "Off track", worse ≥ Amber, "At risk", TRUE, "On track")</span></code></div>
+      </div>
+      <label class="vz-try" data-k="try">Try another Actual for Germany · Claims paid: <input type="range" min="21000" max="28000" step="10" value="25530" aria-label="Actual"> <output>25,527.9</output></label>
+      ${vizCtl}`;
+    const input = $('.vz-try input', el), out = $('.vz-try output', el), pill = $('.vz-verdict', el);
+    const judge = (a) => {
+      const gap = a / T - 1, worse = gap;
+      const v = worse >= 0.08 ? ['Off track', 'red'] : worse >= 0.03 ? ['At risk', 'amber'] : ['On track', 'green'];
+      $('.vz-act', el).textContent = num(a); out.textContent = num(a);
+      $('.vz-gap', el).textContent = `${gap >= 0 ? '+' : '−'}${num(Math.abs(gap) * 100)}%`;
+      $('.vz-worse', el).textContent = `${worse >= 0 ? '' : '−'}${num(Math.abs(worse) * 100)}%${worse < 0 ? ' (better)' : ''}`;
+      pill.textContent = v[0]; pill.className = `vz-verdict ${v[1]}`;
+    };
+    input.addEventListener('input', () => judge(+input.value));
+    judge(25527.9);
+    stepper(el, [
+      { on: ['row'], text: 'Start with one row of the register: Germany, Claims paid, Target 24,110, Actual 25,527.9.' },
+      { on: ['c', 'tc', 'ge', 'newA', 'newA2', 'r1', 'r2'], text: 'Task A. XLOOKUP takes “Germany”, finds it in tblCountries and brings back the Region and the Country_Manager: <code>=XLOOKUP([@Country], tblCountries[Country], tblCountries[Region])</code>.' },
+      { on: ['kpi', 'tk', 'cp'], text: 'Task B starts the same way: XLOOKUP finds “Claims paid” in tblKPIs and brings back Better_When and the two thresholds.' },
+      { on: ['let', 'l1'], text: 'LET gives the parts names, so the formula reads like a sentence. <b>gap</b>: Actual is 5.9% above Target.' },
+      { on: ['let', 'l2'], text: 'For claims, lower is better, so being 5.9% above target means 5.9% <b>worse</b>.' },
+      { on: ['let', 'l3', 'verdict', 'newB'], text: 'IFS checks the thresholds: 5.9% is past Amber (3%) but not Red (8%), so the row says <b>At risk</b>.' },
+      { on: ['try', 'verdict'], text: 'Now drag the Actual. One live formula, and the verdict follows: that’s why Copilot writes a formula instead of typing the answer.' },
+    ]);
+  };
+
   // Make sure the exported image shows the final frame, not a half-played animation.
   const tlFinish = (svg) => gsap.getTweensOf(svg.querySelectorAll('*')).forEach((tw) => tw.progress(1));
 })();

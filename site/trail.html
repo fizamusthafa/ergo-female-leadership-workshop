@@ -63,6 +63,7 @@
       <input type="range" min="0" max="100" value="50" aria-label="Drag to compare before and after"></div></div><figcaption>${m.caption}</figcaption></figure>`;
     if (m.type === 'morph') return '<div data-fx="scrub"></div>';
     if (m.type === 'panel') return '<div data-fx="panel"></div>';
+    if (m.type === 'viz') return `<figure class="viz-fig"><div data-viz="${m.viz}"></div>${m.caption ? `<figcaption>${m.caption}</figcaption>` : ''}</figure>`;
     return `<figure><div class="device"><div class="bar"><i></i><i></i><i></i></div><img src="${m.image}" alt="${esc(m.caption)}" loading="lazy"></div><figcaption>${m.caption}</figcaption></figure>`;
   };
   const nav = (prev, next) => `<div class="next-nav">${prev ? `<a class="btn ghost" href="${prev[0]}">← ${esc(prev[1])}</a>` : '<span></span>'}${next ? `<a class="btn red" href="${next[0]}">${esc(next[1])} →</a>` : ''}</div>`;
@@ -188,7 +189,7 @@
         ${tasks}</div>
         ${st.skills && st.skills.length ? `<div class="uses"><span class="small muted">Look for:</span>${st.skills.map((s) => `<span class="pill red">${ADV.skills[s].kind === 'agent' ? '' : 'Loaded '}${ADV.skills[s].title}</span>`).join('')}</div>` : ''}
         <p class="wow">${st.wow}</p>
-        ${st.explain ? `<details class="explain card"><summary>${esc(st.explain.q)}</summary><div class="explain-body"><p>${st.explain.lead}</p>
+        ${st.explain ? `<details class="explain card"><summary>${esc(st.explain.q)}</summary><div class="explain-body"><p>${st.explain.lead}</p>${st.explain.viz ? `<div data-viz="${st.explain.viz}"></div>` : ''}
           <div class="explain-cols">${st.explain.cols.map(([h, items]) => `<div><b>${h}</b><ul>${items.map((s) => `<li>${s}</li>`).join('')}</ul></div>`).join('')}</div>
           <p>${st.explain.tip}</p></div></details>` : ''}
       </div></div>
@@ -269,6 +270,7 @@
   const panelEl = document.querySelector('[data-fx="panel"]'); if (panelEl) fx.panel(panelEl);
   const duoEl = document.querySelector('[data-fx="duo"]'); if (duoEl) fx.duoHero(duoEl, key);
   const amEl = document.querySelector('[data-fx="addmenu"]'); if (amEl) fx.addmenu(amEl, { pick: 'upload' });
+  document.querySelectorAll('[data-viz]').forEach((el) => { const f = fx.viz && fx.viz[el.dataset.viz]; if (f) f(el); });
 
   $('#page').addEventListener('click', (e) => {
     const b = e.target.closest('[data-path-pick]'); if (!b) return;
