@@ -71,7 +71,7 @@
   // Text files (transcript, sample emails, notes) can also be read and copied right on the page.
   const peek = ([href, label]) => { const t = (window.TEXT_FILES || {})[href]; return t ? `<details class="peek"><summary>📖 Show the text: ${esc(label)}</summary><div class="peek-body"><button type="button" class="btn small ghost peek-copy" data-copy="${esc(t)}">Copy all</button><pre>${esc(t)}</pre></div></details>` : ''; };
   const filesRow = (list) => `<div class="files">${list.map(fileBtn).join('')}</div>${list.map(peek).join('')}`;
-  const variant = ([label, p, x]) => `<p class="v-label">${esc(label)}</p>${x && x.files ? filesRow(x.files) : ''}${x && x.how ? `<p class="muted how">${x.how}</p>` : ''}${ADV.promptBox(p)}`;
+  const variant = ([label, p, x]) => `<p class="v-label">${esc(label)}</p>${x && x.files ? filesRow(x.files) : ''}${x && x.how ? `<p class="how">${x.how}</p>` : ''}${ADV.promptBox(p)}`;
   // Case cards: each sets a fill-in field (e.g. {call}) and offers its own file pack; a case without a value points to the field.
   const casesBox = (c) => `<div class="cases">${c.list.map((x) => `<article class="card case"><h3>${esc(x.title)}</h3><p class="muted">${x.what}</p>
       ${x.zip ? `<p class="small muted">${x.contents}</p><p class="row"><a class="btn small red" href="${x.zip}" download>Download the pack ↓</a>` : '<p class="row">'}
@@ -88,7 +88,7 @@
     return `<div class="upload card"><p class="eyebrow">🎒 Add the skill${ks.length > 1 ? 's' : ''}</p>
       ${skillDownloads(ks)}
       <p class="small muted">${u.app === 'ppt' ? `PowerPoint takes each ZIP as it is. Keep ${ks.length > 1 ? 'them' : 'it'} zipped${ks.length > 1 ? ' and upload them one by one' : ''}. They’re also in the kit’s <code>skills-upload-as-zip</code> folder.` : 'Upload the ZIP, or unzip it and upload the folder with its SKILL.md.'}</p>
-      ${u.explore ? '<p style="margin:22px 0 4px"><b>What’s behind Add?</b> Four ways to add a skill. Try the menu and select each option.</p><div data-fx="addmenu"></div>' : ''}
+      ${u.explore ? '<details class="open-how"><summary>Curious? What’s behind <b>Add</b>: four ways to add a skill</summary><p class="small muted">Try the menu and select each option.</p><div data-fx="addmenu"></div></details>' : ''}
       <ol class="pack-steps">${U.steps.map((x) => `<li><div><p>${x.text}</p></div>${x.gif ? `<figure class="pack-clip"><img src="${x.gif}" alt="Screen recording of this step" loading="lazy"></figure>` : ''}</li>`).join('')}</ol>
       <p class="small muted">${ADV.upload.gifNote} While it uploads, read the skill: open the SKILL.md you downloaded.</p>
       <p class="small" style="margin-top:12px"><b>Check:</b> ask Copilot <q>Which custom skills do you have?</q> It can take a few minutes to appear.</p></div>`;
@@ -129,7 +129,7 @@
     x.switchTo ? switchBox(x.switchTo) : '',
     x.upload ? uploadBlock(x.upload) : '',
     x.intro ? `<p>${x.intro}</p>` : '',
-    x.how ? `<div class="muted how">${x.how}</div>` : '',
+    x.how ? `<div class="how">${x.how}</div>` : '',
     x.cases ? casesBox(x.cases) : '',
     x.fields ? ADV.fieldsBox(x.fields) : '',
     x.prompt ? `<p class="muted">Copy this into Copilot:</p>${ADV.promptBox(x.prompt)}` : '',
@@ -146,7 +146,7 @@
       ? `<details class="alt card fold"><summary class="eyebrow">Plan B · ${esc(x.alt.label)}</summary>${x.alt.files ? filesRow(x.alt.files) : ''}<p>${x.alt.text}</p>${x.alt.cases ? casesBox(x.alt.cases) : ''}${x.alt.prompt ? ADV.promptBox(x.alt.prompt) : ''}</details>`
       : `<div class="alt card"><p class="eyebrow">Plan B · ${esc(x.alt.label)}</p>${x.alt.files ? filesRow(x.alt.files) : ''}<p>${x.alt.text}</p>${x.alt.prompt ? ADV.promptBox(x.alt.prompt) : ''}</div>`) : '',
     x.skillFiles ? `<p class="v-label">Skill files</p>${skillDownloads(x.skillFiles)}` : '',
-    x.note ? `<p class="note-line">ℹ️ ${x.note}</p>` : '',
+    x.note ? `<div class="note-line"><span aria-hidden="true">👉</span><p>${x.note}</p></div>` : '',
     media(x.media),
   ].join('');
 
@@ -164,12 +164,12 @@
     const files = st.files || [];
     const wb = T.workbook;
     const openBits = [
-      wb ? `<div class="files">${fileBtn([wb.file, wb.name])}${files.map(fileBtn).join('')}</div>${files.map(peek).join('')}<p class="small muted">The same workbook all session. Already have it open? Just switch to the sheet below.</p>` : '',
-      !wb && files.length ? `${filesRow(files)}<p class="small muted">${files.some(([h]) => /\.(txt|md)$/.test(h)) ? 'Already in the kit. Text files also open right here: select <b>Show the text</b>.' : 'Already downloaded with the kit. Upload to OneDrive if you haven’t yet.'}</p>` : '',
+      wb ? `<details class="get-files"><summary>📥 Need the workbook again? Download it here</summary><div class="gf-body"><div class="files">${fileBtn([wb.file, wb.name])}${files.map(fileBtn).join('')}</div><p class="small muted">The same workbook all session. Already have it open? Just switch to the sheet below.</p></div></details>${files.map(peek).join('')}` : '',
+      !wb && files.length ? `<details class="get-files"><summary>📥 Skipped ahead or missing a file? Get the files for this step</summary><div class="gf-body"><div class="files">${files.map(fileBtn).join('')}</div><p class="small muted">${files.some(([h]) => /\.(txt|md)$/.test(h)) ? 'Already in the kit. Text files also open right here: select <b>Show the text</b>.' : 'Already downloaded with the kit. Upload to OneDrive if you haven’t yet.'}</p></div></details>${files.map(peek).join('')}` : '',
       T.openHow ? `<details class="open-how"><summary>First time? How to open the workbook in Excel for the web</summary><ol>${T.setup.map((x) => `<li>${x}</li>`).join('')}</ol></details>` : '',
       st.sheet ? `<p class="sheet-line">📄 Sheet: <b>${esc(st.sheet)}</b></p>` : '',
       st.open ? `<p style="font-size:19px">Open <b>${esc(st.open)}</b>.</p>` : '',
-      st.intro ? `<p class="muted">${st.intro}</p>` : '',
+      st.intro ? `<p class="intro-line">${st.intro}</p>` : '',
     ].join('');
     const pathOf = (x) => x.path || '';
     const letterOf = (i) => { const p = pathOf(st.tasks[i]); return letters[st.tasks.slice(0, i).filter((y) => !pathOf(y) || !p || pathOf(y) === p).length]; };

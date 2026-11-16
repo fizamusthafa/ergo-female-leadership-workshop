@@ -197,7 +197,9 @@ body::before {
 .how ol { padding-left: 20px; margin: 6px 0; }
 .v-label { margin: 18px 0 6px; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
 .pill.test { background: #fff3d6; color: #8a5a00; }
-.note-line { margin: 14px 0 0; font-size: 14px; color: var(--muted); }
+.note-line { display: flex; gap: 10px; align-items: flex-start; margin: 14px 0 0; padding: 12px 14px; border-radius: 12px; background: #fff8e8; border-left: 4px solid #f0b429; font-size: 16px; color: var(--text); }
+.note-line > span { font-size: 18px; line-height: 1.4; }
+.note-line p { margin: 0; }
 .alt { margin: 18px 0 6px; padding: 16px 18px; background: #fbfaf7; box-shadow: none; }
 .alt .eyebrow { margin-bottom: 6px; }
 .alt p { margin: 0 0 8px; }
@@ -738,3 +740,12 @@ html.reduce .vz-race2 i.go::after { width: 100%; }
 .viz-fig, .viz-fig .vz { min-width: 0; max-width: 100%; }
 .beat > div:has(.viz-fig) { min-width: 0; }
 .vz-decks { height: auto; aspect-ratio: 32 / 9; }
+
+/* Step files: folded, because the kit already has them */
+.get-files { margin: 4px 0 12px; border: 1px dashed var(--line); border-radius: 12px; background: #fff; }
+.get-files > summary { cursor: pointer; padding: 9px 14px; font-size: 15px; color: var(--muted); }
+.get-files[open] > summary { color: var(--text); font-weight: 600; }
+.gf-body { padding: 0 14px 12px; }
+.gf-body .files { margin-top: 0; }
+.intro-line { font-size: 17px; margin: 6px 0 10px; }
+.how { font-size: 16px; }
