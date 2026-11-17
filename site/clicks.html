@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Where to click · Make Copilot yours</title>
+<link rel="icon" href="assets/img/favicon.png">
+<link rel="stylesheet" href="assets/app.css">
+<link rel="stylesheet" href="assets/fx.css">
+</head>
+<body>
+<main id="main">
+  <section style="padding-bottom:20px">
+    <div class="wrap">
+      <p class="eyebrow">Short screen recordings, by trail and step</p>
+      <h1 class="display" style="font-size:clamp(40px,7vw,84px)">Where to <em>click.</em></h1>
+      <p class="lede">Every click-through from the three trails in one place. Each one is also on its step, under <b>Show me where to click</b>.</p>
+      <div class="row" id="jump" style="margin-top:20px"></div>
+    </div>
+  </section>
+  <section style="padding-top:10px"><div class="wrap" id="clips"></div></section>
+</main>
+<script src="assets/content.js"></script>
+<script src="assets/skills-data.js"></script>
+<script src="assets/facts-data.js"></script>
+<script src="assets/clips-data.js"></script>
+<script src="assets/vendor/gsap.min.js"></script>
+<script src="assets/app.js"></script>
+<script src="assets/fx.js"></script>
+<script>
+(function () {
+  ADV.shell({ active: 'library' });
+  const esc = ADV.esc;
+  const order = ['xls', 'ppt', 'cos'];
+  const all = Object.entries(ADV.clips || {}).map(([id, c]) => ({ id, ...c }));
+  const where = (c) => {
+    const T = ADV.trails[c.trail];
+    if (!c.step) return { label: 'Base camp', href: `trail.html?t=${c.trail}&s=0` };
+    if (c.step > T.steps.length) return { label: 'Extra how-to', href: `trail.html?t=${c.trail}&s=quests` };
+    const st = T.steps[c.step - 1];
+    return { label: `Step ${c.step} · ${st ? st.title : ''}${c.task ? ` · task ${c.task}` : ''}`, href: `trail.html?t=${c.trail}&s=${c.step}${c.task ? `#task-${'ABCDEFGH'.indexOf(c.task) + 1}` : ''}` };
+  };
+  ADV.$('#jump').innerHTML = order.filter((k) => all.some((c) => c.trail === k)).map((k) => `<a class="btn small ghost" href="#t-${k}">${ADV.trails[k].group} · ${ADV.trails[k].app}</a>`).join('');
+  ADV.$('#clips').innerHTML = all.length ? order.map((k) => {
+    const list = all.filter((c) => c.trail === k).sort((a, b) => a.step - b.step || String(a.task).localeCompare(String(b.task)));
+    if (!list.length) return '';
+    const T = ADV.trails[k];
+    return `<div class="lib-step" id="t-${k}"><h2 style="margin:30px 0 14px">${T.group} · ${esc(T.app)}: ${esc(T.name)}</h2>
+      <div class="clip-list">${list.map((c) => { const w = where(c); return `<article class="card clip-card"><p class="eyebrow"><a href="${w.href}">${esc(w.label)}</a> · ${c.steps && c.steps.length ? `${c.steps.length} steps · ` : ''}${c.seconds} s</p><h3 style="margin:0 0 10px">${esc(c.title)}</h3>
+        ${ADV.clipPlayer(c.id, c, { tag: 'div' })}</article>`; }).join('')}</div></div>`;
+  }).join('') : '<p class="muted">No clips yet.</p>';
+})();
+</script>
+</body>
+</html>

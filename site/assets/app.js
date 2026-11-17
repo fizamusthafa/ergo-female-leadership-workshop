@@ -42,7 +42,67 @@
     const b = e.target.closest('[data-copy]');
     if (b) ADV.copy(b.getAttribute('data-copy'), b);
   });
-  ADV.promptBox = (tpl) => { const text = ADV.fill(tpl); return `<div class="prompt"${ADV.isTpl(tpl) ? ` data-tpl="${ADV.esc(tpl)}"` : ''}><q>${ADV.esc(text)}</q><button type="button" data-copy="${ADV.esc(text)}" aria-label="Copy prompt: ${ADV.esc(text)}">Copy</button></div>`; };
+  // why: what the prompt makes Copilot do. A list of strings, or { steps: [...], exact: 'detailed prompt' }.
+  let whyId = 0;
+  ADV.promptBox = (tpl, why) => {
+    const text = ADV.fill(tpl);
+    const w = Array.isArray(why) ? { steps: why } : why;
+    const id = w ? `why-${++whyId}` : '';
+    const panel = w ? `<div class="why" id="${id}" hidden><p class="why-h">What Copilot does with this prompt</p><ol>${(w.steps || []).map((x) => `<li>${x}</li>`).join('')}</ol>${w.check ? `<p class="why-check">✓ ${w.check}</p>` : ''}${w.exact ? `<p class="v-label">Numbers don’t match? The detailed version</p>${ADV.promptBox(w.exact)}` : ''}</div>` : '';
+    return `<div class="prompt"${ADV.isTpl(tpl) ? ` data-tpl="${ADV.esc(tpl)}"` : ''}><div class="p-body"><q>${ADV.esc(text)}</q>${w ? `<button type="button" class="why-btn" aria-expanded="false" aria-controls="${id}"><span aria-hidden="true">ⓘ</span> What it does</button>` : ''}</div><button type="button" class="copy-btn" data-copy="${ADV.esc(text)}" aria-label="Copy prompt: ${ADV.esc(text)}">Copy</button></div>${panel}`;
+  };
+  document.addEventListener('click', (e) => {
+    const b = e.target.closest('.why-btn'); if (!b) return;
+    const p = document.getElementById(b.getAttribute('aria-controls')); const open = b.getAttribute('aria-expanded') !== 'true';
+    b.setAttribute('aria-expanded', String(open)); if (p) p.hidden = !open;
+    b.lastChild.textContent = open ? ' Hide' : ' What it does';
+  });
+
+  // ---------- "Show me where to click" player: one looping clip per click, plus the whole recording ----------
+  ADV.clipPlayer = (id, c, { open = false, tag = 'details' } = {}) => {
+    const steps = c.steps && c.steps.length ? c.steps : null;
+    const first = steps ? steps[0] : c;
+    const chips = steps ? `<ol class="clip-steps">${steps.map((s, i) => `<li><button type="button" data-clip-step="${i}" aria-pressed="${i === 0}"><b class="cs-n">${i + 1}</b><span>${s.caption}</span></button></li>`).join('')}</ol>` : '';
+    const stage = `<div class="clip-stage"><video ${steps ? 'loop' : 'controls'} muted playsinline preload="none" ${first.poster ? `poster="${first.poster}"` : ''} src="${first.src}" aria-label="${ADV.esc(c.title)}: screen recording"></video>
+      ${steps ? `<p class="clip-cap" aria-live="polite"><span class="clip-n">Step 1 of ${steps.length}</span> ${steps[0].caption}</p>
+      <div class="clip-nav"><button type="button" class="btn small ghost" data-clip-go="-1">← Back</button><button type="button" class="btn small ghost" data-clip-go="1">Next →</button><button type="button" class="linkish" data-clip-all>Play the whole clip (${c.seconds} s)</button></div>` : ''}
+      <p class="small muted clip-note">Recorded in a Microsoft demo tenant. Your screen can look slightly different.</p></div>`;
+    const body = `<div class="clip-body ${steps ? 'has-steps' : ''}">${chips}${stage}</div>`;
+    const sum = `<span class="clip-play" aria-hidden="true">▶</span> Show me where to click<span class="clip-meta">${ADV.esc(c.title)} · ${steps ? `${steps.length} steps` : `${c.seconds} s`}</span>`;
+    return tag === 'details' ? `<details class="clip" data-clip="${id}" ${open ? 'open' : ''}><summary>${sum}</summary>${body}</details>`
+      : `<div class="clip clip-inline" data-clip="${id}">${body}</div>`;
+  };
+  const clipShow = (box, i) => {
+    const c = (ADV.clips || {})[box.dataset.clip]; if (!c) return;
+    const v = box.querySelector('video'), steps = c.steps || [];
+    if (i === 'all') {
+      v.loop = false; v.controls = true; v.poster = c.poster || ''; v.src = c.src; box.dataset.at = 'all';
+      box.querySelector('.clip-cap').innerHTML = `<span class="clip-n">Whole clip</span> ${ADV.esc(c.title)}`;
+      box.querySelectorAll('[data-clip-step]').forEach((b) => b.setAttribute('aria-pressed', 'false'));
+    } else {
+      i = Math.max(0, Math.min(steps.length - 1, i)); const s = steps[i];
+      v.loop = true; v.controls = false; v.poster = s.poster || ''; v.src = s.src; box.dataset.at = String(i);
+      box.querySelector('.clip-cap').innerHTML = `<span class="clip-n">Step ${i + 1} of ${steps.length}</span> ${s.caption}`;
+      box.querySelectorAll('[data-clip-step]').forEach((b) => b.setAttribute('aria-pressed', String(Number(b.dataset.clipStep) === i)));
+      const ol = box.querySelector('.clip-steps'), on = box.querySelector(`[data-clip-step="${i}"]`);
+      if (ol && on && ol.scrollWidth > ol.clientWidth) ol.scrollLeft = on.parentElement.offsetLeft - ol.offsetLeft - 8;
+    }
+    v.play().catch(() => {});
+  };
+  document.addEventListener('click', (e) => {
+    const box = e.target.closest('[data-clip]'); if (!box) return;
+    const st = e.target.closest('[data-clip-step]'), go = e.target.closest('[data-clip-go]'), all = e.target.closest('[data-clip-all]');
+    if (st) clipShow(box, Number(st.dataset.clipStep));
+    else if (go) clipShow(box, (box.dataset.at === 'all' ? -1 : Number(box.dataset.at || 0)) + Number(go.dataset.clipGo));
+    else if (all) clipShow(box, 'all');
+    else if (e.target.matches('video') && !e.target.controls) { const v = e.target; if (v.paused) v.play().catch(() => {}); else v.pause(); }
+  });
+  // Opening a clip plays it; closing pauses.
+  document.addEventListener('toggle', (e) => {
+    const d = e.target; if (!d.matches || !d.matches('details.clip')) return;
+    const v = d.querySelector('video'); if (!v) return;
+    if (d.open) { v.currentTime = 0; v.play().catch(() => {}); } else v.pause();
+  }, true);
 
   // ---------- fill-in prompts: {field} placeholders (ADV.fields), values kept in state.fill ----------
   ADV.fieldVal = (k) => { const v = String((ADV.state.fill || {})[k] || '').trim(); return v || ((ADV.fields || {})[k] || {}).default || ''; };
@@ -50,12 +110,12 @@
   ADV.isTpl = (text) => [...String(text).matchAll(/\{(\w+)\}/g)].some(([, k]) => ADV.fields && ADV.fields[k]);
   ADV.fieldsBox = (ids) => `<div class="fill card">${ids.map((k) => {
     const f = ADV.fields[k], v = (ADV.state.fill || {})[k] || '', cur = ADV.fieldVal(k);
-    return `<div class="fill-row"><label for="f-${k}">${f.label}</label><input id="f-${k}" type="text" data-field="${k}" value="${ADV.esc(v)}" placeholder="${ADV.esc(f.default)}" autocomplete="off">
+    return `<div class="fill-row"><label for="f-${k}">${f.label}</label><input id="f-${k}" type="text" data-field="${k}" value="${ADV.esc(v)}" placeholder="${ADV.esc(f.placeholder || f.default)}" autocomplete="off">
       ${f.options ? `<div class="ideas fill-opts">${f.options.map((o) => `<button type="button" class="idea fill-opt ${o === cur ? 'on' : ''}" data-field-set="${k}" data-value="${ADV.esc(o)}" aria-pressed="${o === cur}">${ADV.esc(o)}</button>`).join('')}</div>` : ''}</div>`;
   }).join('')}<p class="small muted" style="margin:4px 0 0">✏️ Type your own or pick one. The prompts on this page change as you go.</p></div>`;
   ADV.refreshPrompts = () => document.querySelectorAll('[data-tpl]').forEach((box) => {
-    const t = ADV.fill(box.dataset.tpl), b = box.querySelector('[data-copy]');
-    box.querySelector('q').textContent = t; b.setAttribute('data-copy', t); b.setAttribute('aria-label', 'Copy prompt: ' + t);
+    const b = box.querySelector('[data-copy]'), q = box.querySelector('q'), t = ADV.fill(box.dataset.tpl);
+    q.textContent = t; b.setAttribute('data-copy', t); b.setAttribute('aria-label', 'Copy prompt: ' + t);
   });
   const setField = (k, v) => {
     ADV.state.fill = Object.assign({}, ADV.state.fill, { [k]: v }); ADV.save(ADV.state);
@@ -86,6 +146,15 @@
   // ---------- skills and progress ----------
   // Tasks someone actually does in a step: shared tasks plus one path (steps with a path toggle list both paths).
   ADV.taskCount = (st) => (st.toggle ? st.tasks.filter((x) => !x.path || x.path === st.toggle.options[0][0]).length : st.tasks.length);
+  // "Before you start" cards and troubleshooting, tailored per trail (a trail can override a card by id, or drop it).
+  ADV.basicsFor = (key) => {
+    const T = ADV.trails[key] || {}, o = T.basics || {};
+    return ADV.basics.filter(([, , , id]) => !(id === 'licence' && T.premium) && o[id] !== null).map((b) => (o[b[3]] ? [b[0], o[b[3]][0], o[b[3]][1], b[3]] : b));
+  };
+  ADV.troubleFor = (key) => {
+    const T = ADV.trails[key] || {};
+    return ADV.trouble.filter(([, , id, apps]) => !(id === 'licence' && T.premium) && (!apps || apps.includes(key))).concat(T.trouble || []);
+  };
   // Skills a step adds: its own list plus any uploaded or downloadable skill in its tasks.
   ADV.stepSkills = (st) => [...new Set((st.skills || []).concat(...(st.tasks || [st]).map((x) => (x.upload ? (x.upload.skills || [x.upload.skill]) : []).concat(x.skillFiles || []))))];
   // opts.quiet: no toast (the caller shows the message itself, e.g. in the high five). Returns the toast text.
@@ -156,7 +225,8 @@
   ADV.renderDrawer = () => {
     const drawer = $('#drawer'); const count = $('.drawer-btn .count');
     const s = ADV.state; const owned = Object.keys(ADV.skills).filter((k) => s.skills[k]);
-    if (count) count.textContent = owned.length + Object.keys(s.badges).length;
+    const total = owned.length + Object.keys(s.badges).length;
+    if (count) { count.textContent = total; count.hidden = total === 0; }
     if (!drawer) return;
     const trailSkills = (k) => { const t = ADV.trails[k]; return t ? [...new Set(t.steps.flatMap(ADV.stepSkills).concat(t.sideQuests.map((q) => q.skill).filter(Boolean)))] : []; };
     const order = [...new Set(trailSkills(s.trail).concat(Object.keys(ADV.skills)))];

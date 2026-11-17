@@ -45,9 +45,10 @@
   const P = (p, label) => `<div class="p">${label ? `<small>${esc(label)}</small>` : ''}${esc(ADV.fill(p))}</div>`;
   const files = (list) => (list || []).map(([, l]) => `<code>${esc(l)}</code>`).join(', ');
   const PATH = { agent: 'With Agent Builder', prompts: 'Without Agent Builder' };
-  const taskHtml = (x, i) => `<h3>${'ABCDEF'[i]} · ${esc(x.title)}${x.level === 'advanced' ? ' (Advanced)' : ''}${x.path ? ` · ${PATH[x.path]}` : ''}</h3>
+  const plans = (x) => [].concat(x.alt || []).map((a) => `<p><b>Plan B (${esc(a.label)}):</b> ${a.switchTo ? `${a.switchTo.title}. ${a.switchTo.text} ` : ''}${a.text}</p>${a.cases ? `<ul>${a.cases.list.map((c) => `<li><b>${esc(c.title)}:</b> ${c.what}${c.zip ? ` (<code>${c.zip.split('/').pop()}</code>)` : ''}</li>`).join('')}</ul>` : ''}${a.prompt ? P(a.prompt, 'Plan B') : ''}${a.then ? `<p>${a.then.text}</p>${a.then.prompt ? P(a.then.prompt, a.then.label) : ''}` : ''}`).join('');
+  const taskHtml = (x, i) => `<h3>${'ABCDEFGHIJ'[i]} · ${esc(x.title)}${x.level === 'advanced' ? ' (Advanced)' : ''}${x.extra ? ' (if you have time)' : ''}${x.path ? ` · ${PATH[x.path]}` : ''}</h3>
       ${x.open ? `<p><b>Open:</b> ${esc(x.open)}</p>` : ''}${x.switchTo ? `<p><b>${x.switchTo.title}.</b> ${x.switchTo.text}</p>` : ''}
-      ${x.upload ? `<p><b>Add the skill</b> <code>${x.upload.skill}</code>: ${ADV.upload[x.upload.app].steps.map((s) => s.text).join(' ')}</p>` : ''}
+      ${x.upload ? `<p><b>Add the skill${(x.upload.skills || []).length > 1 ? 's' : ''}</b> ${(x.upload.skills || [x.upload.skill]).map((k) => `<code>${k}</code>`).join(' and ')}: ${ADV.upload[x.upload.app].steps.map((s) => s.text).join(' ')}</p>` : ''}
       ${x.intro ? `<p>${x.intro}</p>` : ''}${x.how ? `<div>${x.how}</div>` : ''}
       ${x.cases ? `<ul>${x.cases.list.map((c) => `<li><b>${esc(c.title)}:</b> ${c.what}${c.zip ? ` (<code>${c.zip.split('/').pop()}</code>)` : ''}</li>`).join('')}</ul>` : ''}
       ${x.prompt ? P(x.prompt) : ''}${x.prompt2 ? P(x.prompt2, 'Then') : ''}
@@ -55,7 +56,7 @@
       ${x.build ? `<ul>${x.build.map(([h, t]) => `<li><b>${h}:</b> ${t}</li>`).join('')}</ul>` : ''}
       ${x.use ? `<ol>${x.use.steps.map((s) => `<li>${s}</li>`).join('')}</ol>` : ''}${x.more ? P(x.more.prompt, x.more.label) : ''}
       ${x.ideas ? `<p><b>Ideas, one at a time:</b></p>${x.ideas.map((s) => P(Array.isArray(s) ? s[1] : s, 'Idea')).join('')}` : ''}${x.waiting ? `<p><b>While you wait:</b> ${x.waiting.text}</p>${(x.waiting.ideas || []).map(([l, q]) => P(q, 'While you wait · ' + l)).join('')}${x.waiting.tips ? `<ul>${x.waiting.tips.map(([h, t]) => `<li><b>${h}</b> ${t}</li>`).join('')}</ul>` : ''}` : ''}
-      ${x.alt ? `<p><b>Plan B (${esc(x.alt.label)}):</b> ${x.alt.text}</p>${x.alt.cases ? `<ul>${x.alt.cases.list.map((c) => `<li><b>${esc(c.title)}:</b> ${c.what}${c.zip ? ` (<code>${c.zip.split('/').pop()}</code>)` : ''}</li>`).join('')}</ul>` : ''}${x.alt.prompt ? P(x.alt.prompt, 'Plan B') : ''}` : ''}
+      ${plans(x)}
       ${x.note ? `<p class="meta">${x.note}</p>` : ''}`;
   const steps = T.steps.map((st, i) => `<section class="step"><h2>Step ${i + 1} · ${esc(st.title)}</h2>
       <p class="meta">${esc(st.goal)} · ${st.time} min</p>
@@ -74,13 +75,13 @@
       ${Object.keys(ADV.trails).map((k) => `<a class="btn small ghost" href="print.html?t=${k}">${ADV.trails[k].app}</a>`).join('')}<a class="btn small ghost" href="trail.html?t=${key}">Back to the trail</a></div>
     <p class="eyebrow">${ADV.event.name} · Trail ${T.group} · ${T.app} · ${esc(T.useCase)}</p>
     <h1>${T.name}</h1><p>${T.mission}</p>
-    <h2>Before you start</h2><ul>${ADV.basics.filter(([, , , id]) => !(id === 'licence' && T.premium)).map(([, h, t]) => `<li><b>${h}:</b> ${t}</li>`).join('')}</ul>
+    <h2>Before you start</h2><ul>${ADV.basicsFor(key).map(([, h, t]) => `<li><b>${h}:</b> ${t}</li>`).join('')}</ul>
     <p><b>Files:</b> ${T.kit.contents.map((c) => `<code>${c}</code>`).join(', ')} (kit on the workshop site).</p>
     <ul>${Object.entries(T.levels).map(([k, v]) => `<li><b>${ADV.levels[k]}:</b> ${v}</li>`).join('')}</ul>
     ${steps}${byo}${quests ? `<section class="step"><h2>Side quests</h2>${quests}</section>` : ''}
     ${T.noBonus ? '' : `<section class="step"><h2>Bonus · Copilot Workspaces (Advanced focus)</h2><p>${ADV.bonus.advanced} ${ADV.bonus.text}</p><ol>${ADV.bonus.steps.map((x) => `<li>${x}</li>`).join('')}</ol>${ADV.bonus.prompts.map((x) => P(x)).join('')}</section>`}
     <section class="step"><h2>Your 2-minute share-out</h2><p>${ADV.shareOut.intro}</p><ol>${ADV.shareOut.parts.map(([h, t]) => `<li><b>${h}:</b> ${t}</li>`).join('')}</ol></section>
-    <section class="step"><h2>Troubleshooting</h2><ul>${ADV.trouble.filter(([, , id]) => !(id === 'licence' && T.premium)).concat(T.trouble || []).map(([q, a]) => `<li><b>${q}:</b> ${a}</li>`).join('')}</ul></section>
+    <section class="step"><h2>Troubleshooting</h2><ul>${ADV.troubleFor(key).map(([q, a]) => `<li><b>${q}:</b> ${a}</li>`).join('')}</ul></section>
     <p class="meta" style="margin-top:24px">${ADV.label}. ${ADV.shareOut.stayLive}</p>`;
 })();
 </script>

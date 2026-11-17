@@ -16,6 +16,7 @@
 <script src="assets/skills-data.js"></script>
 <script src="assets/texts-data.js"></script>
 <script src="assets/facts-data.js"></script>
+<script src="assets/clips-data.js"></script>
 <script src="assets/vendor/gsap.min.js"></script>
 <script src="assets/app.js"></script>
 <script src="assets/fx.js"></script>
@@ -67,18 +68,25 @@
     return `<figure><div class="device"><div class="bar"><i></i><i></i><i></i></div><img src="${m.image}" alt="${esc(m.caption)}" loading="lazy"></div><figcaption>${m.caption}</figcaption></figure>`;
   };
   const nav = (prev, next) => `<div class="next-nav">${prev ? `<a class="btn ghost" href="${prev[0]}">← ${esc(prev[1])}</a>` : '<span></span>'}${next ? `<a class="btn red" href="${next[0]}">${esc(next[1])} →</a>` : ''}</div>`;
+  // "Show me where to click": short screen recordings (assets/clips-data.js), folded until someone asks for them.
+  const clipsFor = (step, task) => Object.entries(ADV.clips || {}).filter(([, c]) => c.trail === key && c.step === step && (c.task || null) === task).map(([id, c]) => ({ id, ...c }));
+  const clipBox = (list) => list.map((c) => ADV.clipPlayer(c.id, c)).join('');
+  const clickGuide = (g) => g ? `<details class="open-how click-guide"><summary>Where to click: ${esc(g.title)}</summary>
+      <ol class="use-steps">${g.steps.map((text) => `<li>${text}</li>`).join('')}</ol>
+      ${(g.images || []).map(([image, caption]) => `<figure><a href="${image}" target="_blank" rel="noopener"><img src="${image}" alt="${esc(caption)}" loading="lazy" style="display:block;max-width:100%;height:auto"></a><figcaption>${caption} Select the image to enlarge it.</figcaption></figure>`).join('')}
+      <p class="small muted">Screenshots from a Microsoft demo tenant, 15 November 2026. Labels and available features can differ in your organisation.</p></details>` : '';
   const fileBtn = ([href, label]) => `<a class="file-chip" href="${href}" download><span aria-hidden="true">${/\.xlsx$/.test(href) ? '📗' : /\.pptx$/.test(href) ? '📙' : /\.docx$/.test(href) ? '📘' : '📄'}</span>${esc(label)}<span class="dl" aria-hidden="true">↓</span></a>`;
   // Text files (transcript, sample emails, notes) can also be read and copied right on the page.
   const peek = ([href, label]) => { const t = (window.TEXT_FILES || {})[href]; return t ? `<details class="peek"><summary>📖 Show the text: ${esc(label)}</summary><div class="peek-body"><button type="button" class="btn small ghost peek-copy" data-copy="${esc(t)}">Copy all</button><pre>${esc(t)}</pre></div></details>` : ''; };
   const filesRow = (list) => `<div class="files">${list.map(fileBtn).join('')}</div>${list.map(peek).join('')}`;
-  const variant = ([label, p, x]) => `<p class="v-label">${esc(label)}</p>${x && x.files ? filesRow(x.files) : ''}${x && x.how ? `<p class="how">${x.how}</p>` : ''}${ADV.promptBox(p)}`;
+  const variant = ([label, p, x]) => `<p class="v-label">${esc(label)}</p>${x && x.files ? filesRow(x.files) : ''}${x && x.how ? `<p class="how">${x.how}</p>` : ''}${ADV.promptBox(p, x && x.why)}`;
   // Case cards: each sets a fill-in field (e.g. {call}) and offers its own file pack; a case without a value points to the field.
   const casesBox = (c) => `<div class="cases">${c.list.map((x) => `<article class="card case"><h3>${esc(x.title)}</h3><p class="muted">${x.what}</p>
       ${x.zip ? `<p class="small muted">${x.contents}</p><p class="row"><a class="btn small red" href="${x.zip}" download>Download the pack ↓</a>` : '<p class="row">'}
       ${x.value ? `<button type="button" class="idea fill-opt ${ADV.fieldVal(c.field) === x.value ? 'on' : ''}" data-field-set="${c.field}" data-value="${esc(x.value)}" aria-pressed="${ADV.fieldVal(c.field) === x.value}">Use this case</button>` : `<a class="idea" href="#f-${c.field}">Type it below ↓</a>`}</p></article>`).join('')}</div>`;
   const switchBox = (w) => `<div class="switch card"><span aria-hidden="true">↗️</span><div><b>${w.title}</b><p>${w.text}</p><a class="btn small red" href="${w.url}" target="_blank" rel="noopener">${w.cta} ↗</a></div></div>`;
   const trouble = () => `<details class="trouble"><summary>🛠️ Something not working? Troubleshooting</summary>
-      <dl>${ADV.trouble.filter(([, , id]) => !(id === 'licence' && T.premium)).concat(T.trouble || []).map(([q, a]) => `<dt>${q}</dt><dd>${a}</dd>`).join('')}</dl></details>`;
+      <dl>${ADV.troubleFor(key).map(([q, a]) => `<dt>${q}</dt><dd>${a}</dd>`).join('')}</dl></details>`;
   const skillDownloads = (keys) => `<div class="pack-files">${keys.map((k) => { const sk = ADV.skills[k]; return `<div class="pack-file"><span class="pf-ic" aria-hidden="true">${(ADV.gear[k] || ['🎒'])[0]}</span><span><b>${sk.title}</b><code>${k}</code></span>
       <span class="pf-links">${sk.zip ? `<a href="${sk.zip}" download>ZIP ↓</a>` : ''}${sk.md ? `<a href="${sk.md}" download>SKILL.md ↓</a>` : ''}</span></div>`; }).join('')}</div>`;
   const uploadBlock = (u) => {
@@ -86,13 +94,25 @@
     const ks = u.skills || [u.skill];
     return `<div class="upload card"><p class="eyebrow">🎒 Add the skill${ks.length > 1 ? 's' : ''}</p>
       ${skillDownloads(ks)}
-      <p class="small muted">${u.app === 'ppt' ? `PowerPoint takes each ZIP as it is. Keep ${ks.length > 1 ? 'them' : 'it'} zipped${ks.length > 1 ? ' and upload them one by one' : ''}. They’re also in the kit’s <code>skills-upload-as-zip</code> folder.` : 'Upload the ZIP, or unzip it and upload the folder with its SKILL.md.'}</p>
+      <p class="small muted">${u.app === 'ppt' ? `PowerPoint takes each ZIP as it is. Keep ${ks.length > 1 ? 'them' : 'it'} zipped${ks.length > 1 ? ' and upload them one by one' : ''}. They’re also in the kit’s <code>skills-upload-as-zip</code> folder.` : 'For the tested Excel route, unzip the template and upload the folder containing SKILL.md to the dedicated OneDrive skills folder.'}</p>
       ${u.explore ? '<details class="open-how"><summary>Curious? What’s behind <b>Add</b>: four ways to add a skill</summary><p class="small muted">Try the menu and select each option.</p><div data-fx="addmenu"></div></details>' : ''}
-      <ol class="pack-steps">${U.steps.map((x) => `<li><div><p>${x.text}</p></div>${x.gif ? `<figure class="pack-clip"><img src="${x.gif}" alt="Screen recording of this step" loading="lazy"></figure>` : ''}</li>`).join('')}</ol>
-      <p class="small muted">${ADV.upload.gifNote} While it uploads, read the skill: open the SKILL.md you downloaded.</p>
-      <p class="small" style="margin-top:12px"><b>Check:</b> ask Copilot <q>Which custom skills do you have?</q> It can take a few minutes to appear.</p></div>`;
+      <ol class="pack-steps">${U.steps.map((x) => `<li><div><p>${x.text}</p></div>${x.gif || x.image ? `<figure class="pack-clip"><a href="${x.image || x.gif}" target="_blank" rel="noopener"><img src="${x.image || x.gif}" alt="${x.image ? 'Excel custom-skill controls; select to enlarge' : 'Screen recording of this step'}" loading="lazy"></a></figure>` : ''}</li>`).join('')}</ol>
+      <p class="small muted">${U.steps.some((x) => x.gif) ? ADV.upload.gifNote : 'Screenshots from the 15 November rehearsal; select one to enlarge it.'} While it uploads, read the skill: open the SKILL.md you downloaded.</p>
+      <p class="small" style="margin-top:12px"><b>Check:</b> find the skill under Custom skills, select Refresh after an upload, and choose it explicitly from the picker. A chat answer about available skills is not enough to prove it loaded.</p></div>`;
   };
-  const skipBar = (n) => `<nav class="skipbar" aria-label="Skip to a step"><span class="small muted">Skip to step</span>${T.steps.map((x, i) => `<a href="${url(i + 1)}" class="${i + 1 === n ? 'on' : ''} ${isDone(i + 1) ? 'done' : ''}" title="${esc(x.title)}">${i + 1}</a>`).join('')}<a href="${url('quests')}" title="Side quests">★</a></nav>`;
+  // Progress bar: one dot per step, joined by a line that turns red as steps are done. Replaces the old altitude chart.
+  const trailBar = (n) => {
+    const info = ADV.fx.altitude(key);
+    const dots = T.steps.map((x, i) => {
+      const k = i + 1, d = isDone(k), on = k === n, hero = T.hero === k;
+      return `<li class="${d ? 'done' : ''} ${on ? 'on' : ''} ${hero ? 'showcase' : ''}"><a href="${url(k)}" ${on ? 'aria-current="step"' : ''} title="Step ${k}: ${esc(x.title)}${hero ? ' (showcase)' : ''}${d ? ' (done)' : ''}"><span aria-hidden="true">${d ? '✓' : k}</span><span class="sr-only">Step ${k}: ${esc(x.title)}${d ? ', done' : ''}</span></a></li>`;
+    }).join('');
+    return `<nav class="trailbar" aria-label="Your progress on this trail"><ol>
+        <li class="done tb-base ${n === 0 ? 'on' : ''}"><a href="${url(0)}" title="Base camp" ${n === 0 ? 'aria-current="step"' : ''}><span aria-hidden="true">⌂</span><span class="sr-only">Base camp</span></a></li>${dots}
+        <li class="tb-quest"><a href="${url('quests')}" title="Side quests"><span aria-hidden="true">★</span><span class="sr-only">Side quests</span></a></li></ol>
+      <p class="tb-read" aria-live="polite"><span aria-hidden="true">⛰️</span> <b>${info.alt.toLocaleString('en-GB')} m</b> · ${info.core} of ${info.total} done</p></nav>`;
+  };
+  const refreshBar = () => { const b = document.querySelector('.trailbar'); if (b) b.outerHTML = trailBar(typeof s === 'number' ? s : -1); };
   const levelNote = () => {
     if (!T.levels) return '';
     const rows = Object.entries(T.levels).map(([k, v]) => `<li class="${level === k ? 'mine' : ''}"><b>${ADV.levels[k]}</b>${level === k ? ' <span class="pill red">you</span>' : ''}: ${v}</li>`).join('');
@@ -104,22 +124,24 @@
     const where = myRoom ? `<span class="pill red">Room ${esc(myRoom.room)} · ${ADV.levels[myRoom.level]}</span>` : '';
     return `<header class="step-head bc-head"><div><div class="meta"><span class="pill app-pill"><img src="${T.logo}" alt="">Trail ${T.group} · ${T.app}</span><span class="pill">${esc(T.useCase)}</span>${where}</div>
       <h1 class="display" style="font-size:clamp(44px,8vw,96px)">${T.name}</h1><p class="lede">${T.mission}</p></div><div data-fx="duo"></div></header>
-      <div data-fx="profile"></div>
+      ${trailBar(0)}
       <div class="beat"><h3><b>1</b>Before you start</h3><div>
-        <div class="basics">${ADV.basics.filter(([, , , id]) => !(id === 'licence' && T.premium)).map(([ic, h, t]) => `<div class="basic"><span aria-hidden="true">${ic}</span><div><b>${h}</b><p>${t}</p></div></div>`).join('')}</div>
+        <div class="basics">${ADV.basicsFor(key).map(([ic, h, t]) => `<div class="basic"><span aria-hidden="true">${ic}</span><div><b>${h}</b><p>${t}</p></div></div>`).join('')}</div>
         <p class="row" style="margin-top:18px"><a class="btn red" href="${T.web[1]}" target="_blank" rel="noopener">Open ${T.web[0]} ↗</a></p></div></div>
       <div class="beat"><h3><b>2</b>Get the files</h3><div>
-        <p>Everything for this trail in one download (${T.kit.size}): ${T.kit.contents.map((c) => `<code>${c}</code>`).join(', ')}.</p>
-        <p class="row">${T.workbook ? `<a class="btn red" href="${T.workbook.file}" download>${T.workbook.name} ↓</a><a class="btn ghost" href="${T.kit.file}" download>Whole kit ↓</a>` : `<a class="btn red" href="${T.kit.file}" download>Get the kit ↓</a>`}<span class="small muted">${ADV.label}.</span></p>
+        <p>${T.workbook || T.startFile ? 'The one file you need is the red button. Everything else is optional, in one ZIP' : 'Everything for this trail in one download'} (${T.kit.size}): ${T.kit.contents.map((c) => `<code>${c}</code>`).join(', ')}.</p>
+        <p class="row">${T.workbook || T.startFile ? `<a class="btn red" href="${(T.workbook || T.startFile).file}" download>${(T.workbook || T.startFile).name} ↓</a><a class="btn ghost" href="${T.kit.file}" download>Whole kit (ZIP) ↓</a>` : `<a class="btn red" href="${T.kit.file}" download>Get the kit ↓</a>`}<span class="small muted">${ADV.label}.</span></p>
         <ol class="muted">${T.setup.map((x) => `<li>${x}</li>`).join('')}</ol>
-        <p class="small muted">${T.workbook ? 'Prepared <b>_Ready</b> sheets in the same workbook let you skip ahead without the earlier results.' : 'You can skip ahead at any time: every step works with the files in the kit.'}</p></div></div>
+        ${clipBox(clipsFor(0, null))}
+        ${clickGuide(T.clickGuide)}
+        <p class="small muted">${T.workbook ? 'Prepared <b>_Ready</b> sheets in the same workbook let you skip ahead without the earlier results.' : T.startFile ? 'You can skip ahead at any time: every step works in this one deck.' : 'You can skip ahead at any time: every step works with the files in the kit.'}</p></div></div>
       <div class="beat"><h3><b>3</b>The route</h3><div>
         <p class="muted">Prompts first, skills later. You try each task by hand; when it’s something you’d do again and again, you turn it into a skill${key === 'cos' ? ' or a scheduled prompt' : ''}.</p>
-        <div class="path-line">${T.steps.map((x, i) => `<a class="node" href="${url(i + 1)}"><b>${i + 1}. ${x.title}</b><span>${x.time} min · ${ADV.taskCount(x)} task${ADV.taskCount(x) > 1 ? 's' : ''}</span></a>`).join('')}</div>
+        <div class="path-line">${T.steps.map((x, i) => `<a class="node ${T.hero === i + 1 ? 'showcase' : ''}" href="${url(i + 1)}"><b>${i + 1}. ${x.title}</b><span>${x.time} min · ${ADV.taskCount(x)} task${ADV.taskCount(x) > 1 ? 's' : ''}${T.hero === i + 1 ? ' · ⭐ showcase' : ''}</span></a>`).join('')}</div>
         ${levelNote()}
-        <p class="small muted">Basic and Advanced follow the same steps. Advanced groups move faster and skip ahead.</p></div></div>
+        <p class="small muted">Basic and Advanced follow the same steps. Advanced groups move faster and skip ahead. Short on time? Jump to the ⭐ showcase step: step ${T.hero}.</p></div></div>
       ${trouble()}
-      <p class="small muted" style="margin-top:18px"><a href="print.html?t=${key}">Print view or PDF of this trail</a> · <a href="anatomy.html?next=${key}">What is a skill? (3 min)</a></p>
+      <p class="small muted" style="margin-top:18px"><a href="print.html?t=${key}">Print view or PDF of this trail</a> · <a href="clicks.html#t-${key}">All click-throughs</a> · <a href="anatomy.html?next=${key}">What is a skill? (3 min)</a></p>
       ${nav(['index.html', 'Start'], [url(1), 'Step 1: ' + T.steps[0].title])}`;
   };
 
@@ -130,17 +152,19 @@
     x.intro ? `<p>${x.intro}</p>` : '',
     x.how ? `<div class="how">${x.how}</div>` : '',
     x.cases ? casesBox(x.cases) : '',
-    x.fields ? ADV.fieldsBox(x.fields) : '',
-    x.prompt ? `<p class="muted">Copy this into Copilot:</p>${ADV.promptBox(x.prompt)}` : '',
+    x.fields && !x.fieldsAfter ? ADV.fieldsBox(x.fields) : '',
+    x.prompt ? `<p class="muted">Copy this into Copilot:</p>${ADV.promptBox(x.prompt, x.why)}` : '',
     x.prompt2 ? `<p class="v-label">Then</p>${ADV.promptBox(x.prompt2)}` : '',
     (x.variants || []).map(variant).join(''),
+    x.fields && x.fieldsAfter ? `<p class="v-label">${esc(x.fieldsAfter)}</p>${ADV.fieldsBox(x.fields)}` : '',
     x.build ? `<div class="byo-parts build">${x.build.map(([h, t], i) => `<div><span class="num">${i + 1}</span><b>${h}</b><p>${t}</p></div>`).join('')}</div>` : '',
     x.use ? `<p class="v-label">${esc(x.use.label)}</p><ol class="use-steps">${x.use.steps.map((s) => `<li>${s}</li>`).join('')}</ol>` : '',
-    x.more ? variant([x.more.label, x.more.prompt]) : '',
+    x.more ? variant([x.more.label, x.more.prompt, x.more]) : '',
     x.ideas ? `<p class="v-label">Make it yours: add one idea at a time</p><div class="ideas">${x.ideas.map((s) => { const [l, q] = Array.isArray(s) ? s : [s, s]; return `<button type="button" class="idea" data-copy="${esc(q)}" title="${esc(q)}">${esc(l)} <span aria-hidden="true">⧉</span></button>`; }).join('')}${x.ideas.some(Array.isArray) ? '<p class="small muted" style="margin:6px 0 0">Each button copies the full prompt: it asks Copilot to update the existing dashboard and show it rendered, not only as code.</p>' : ''}</div>` : '',
     x.waiting ? `<div class="waiting card"><span aria-hidden="true">⏳</span><div><b>While you wait</b><p>${x.waiting.text}</p>
       ${x.waiting.ideas ? `<p class="v-label">Ask Copilot in another tab: copy one</p><div class="ideas">${x.waiting.ideas.map(([l, q]) => `<button type="button" class="idea" data-copy="${esc(q)}" title="${esc(q)}">${esc(l)} <span aria-hidden="true">⧉</span></button>`).join('')}</div>` : ''}
       ${x.waiting.tips ? `<p class="v-label">Or try PowerPoint itself</p><ul class="wait-tips">${x.waiting.tips.map(([h, t]) => `<li><b>${h}</b> ${t}</li>`).join('')}</ul>` : ''}</div></div>` : '',
+    // Backups never show until someone opens them.
     [].concat(x.alt || []).map((a) => `<details class="alt card fold"><summary class="eyebrow">Plan B · ${esc(a.label)}</summary>${a.switchTo ? switchBox(a.switchTo) : ''}${a.files ? filesRow(a.files) : ''}<p>${a.text}</p>${a.cases ? casesBox(a.cases) : ''}${a.prompt ? ADV.promptBox(a.prompt) : ''}${a.then ? `<p class="v-label">${esc(a.then.label)}</p><p class="muted">${a.then.text}</p>${a.then.prompt ? ADV.promptBox(a.then.prompt) : ''}` : ''}</details>`).join(''),
     x.skillFiles ? `<p class="v-label">Skill files</p>${skillDownloads(x.skillFiles)}` : '',
     x.note ? `<div class="note-line"><span aria-hidden="true">👉</span><p>${x.note}</p></div>` : '',
@@ -167,6 +191,8 @@
       st.sheet ? `<p class="sheet-line">📄 Sheet: <b>${esc(st.sheet)}</b></p>` : '',
       st.open ? `<p style="font-size:19px">Open <b>${esc(st.open)}</b>.</p>` : '',
       st.intro ? `<p class="intro-line">${st.intro}</p>` : '',
+      clipBox(clipsFor(n, null)),
+      clickGuide(st.clickGuide),
     ].join('');
     const pathOf = (x) => x.path || '';
     const letterOf = (i) => { const p = pathOf(st.tasks[i]); return letters[st.tasks.slice(0, i).filter((y) => !pathOf(y) || !p || pathOf(y) === p).length]; };
@@ -174,11 +200,14 @@
     const toggleBox = st.toggle ? `<div class="path-toggle card" role="group" aria-label="Choose your path"><p style="margin:0 0 10px">${st.toggle.question}</p>
         <div class="pt-opts">${st.toggle.options.map(([k, l]) => `<button type="button" class="pt-btn ${k === active ? 'on' : ''}" data-path-pick="${k}" aria-pressed="${k === active}">${esc(l)}</button>`).join('')}</div>
         <p class="small muted" style="margin:10px 0 0">${st.toggle.help}</p></div>` : '';
-    const tasks = st.tasks.map((x, i) => `<section class="task ${x.level === 'advanced' ? 'adv' : ''}" id="task-${i + 1}" ${x.path ? `data-path="${x.path}"` : ''}><h2 class="task-h"><span class="t-letter">${letterOf(i)}</span>${esc(x.title)}${x.level === 'advanced' ? ' <span class="pill">Advanced</span>' : ''}${x.switchTo ? ` <span class="pill red">↗ ${esc(x.switchTo.pill)}</span>` : ''}</h2>${taskBits(x)}</section>`).join('');
-    return `<header class="step-head"><div class="meta"><span class="pill app-pill"><img src="${T.logo}" alt="">Step ${n} of ${T.steps.length}</span><span class="pill">${st.time} min</span><span class="pill">${ADV.taskCount(st)} task${ADV.taskCount(st) > 1 ? 's' : ''}</span></div>
-        <h1 class="display" style="font-size:clamp(40px,7vw,84px)">${st.title}</h1><p class="lede">${st.goal}</p></header>
-      ${skipBar(n)}
-      <div data-fx="profile"></div>
+    const tasks = st.tasks.map((x, i) => `<section class="task ${x.level === 'advanced' ? 'adv' : ''} ${x.extra ? 'extra' : ''}" id="task-${i + 1}" ${x.path ? `data-path="${x.path}"` : ''}><h2 class="task-h"><span class="t-letter">${letterOf(i)}</span>${esc(x.title)}${x.level === 'advanced' ? ' <span class="pill">Advanced</span>' : ''}${x.extra ? ' <span class="pill extra">If you have time</span>' : ''}${x.switchTo ? ` <span class="pill red">↗ ${esc(x.switchTo.pill)}</span>` : ''}</h2>${clipBox(clipsFor(n, 'ABCDEFGH'[i]))}${taskBits(x)}</section>`).join('');
+    const must = st.tasks.map((x, i) => (x.level === 'advanced' || x.extra || (st.toggle && x.path && x.path !== active) ? null : letterOf(i))).filter(Boolean);
+    const roomChip = myRoom ? `<span class="pill room">📍 ${esc(myRoom.room)} · ${ADV.levels[myRoom.level]}</span>` : '';
+    const nextHref = n < T.steps.length ? url(n + 1) : url('quests');
+    const nextLabel = n < T.steps.length ? `Step ${n + 1}: ${T.steps[n].title}` : 'Side quests';
+    return `<header class="step-head"><div class="meta"><span class="pill app-pill"><img src="${T.logo}" alt="">Step ${n} of ${T.steps.length}</span><span class="pill">${st.time} min</span>${must.length && must.length < ADV.taskCount(st) ? `<span class="pill must">Must-do: ${must.join(' + ')}</span>` : `<span class="pill">${ADV.taskCount(st)} task${ADV.taskCount(st) > 1 ? 's' : ''}</span>`}${T.hero === n ? '<span class="pill red">⭐ Showcase step</span>' : ''}${roomChip}</div>
+        <h1 class="display" style="font-size:clamp(36px,6vw,72px)">${st.title}</h1><p class="lede">${st.goal}</p></header>
+      ${trailBar(n)}
       ${openBits ? `<div class="beat"><h3><b>①</b>Open</h3><div>${openBits}</div></div>` : ''}
       <div class="beat"><h3><b>${openBits ? '②' : '①'}</b>Ask Copilot</h3><div>
         <div class="tasks-wrap" ${st.toggle ? `data-active="${active}"` : ''}>${toggleBox}
@@ -194,11 +223,12 @@
       ${st.poll ? pollBox(st.poll) : ''}
       ${st.yours ? `<div class="beat"><h3><b>★</b>Make it yours</h3><div><p>${st.yours.text}</p>${st.yours.prompt ? ADV.promptBox(st.yours.prompt) : ''}</div></div>` : ''}
       <div class="beat"><h3><b>✓</b>Done?</h3><div>
-        <p class="muted">You’re there when you see:</p><ul class="checks">${st.check.map((s) => `<li>${esc(s)}</li>`).join('')}</ul>
-        <div class="done-row" style="margin-top:22px"><button class="btn done-btn ${isDone(n) ? 'is-done' : ''}" type="button" aria-pressed="${isDone(n)}">${isDone(n) ? '✓ Done' : 'Mark as done'}</button>
-        ${n < T.steps.length ? `<a class="linkish" href="${url(n + 1)}">Skip to step ${n + 1} →</a>` : `<a class="linkish" href="${url('share')}">Skip to the share-out →</a>`}</div></div></div>
+        <p class="muted">Tick what you see. When everything is ticked, the step counts as done.</p><ul class="checks tickable">${st.check.map((c, i) => `<li><label><input type="checkbox" data-check="${key}-${n}-${i}" ${ADV.state.checks && ADV.state.checks[`${key}-${n}-${i}`] ? 'checked' : ''}><span>${esc(c)}</span></label></li>`).join('')}</ul>
+        <div class="done-row" style="margin-top:22px"><a class="btn red done-next" href="${nextHref}" data-done-next="${n}">${isDone(n) ? '✓ Done' : 'Done'} · ${esc(nextLabel)} →</a>
+        <button class="linkish done-btn ${isDone(n) ? 'is-done' : ''}" type="button" aria-pressed="${isDone(n)}">${isDone(n) ? 'Undo done' : 'Mark as done and stay here'}</button></div>
+        <p class="small muted" style="margin-top:8px">Not finished? <a href="${nextHref}">Skip ahead without marking it done</a>.</p></div></div>
       ${trouble()}
-      ${nav(n === 1 ? [url(0), 'Base camp'] : [url(n - 1), `Step ${n - 1}`], n < T.steps.length ? [url(n + 1), `Step ${n + 1}: ${T.steps[n].title}`] : [url('quests'), 'Side quests'])}`;
+      <div class="next-nav"><a class="btn ghost" href="${n === 1 ? url(0) : url(n - 1)}">← ${n === 1 ? 'Base camp' : `Step ${n - 1}`}</a><a class="btn red done-next" href="${nextHref}" data-done-next="${n}">${isDone(n) ? '✓ Done' : 'Done'} · ${esc(nextLabel)} →</a></div>`;
   };
 
   const byoCard = (q) => {
@@ -217,7 +247,7 @@
       <ol class="byo-steps">${B.steps.map((x) => `<li>${x}</li>`).join('')}</ol>
       ${ADV.promptBox(B.prompt)}
       ${uploadBlock({ skill: q.skill, app: key, explore: false })}
-      <div class="alt card"><p class="eyebrow">No time to edit a file?</p><p>Let Copilot write the skill for you. Do steps 4–6 in one conversation, then send:</p>${ADV.promptBox(B.builder)}</div>
+      <details class="alt card fold"><summary class="eyebrow">Plan B · No time to edit a file?</summary><p>Let Copilot write the skill for you. Do steps 4–6 in one conversation, then send:</p>${ADV.promptBox(B.builder)}</details>
       <h3 style="margin-top:26px">Ideas for your own skill</h3>
       <div class="grid three">${B.ideas.map(([h, t]) => `<div class="idea-card"><b>${h}</b><p>${t}</p></div>`).join('')}</div>
       <p class="wow" style="margin-top:22px">✅ ${B.success}</p>
@@ -261,8 +291,6 @@
   });
 
   const fx = ADV.fx;
-  let profile = null;
-  const pfEl = document.querySelector('[data-fx="profile"]'); if (pfEl) profile = fx.profile(pfEl, key);
   const stepObj = typeof s === 'number' && s > 0 ? T.steps[s - 1] : null;
   const scrubEl = document.querySelector('[data-fx="scrub"]'); if (scrubEl) fx.scrub(scrubEl, stepObj.tasks.map((x) => x.media).find((m) => m && m.type === 'morph'));
   const panelEl = document.querySelector('[data-fx="panel"]'); if (panelEl) fx.panel(panelEl);
@@ -289,21 +317,51 @@
     box.querySelector('.poll-out').innerHTML = pollMsg(k);
   });
 
+  // Marking a step done: from "Done · next" (celebrate on the next page), from ticking every check, or from the stay-here button.
+  const markDone = (n, on = true) => {
+    const k = `${key}-${n}`;
+    if (!!ADV.state.done[k] === on) return '';
+    ADV.update((st) => { if (on) st.done[k] = true; else delete st.done[k]; });
+    return on ? ADV.collectSkills(ADV.stepSkills(T.steps[n - 1]), { quiet: true }) : '';
+  };
+  const celebrate = (n, gear) => {
+    const all = T.steps.every((x, i) => ADV.state.done[`${key}-${i + 1}`]);
+    if (all && !ADV.state.seen[`${key}-complete`]) { ADV.update((st) => { st.seen[`${key}-complete`] = true; }); ADV.confetti(); fx.highFive(key, 'Summit! Time to prepare your share-out.', gear); }
+    else fx.highFive(key, `High five! Step ${n} done.`, gear);
+  };
+  const syncDoneUi = () => {
+    const d = isDone(s);
+    document.querySelectorAll('.done-next').forEach((a) => { a.textContent = a.textContent.replace(/^(✓ )?Done/, d ? '✓ Done' : 'Done'); });
+    const b = $('.done-btn:not([data-quest])'); if (b) { b.classList.toggle('is-done', d); b.textContent = d ? 'Undo done' : 'Mark as done and stay here'; b.setAttribute('aria-pressed', d); }
+    rail(); refreshBar();
+  };
+  if (ADV.state.justDone && ADV.state.justDone.key === key) {
+    const j = ADV.state.justDone; ADV.update((st) => { delete st.justDone; });
+    setTimeout(() => celebrate(j.n, j.gear), 350);
+  }
+  document.querySelectorAll('[data-done-next]').forEach((a) => a.addEventListener('click', () => {
+    const n = Number(a.dataset.doneNext);
+    if (isDone(n)) return;
+    const gear = markDone(n, true);
+    ADV.update((st) => { st.justDone = { key, n, gear }; });
+  }));
+  $('#page').addEventListener('change', (e) => {
+    const c = e.target.closest('[data-check]'); if (!c || !stepObj) return;
+    ADV.update((st) => { st.checks = Object.assign({}, st.checks, { [c.dataset.check]: c.checked }); });
+    const boxes = [...document.querySelectorAll('[data-check]')];
+    if (boxes.every((x) => x.checked) && !isDone(s)) { const gear = markDone(s, true); syncDoneUi(); const dot = document.querySelectorAll('#rail .dot')[s]; if (dot) dot.classList.add('stamp'); celebrate(s, gear); }
+  });
   const doneBtn = $('.done-btn:not([data-quest])');
   if (doneBtn && stepObj) doneBtn.addEventListener('click', () => {
-    const k = `${key}-${s}`; const now = !ADV.state.done[k];
-    ADV.update((st) => { if (now) st.done[k] = true; else delete st.done[k]; });
-    doneBtn.classList.toggle('is-done', now); doneBtn.textContent = now ? '✓ Done' : 'Mark as done'; doneBtn.setAttribute('aria-pressed', now);
-    rail();
-    if (now) {
-      const dot = document.querySelectorAll('#rail .dot')[s]; if (dot) dot.classList.add('stamp');
-      const gear = ADV.collectSkills(ADV.stepSkills(stepObj), { quiet: true });
-      if (profile) profile.update();
-      const all = T.steps.every((x, i) => ADV.state.done[`${key}-${i + 1}`]);
-      if (all && !ADV.state.seen[`${key}-complete`]) { ADV.update((st) => { st.seen[`${key}-complete`] = true; }); ADV.confetti(); fx.highFive(key, 'Summit! Time to prepare your share-out.', gear); }
-      else fx.highFive(key, `High five! Step ${s} done.`, gear);
-    } else if (profile) profile.update();
+    const now = !isDone(s);
+    const gear = markDone(s, now);
+    syncDoneUi();
+    if (now) { const dot = document.querySelectorAll('#rail .dot')[s]; if (dot) dot.classList.add('stamp'); celebrate(s, gear); }
+    else ADV.toast('Marked as not done.');
   });
+  // Long rails scroll: keep the current step in view.
+  const cur = document.querySelector('#rail [aria-current]'), railOl = $('#rail');
+  if (cur && railOl) railOl.scrollLeft += cur.getBoundingClientRect().left - railOl.getBoundingClientRect().left - railOl.clientWidth / 2 + cur.offsetWidth / 2;
   $('#page').addEventListener('click', (e) => {
     const b = e.target.closest('[data-quest]'); if (!b) return;
     const id = b.dataset.quest; const now = !ADV.state.quests[id];

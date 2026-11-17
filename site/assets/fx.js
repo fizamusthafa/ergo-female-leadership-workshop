@@ -716,7 +716,7 @@ ${rules().map(([k, t]) => `<span class="pg-line" data-line="${k}">${esc(t)}</spa
     el.classList.add('vz');
     el.innerHTML = `<p class="vz-title">What happens when you send the prompt</p>
       <div class="vz-flow">
-        <div class="vz-node" data-k="ask"><span class="vz-ic" aria-hidden="true">💬</span><b>You ask</b><q>Rebuild the drafts as board-ready <mark>ERGO slides</mark>.</q></div>
+        <div class="vz-node" data-k="ask"><span class="vz-ic" aria-hidden="true">💬</span><b>You ask</b><q>Make the board pack <mark>ERGO style</mark>.</q></div>
         <div class="vz-node" data-k="read"><span class="vz-ic" aria-hidden="true">🔎</span><b>Copilot reads the descriptions</b>
           <ul class="vz-skills">
             <li data-k="b1">Explain this presentation <i>built in</i></li>
@@ -733,7 +733,7 @@ ${rules().map(([k, t]) => `<span class="pg-line" data-line="${k}">${esc(t)}</spa
     stepper(el, [
       { on: ['ask'], text: 'You ask the way you’d ask a colleague. The words you use decide which skill fits.' },
       { on: ['read', 'b1', 'b2', 'deck', 'motion'], text: 'Copilot compares your request with the <b>description</b> of every skill that’s switched on: the built-in ones and yours.' },
-      { on: ['read', 'deck'], text: '“ERGO slides” matches ERGO Deck’s description best. ERGO Motion is for animated slides, so it stays out.' },
+      { on: ['read', 'deck'], text: '“ERGO style” matches ERGO Deck’s description best. ERGO Motion is for animated slides, so it stays out.' },
       { on: ['load'], text: 'The skill loads, and the chat says so: look for <b>Using skills from …</b> or <b>Loaded … skill</b>.' },
       { on: ['out', 't1', 't2', 't3', 't4'], text: 'The rules shape the result: red message title, logo, KPI tiles, takeaway band. Every figure is copied, never changed.' },
       { on: ['at'], text: 'If Copilot picks the wrong skill, or none, type <b>@</b> and choose it yourself.' },
@@ -821,7 +821,7 @@ ${rules().map(([k, t]) => `<span class="pg-line" data-line="${k}">${esc(t)}</spa
       ['KPI-0013', ['DE', 'Germany'], 'Claims paid', ['8.299,60', '8,299.6'], ['€', 'EUR'], ['17 Feb 2026', '2026-02-17'], ['on track', 'On track']],
       [['KPI-0013', '', 'dup'], ['Deutschland', 'Germany'], 'Claims paid', '8,299.6', 'EUR', '2026-02-17', 'On track'],
       ['KPI-0044', ['Polska', 'Poland'], 'Operating costs', ['', '⚠ missing', 'flag'], ['zł', 'PLN'], ['30.02.2026', '⚠ check', 'flag'], ['At Risk ', 'At risk']],
-      ['KPI-0071', 'Austria', 'Complaints', '245', 'EUR', '2026-03-11', ['off-track', 'Off track']],
+      ['KPI-0071', 'Austria', 'Customer complaints', '245', ['', 'N/A (count)'], '2026-03-11', ['off-track', 'Off track']],
       ['KPI-0102', ['España', 'Spain'], 'Gross written premium', '11,104.8', ['Euro', 'EUR'], ['03/17/2026', '2026-03-17'], ['Ontrack', 'On track']],
     ];
     const cell = (v) => (v === '' ? '<i class="vz-faint">(empty)</i>' : esc(v).replace(/ $/, '<span class="vz-trail"> </span>'));
@@ -1070,7 +1070,7 @@ ${rules().map(([k, t]) => `<span class="pg-line" data-line="${k}">${esc(t)}</spa
   viz.cosschedule = (el) => {
     scene(el, 'What scheduling the prompt does',
       `<div class="vz-sched"><div class="vz-sky"><b class="vz-clock">06:30</b><small class="vz-day">Tuesday</small><span class="vz-you">😴 You’re still asleep</span></div>
-        <div class="vz-chat"><div class="vz-sp"><span>⏰ Weekdays 07:45</span><b>Morning sweep</b><small class="vz-st">Scheduled</small></div><div class="vz-sp fri"><span>⏰ Fridays 15:00</span><b>My week in review</b><small class="vz-st">Scheduled</small></div>
+        <div class="vz-chat"><div class="vz-sp"><span>⏰ Weekdays 07:30</span><b>Morning sweep</b><small class="vz-st">Scheduled</small></div><div class="vz-sp fri"><span>⏰ Fridays 15:00</span><b>My week in review</b><small class="vz-st">Scheduled</small></div>
           <div class="vz-brief"><b>Morning sweep · 07:46</b><span class="vz-new">New</span><ol><li>Phone system down for team B</li><li>Board figures due Wednesday</li><li>Complaints plan to Daniel by Friday</li></ol></div></div></div>`,
       () => {
         const clock = $('.vz-clock', el), sky = $('.vz-sky', el), you = $('.vz-you', el), day = $('.vz-day', el);
@@ -1080,10 +1080,10 @@ ${rules().map(([k, t]) => `<span class="pg-line" data-line="${k}">${esc(t)}</spa
         vzSay(el, 'You scheduled the morning sweep yesterday. It’s 06:30.');
         const tickTo = (from, to, ms, now) => { if (now) { clock.textContent = to; return; } const [h0, m0] = from.split(':').map(Number), [h1, m1] = to.split(':').map(Number); const a = h0 * 60 + m0, b = h1 * 60 + m1, t0 = performance.now(); const f = (t) => { const k = Math.min(1, (t - t0) / ms), v = Math.round(a + (b - a) * k); clock.textContent = `${String(Math.floor(v / 60)).padStart(2, '0')}:${String(v % 60).padStart(2, '0')}`; if (k < 1) requestAnimationFrame(f); }; requestAnimationFrame(f); };
         return { end: 10200, steps: [
-          [700, (now) => { tickTo('06:30', '07:45', 1800, now); sky.className = 'vz-sky dawn'; }],
-          [2600, () => { sps[0].classList.add('run'); $('.vz-st', sps[0]).textContent = 'Running…'; vzSay(el, '07:45: the prompt sends itself and reads your mail, calendar and chats.'); }],
+          [700, (now) => { tickTo('06:30', '07:30', 1800, now); sky.className = 'vz-sky dawn'; }],
+          [2600, () => { sps[0].classList.add('run'); $('.vz-st', sps[0]).textContent = 'Running…'; vzSay(el, '07:30: the prompt sends itself and reads your mail, calendar and chats.'); }],
           [4200, () => { $('.vz-st', sps[0]).textContent = 'Done'; sps[0].classList.remove('run'); brief.classList.add('on'); vzSay(el, 'The briefing is waiting in Copilot, marked new.'); }],
-          [5600, (now) => { tickTo('07:45', '08:30', 900, now); sky.className = 'vz-sky day'; you.textContent = '☕ 08:30 You open Copilot: it’s already there'; }],
+          [5600, (now) => { tickTo('07:30', '08:30', 900, now); sky.className = 'vz-sky day'; you.textContent = '☕ 08:30 You open Copilot: it’s already there'; }],
           [7600, () => { day.textContent = 'Friday'; clock.textContent = '15:00'; sps[1].classList.add('run'); $('.vz-st', sps[1]).textContent = 'Running…'; you.textContent = '📋 Friday: your week reviews itself'; vzSay(el, 'And on Friday afternoon, the week in review runs the same way.'); }],
           [9000, () => { sps[1].classList.remove('run'); $('.vz-st', sps[1]).textContent = 'Done'; }],
         ] };

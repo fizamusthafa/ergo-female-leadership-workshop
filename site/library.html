@@ -14,7 +14,7 @@
     <div class="wrap">
       <p class="eyebrow">Every prompt, by trail and step</p>
       <h1 class="display" style="font-size:clamp(44px,8vw,96px)">Prompt <em>library.</em></h1>
-      <p class="lede">All prompts from the three trails in one place. Copy, paste into Copilot, done.</p>
+      <p class="lede">All prompts from the three trails in one place. Copy, paste into Copilot, done. Not sure where to click? <a href="clicks.html">Watch the short click-throughs</a>.</p>
       <div class="row" id="jump" style="margin-top:24px"></div>
     </div>
   </section>
@@ -34,7 +34,7 @@
   const taskPrompts = (x, tag) => [].concat(
     x.prompt ? [[x.prompt, tag]] : [], x.prompt2 ? [[x.prompt2, tag + ' · then']] : [],
     (x.variants || []).map(([l, p]) => [p, tag + ' · ' + l]), x.more ? [[x.more.prompt, tag + ' · ' + x.more.label]] : [],
-    x.alt && x.alt.prompt ? [[x.alt.prompt, tag + ' · Plan B']] : [], (x.ideas || []).map((s) => [Array.isArray(s) ? s[1] : s, tag + ' · idea']),
+    [].concat(x.alt || []).flatMap((a) => [].concat(a.prompt ? [[a.prompt, tag + ' · Plan B']] : [], a.then && a.then.prompt ? [[a.then.prompt, tag + ' · Plan B · ' + a.then.label]] : [])), (x.ideas || []).map((s) => [Array.isArray(s) ? s[1] : s, tag + ' · idea']),
     ((x.waiting && x.waiting.ideas) || []).map(([l, q]) => [q, tag + ' · while you wait: ' + l]));
   const PATH = { agent: ' · with Agent Builder', prompts: ' · without Agent Builder' };
   const stepPrompts = (st) => st.tasks.flatMap((x, i) => taskPrompts(x, 'ABCDEFGH'[i] + ' · ' + x.title + (x.path ? PATH[x.path] : ''))).concat(st.yours && st.yours.prompt ? [[st.yours.prompt, 'Make it yours']] : []);
