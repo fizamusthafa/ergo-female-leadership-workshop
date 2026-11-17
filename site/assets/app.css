@@ -122,11 +122,12 @@ figure { margin: 0; }
 figcaption { font-size: 14px; color: var(--muted); margin-top: 12px; }
 
 /* ---------- intro ---------- */
-.hero { min-height: calc(100vh - 60px); display: grid; place-items: center; text-align: center; padding: 40px 0; position: relative; overflow: hidden; }
-.hero .cobrand { display: inline-flex; align-items: center; gap: 14px; color: var(--faint); margin-bottom: 36px; font-size: 14px; }
+.hero { min-height: calc(100vh - 60px); display: grid; place-items: center; text-align: center; padding: 20px 0 32px; position: relative; overflow: hidden; }
+.hero .cobrand { display: inline-flex; align-items: center; gap: 14px; color: var(--faint); margin-bottom: 18px; font-size: 14px; }
 .hero .cobrand img { height: 22px; width: auto; }
-.hero .display { margin-bottom: 22px; }
-.hero .lede { margin: 0 auto 36px; }
+.hero .cobrand[hidden] { display: none; }
+.hero .display { margin-bottom: 14px; font-size: clamp(44px, 6.2vw, 92px); }
+.hero .lede { margin: 0 auto 22px; max-width: 62ch; }
 .hero .meta { margin-top: 28px; color: var(--faint); font-size: 14px; }
 .reveal-up { opacity: 0; transform: translateY(18px); animation: up .9s var(--ease) forwards; }
 .reveal-up.d1 { animation-delay: .12s; } .reveal-up.d2 { animation-delay: .24s; } .reveal-up.d3 { animation-delay: .36s; } .reveal-up.d4 { animation-delay: .48s; }

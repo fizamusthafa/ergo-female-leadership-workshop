@@ -40,9 +40,9 @@ ADV.leads = {
 };
 // What each group does, one line under the group heading on the start page.
 ADV.roomIntro = {
-  xls: 'Take a messy half-year performance register from raw to ready: clean it, let formulas do the thinking, finish with a dashboard.',
-  ppt: 'Get ready for next week’s board: rehearse the tough questions, shape the story and make the deck look ERGO.',
-  cos: 'One prompt sweeps your meetings, mails and chats. Copilot learns how you work, runs it every morning and turns your top topic into a podcast.',
+  xls: 'From a messy register to a live dashboard.',
+  ppt: 'Rehearse the board, shape the deck, make it ERGO.',
+  cos: 'Your morning sweep, your rules and a podcast briefing.',
 };
 
 // Shown at the start of every trail. [icon, title, text, id]; a trail can override or drop a card by id (trail.basics).
