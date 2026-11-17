@@ -29,8 +29,8 @@ ADV.rooms = [
   { id: 'de-meer', room: 'De Meer', group: '1 Basic', trail: 'xls', level: 'basic', assigned: 20, capacity: 20, lead: ['susanne'], desc: 'Steps 1–3 at a guided pace: clean, formulas, outside data.' },
   { id: 'olimpico', room: 'Olimpico', group: '1 Advanced', trail: 'xls', level: 'advanced', assigned: 14, capacity: 14, lead: ['fiza'], desc: 'Quick clean-up, deep on formulas, then dashboards or your own skill.' },
   { id: 'hall-of-fame', room: 'Hall of Fame', group: '2 Basic', trail: 'ppt', level: 'basic', assigned: 21, capacity: 30, lead: ['kathrin', 'ulrike'], desc: 'Steps 1–3 at a guided pace: rehearse, shape the deck, make it ERGO.' },
-  { id: 'ballymore', room: 'Ballymore', group: '2 Advanced', trail: 'ppt', level: 'advanced', assigned: 20, capacity: 20, lead: ['felix'], desc: 'Fast start, then ERGO Motion and recording your own skill.' },
-  { id: 'warm-up', room: 'Warm-up', group: '3 Basic', trail: 'cos', level: 'basic', assigned: 16, capacity: 16, lead: ['asya'], desc: 'Morning sweep, your rules, one scheduled prompt and a podcast.' },
+  { id: 'warm-up', room: 'Warm-up', group: '2 Advanced', trail: 'ppt', level: 'advanced', assigned: 20, capacity: 16, lead: ['felix'], desc: 'Fast start, then ERGO Motion and recording your own skill.' },
+  { id: 'ballymore', room: 'Ballymore', group: '3 Basic', trail: 'cos', level: 'basic', assigned: 16, capacity: 20, lead: ['asya'], desc: 'Morning sweep, your rules, one scheduled prompt and a podcast.' },
   { id: 'anfield', room: 'Anfield', group: '3 Advanced', trail: 'cos', level: 'advanced', assigned: 12, capacity: 12, lead: ['andre'], desc: 'Race through the sweep, then podcast, flashcards and agent side quests.' },
 ];
 ADV.levels = { basic: 'Basic', advanced: 'Advanced' };
