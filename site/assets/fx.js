@@ -716,8 +716,8 @@ ${rules().map(([k, t]) => `<span class="pg-line" data-line="${k}">${esc(t)}</spa
     el.classList.add('vz');
     el.innerHTML = `<p class="vz-title">What happens when you send the prompt</p>
       <div class="vz-flow">
-        <div class="vz-node" data-k="ask"><span class="vz-ic" aria-hidden="true">💬</span><b>You ask</b><q>Make the board pack <mark>ERGO style</mark>.</q></div>
-        <div class="vz-node" data-k="read"><span class="vz-ic" aria-hidden="true">🔎</span><b>Copilot reads the descriptions</b>
+        <div class="vz-node" data-k="ask"><span class="vz-ic" aria-hidden="true">💬</span><b>You pick and ask</b><q><mark>@ergo-deck</mark> Make the board pack ERGO style.</q></div>
+        <div class="vz-node" data-k="read"><span class="vz-ic" aria-hidden="true">🔎</span><b>Your skills, side by side</b>
           <ul class="vz-skills">
             <li data-k="b1">Explain this presentation <i>built in</i></li>
             <li data-k="b2">Create interactive slide <i>built in</i></li>
@@ -728,16 +728,16 @@ ${rules().map(([k, t]) => `<span class="pg-line" data-line="${k}">${esc(t)}</spa
         <div class="vz-node" data-k="out"><span class="vz-ic" aria-hidden="true">🖼️</span><b>New slides</b>
           <div class="vz-mini"><span class="vz-m-title" data-k="t1">Q3: premiums beat plan</span><span class="vz-m-logo" data-k="t2">ERGO</span><span class="vz-m-tiles" data-k="t3"><i></i><i></i><i></i></span><span class="vz-m-band" data-k="t4"></span></div></div>
       </div>
-      <div class="vz-side" data-k="at"><b aria-hidden="true">@</b><span>Wrong skill, or none? Type <b>@</b>, pick <b>ergo-deck</b> from the list and send the prompt again. Picking it yourself always works.</span></div>
+      <div class="vz-side" data-k="at"><b aria-hidden="true">@</b><span>Without <b>@</b>, Copilot guesses from the skill descriptions. In our tests it sometimes decided the deck was already fine and skipped the skill. Picking it yourself always works.</span></div>
       ${vizFoot}`;
     stepper(el, [
-      { on: ['ask'], text: 'You ask the way you’d ask a colleague. The words you use decide which skill fits.' },
-      { on: ['read', 'b1', 'b2', 'deck', 'motion'], text: 'Copilot compares your request with the <b>description</b> of every skill that’s switched on: the built-in ones and yours.' },
-      { on: ['read', 'deck'], text: '“ERGO style” matches ERGO Deck’s description best. ERGO Motion is for animated slides, so it stays out.' },
+      { on: ['ask'], text: 'Type <b>@</b>, pick <b>ergo-deck</b>, then ask the way you’d ask a colleague.' },
+      { on: ['read', 'b1', 'b2', 'deck', 'motion'], text: 'Every skill that’s switched on has a <b>description</b>: the built-in ones and yours. That’s how Copilot knows what each one is for.' },
+      { on: ['read', 'deck'], text: 'With <b>@ergo-deck</b> there’s no guessing: ERGO Deck is the one that runs. For animated slides you’d pick ERGO Motion instead.' },
       { on: ['load'], text: 'The skill loads, and the chat says so: look for <b>Using skills from …</b> or <b>Loaded … skill</b>.' },
-      { on: ['out', 't1', 't2', 't3', 't4'], text: 'The rules shape the result: red message title, logo, KPI tiles, takeaway band. Every figure is copied, never changed.' },
-      { on: ['at'], text: 'If Copilot picks the wrong skill, or none, type <b>@</b> and choose it yourself.' },
-    ], 'The words you use decide which skill loads. If it picks the wrong one, choose it yourself with @.');
+      { on: ['out', 't1', 't2', 't3', 't4'], text: 'The rules shape the result: red message title, logo, KPI tiles, takeaway band, and the figures carried over.' },
+      { on: ['at'], text: 'Why pick it yourself? Without <b>@</b>, Copilot guesses, and it can decide the skill isn’t needed.' },
+    ], 'Pick the skill with @, then ask. That way the skill always runs.');
   };
 
   // PowerPoint step 3 explainer: a standard slide you edit vs an HTML slide you prompt.
